@@ -1,7 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
+from django.utils import timezone
 from .models import Vineyard, Supplier, Harvest, Cellar, Tank, CrushedJuiceAllocation, TankHistory
-from .forms import VineyardForm, SupplierForm, HarvestForm, CrushedJuiceAllocationFormSet, CrushedJuiceAllocationForm, CellarForm, TankForm
+from .forms import (
+    VineyardForm, SupplierForm, HarvestForm, CrushedJuiceAllocationFormSet,
+    CrushedJuiceAllocationForm, CellarForm, TankForm, TankTransferForm
+)
 
 # Vineyard Views
 def list_vineyards(request):
@@ -12,7 +16,9 @@ def add_vineyard(request):
     if request.method == 'POST':
         form = VineyardForm(request.POST)
         if form.is_valid():
-            form.save()
+            vineyard = form.save(commit=False)
+            vineyard.created_by = request.user
+            vineyard.save()
             return redirect('list_vineyards')
     else:
         form = VineyardForm()
@@ -42,7 +48,9 @@ def add_supplier(request):
     if request.method == 'POST':
         form = SupplierForm(request.POST)
         if form.is_valid():
-            form.save()
+            supplier = form.save(commit=False)
+            supplier.created_by = request.user
+            supplier.save()
             return redirect('list_suppliers')
     else:
         form = SupplierForm()
@@ -153,7 +161,9 @@ def add_cellar(request):
     if request.method == 'POST':
         form = CellarForm(request.POST)
         if form.is_valid():
-            form.save()
+            cellar = form.save(commit=False)
+            cellar.created_by = request.user
+            cellar.save()
             return redirect('list_cellars')
     else:
         form = CellarForm()
@@ -183,6 +193,7 @@ def add_tank(request, cellar_id):
         if form.is_valid():
             tank = form.save(commit=False)
             tank.cellar = cellar
+            tank.created_by = request.user
             tank.save()
             return redirect('cellar_detail', cellar_id=cellar.id)
     else:
@@ -208,6 +219,66 @@ def tank_history(request, tank_id):
         'history': history
     })
 
+@login_required
+def transfer_wine(request):
+    # Get source tank from URL parameter if provided
+    source_tank_id = request.GET.get('source')
+    initial_data = {}
+    
+    if source_tank_id:
+        try:
+            source_tank = Tank.objects.get(id=source_tank_id)
+            initial_data['source_tank'] = source_tank
+        except Tank.DoesNotExist:
+            pass
+
+    if request.method == 'POST':
+        form = TankTransferForm(request.POST)
+        if form.is_valid():
+            source_tank = form.cleaned_data['source_tank']
+            destination_tank = form.cleaned_data['destination_tank']
+            volume = form.cleaned_data['volume']
+            notes = form.cleaned_data['notes']
+            
+            # Create history records for both tanks
+            transfer_date = timezone.now().date()
+            
+            # Record for source tank (negative volume)
+            TankHistory.objects.create(
+                tank=source_tank,
+                operation_type='transfer_out',
+                date=transfer_date,
+                volume=-volume,
+                destination=destination_tank,
+                created_by=request.user,
+                notes=notes
+            )
+            
+            # Record for destination tank (positive volume)
+            TankHistory.objects.create(
+                tank=destination_tank,
+                operation_type='transfer_in',
+                date=transfer_date,
+                volume=volume,
+                source=source_tank,
+                created_by=request.user,
+                notes=notes
+            )
+            
+            # Update tank volumes
+            source_tank.update_volume(-volume)
+            destination_tank.update_volume(volume)
+            
+            return redirect('list_cellars')
+    else:
+        form = TankTransferForm(initial=initial_data)
+        
+        # If source tank is selected, exclude it from destination choices
+        if source_tank_id:
+            form.fields['destination_tank'].queryset = Tank.objects.exclude(id=source_tank_id)
+    
+    return render(request, 'vineyards/transfer_wine.html', {'form': form})
+
 # Allocation Views
 def list_allocations(request, harvest_id):
     harvest = get_object_or_404(Harvest, id=harvest_id)
@@ -221,6 +292,7 @@ def add_allocation(request, harvest_id):
         if form.is_valid():
             allocation = form.save(commit=False)
             allocation.harvest = harvest
+            allocation.created_by = request.user
             allocation.save()
             allocation.tank.update_volume(allocation.allocated_volume)
             # Create history record for allocation
