@@ -32,10 +32,34 @@ class Vineyard(models.Model):
         ('supplied', 'Supplied'),
     ]
 
+    # Predefined grape varieties
+    GRAPE_VARIETY_CHOICES = [
+        ('cabernet_sauvignon', 'Cabernet Sauvignon'),
+        ('merlot', 'Merlot'),
+        ('pinot_noir', 'Pinot Noir'),
+        ('chardonnay', 'Chardonnay'),
+        ('sauvignon_blanc', 'Sauvignon Blanc'),
+        ('syrah', 'Syrah'),
+        ('zinfandel', 'Zinfandel'),
+        ('riesling', 'Riesling'),
+        ('tempranillo', 'Tempranillo'),
+        ('sangiovese', 'Sangiovese'),
+        ('malbec', 'Malbec'),
+        ('grenache', 'Grenache'),
+        ('nebbiolo', 'Nebbiolo'),
+        ('pinot_grigio', 'Pinot Grigio'),
+        ('viognier', 'Viognier'),
+        ('cabernet_franc', 'Cabernet Franc'),
+        ('barbera', 'Barbera'),
+        ('moscato', 'Moscato'),
+        ('shiraz', 'Shiraz'),
+        ('carmenere', 'Carmenere'),
+    ]
+
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     size = models.FloatField(help_text="Size in hectares")
-    grape_variety = models.CharField(max_length=255)
+    grape_variety = models.CharField(max_length=255, choices=GRAPE_VARIETY_CHOICES)  # Updated field
     ownership_type = models.CharField(max_length=50, choices=OWNERSHIP_CHOICES)
     supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, blank=True, null=True, related_name='vineyards')
     contact_person = models.CharField(max_length=255, blank=True, null=True)
