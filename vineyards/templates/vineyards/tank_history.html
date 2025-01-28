@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load cellar_tags %}
 
 {% block content %}
 <h1>Tank History: {{ tank.name }}</h1>
@@ -48,7 +49,7 @@
                         <td>
                             {% if entry.operation_type == 'allocation' %}
                                 From harvest: {{ entry.harvest.vineyard.name }} 
-                                ({{ entry.harvest.vineyard.get_grape_variety_display }})
+                                ({{ entry.harvest.vineyard.grape_variety|get_grape_variety_display }})
                             {% elif entry.operation_type == 'transfer_in' %}
                                 From tank: {{ entry.source.name }}
                             {% elif entry.operation_type == 'transfer_out' %}
