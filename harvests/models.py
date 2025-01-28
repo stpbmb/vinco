@@ -22,18 +22,17 @@ class Harvest(models.Model):
     def __str__(self):
         return f"Harvest on {self.date} at {self.vineyard.name}"
 
+    @property
     def total_allocated_volume(self):
         """Calculate the total volume of juice allocated to tanks."""
-        crushed_juice_volume = sum(allocation.allocated_volume for allocation in self.crushed_juice_allocations.all())
-        harvest_allocation_volume = sum(allocation.allocated_volume for allocation in self.harvest_allocations.all())
-        return crushed_juice_volume + harvest_allocation_volume
+        return sum(allocation.allocated_volume for allocation in self.harvest_allocations.all())
 
     @property
     def remaining_juice(self):
         """Calculate the remaining unallocated juice volume."""
         if not self.juice_yield:
             return 0
-        return self.juice_yield - self.total_allocated_volume()
+        return self.juice_yield - self.total_allocated_volume
 
     class Meta:
         ordering = ['-date']
@@ -49,23 +48,36 @@ class HarvestAllocation(models.Model):
     notes = models.TextField(blank=True, null=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         return f"{self.allocated_volume}L from {self.harvest} to {self.tank}"
 
     def clean(self):
-        if self.allocated_volume > self.harvest.remaining_juice:
-            raise ValidationError({
-                'allocated_volume': f'Cannot allocate more than the remaining juice volume ({self.harvest.remaining_juice}L)'
-            })
+        if not hasattr(self, 'harvest'):
+            raise ValidationError("Harvest must be specified")
+            
+        if not self.harvest.juice_yield:
+            raise ValidationError("Cannot allocate juice from a harvest without juice yield")
         
+        if not hasattr(self, 'allocated_volume'):
+            return
+            
+        if self.allocated_volume > self.harvest.remaining_juice:
+            raise ValidationError(f"Cannot allocate more than the remaining juice volume ({self.harvest.remaining_juice}L)")
+        
+        if not hasattr(self, 'tank'):
+            return
+            
         if self.allocated_volume > self.tank.available_space:
-            raise ValidationError({
-                'allocated_volume': f'Cannot allocate more than the available tank space ({self.tank.available_space}L)'
-            })
+            raise ValidationError(f"Cannot allocate more than the available tank space ({self.tank.available_space}L)")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
+        # Update tank volume after saving
+        self.tank.update_volume(self.allocated_volume)
 
     class Meta:
-        ordering = ['-allocation_date']
         verbose_name = 'Harvest Allocation'
         verbose_name_plural = 'Harvest Allocations'
+        ordering = ['-allocation_date', '-created_at']

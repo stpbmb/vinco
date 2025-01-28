@@ -27,4 +27,10 @@ urlpatterns = [
     path('boxes/add/', views.add_box, name='add_box'),
     path('boxes/<int:pk>/', views.box_detail, name='box_detail'),
     path('boxes/<int:pk>/edit/', views.edit_box, name='edit_box'),
+    
+    # Bottling URLs
+    path('bottling/new/', views.BottlingCreateView.as_view(), name='add_bottling'),
+    path('bottling/unfinished/', views.list_unfinished_bottlings, name='list_unfinished'),
+    path('bottling/finished/', views.list_finished_bottlings, name='list_finished'),
+
 ]

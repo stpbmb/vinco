@@ -2,8 +2,12 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.db.models import Q, F
-from .models import Bottle, Label, Closure, Box
-from .forms import BottleForm, LabelForm, ClosureForm, BoxForm
+from .models import Bottle, Label, Closure, Box, Bottling
+from .forms import BottleForm, LabelForm, ClosureForm, BoxForm, BottlingForm
+from django.urls import reverse_lazy
+from django.contrib.auth.mixins import LoginRequiredMixin
+from django.views.generic import CreateView
+from cellars.models import Tank
 
 # Bottle Views
 @login_required
@@ -68,7 +72,7 @@ def edit_bottle(request, pk):
 @login_required
 def list_labels(request):
     labels = Label.objects.all()
-    low_stock = labels.filter(stock__lte=models.F('minimum_stock'))
+    low_stock = labels.filter(stock__lte=F('minimum_stock'))
     context = {
         'labels': labels,
         'low_stock': low_stock,
@@ -127,7 +131,7 @@ def edit_label(request, pk):
 @login_required
 def list_closures(request):
     closures = Closure.objects.all()
-    low_stock = closures.filter(stock__lte=models.F('minimum_stock'))
+    low_stock = closures.filter(stock__lte=F('minimum_stock'))
     context = {
         'closures': closures,
         'low_stock': low_stock,
@@ -186,7 +190,7 @@ def edit_closure(request, pk):
 @login_required
 def list_boxes(request):
     boxes = Box.objects.all()
-    low_stock = boxes.filter(stock__lte=models.F('minimum_stock'))
+    low_stock = boxes.filter(stock__lte=F('minimum_stock'))
     context = {
         'boxes': boxes,
         'low_stock': low_stock,
@@ -240,3 +244,54 @@ def edit_box(request, pk):
         'title': f'Edit Box: {box.name}'
     }
     return render(request, 'packaging/box_form.html', context)
+
+# Bottling Views
+@login_required
+def list_unfinished_bottlings(request):
+    bottlings = Bottling.objects.filter(status='unfinished')
+    context = {
+        'bottlings': bottlings,
+        'title': 'Unfinished Bottlings'
+    }
+    return render(request, 'packaging/list_unfinished.html', context)
+
+@login_required
+def list_finished_bottlings(request):
+    bottlings = Bottling.objects.filter(status='finished')
+    context = {
+        'bottlings': bottlings,
+        'title': 'Finished Bottlings'
+    }
+    return render(request, 'packaging/list_finished.html', context)
+
+class BottlingCreateView(LoginRequiredMixin, CreateView):
+    model = Bottling
+    form_class = BottlingForm
+    template_name = 'packaging/bottling_form.html'
+    success_url = reverse_lazy('packaging:list_unfinished')
+
+    def form_valid(self, form):
+        form.instance.created_by = self.request.user
+        response = super().form_valid(form)
+
+        # Update inventory quantities
+        tank = form.cleaned_data['tank']
+        bottle = form.cleaned_data['bottle']
+        quantity = form.cleaned_data['quantity']
+
+        # Reduce wine volume in tank
+        tank.current_volume -= quantity * bottle.volume
+        tank.save()
+
+        # Reduce packaging materials
+        bottle.quantity -= quantity
+        bottle.save()
+
+        for material in ['closure', 'label', 'box']:
+            item = form.cleaned_data.get(material)
+            if item:
+                item.quantity -= quantity
+                item.save()
+
+        messages.success(self.request, 'Bottling created successfully!')
+        return response

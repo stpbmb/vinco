@@ -1,190 +1,143 @@
-{% extends 'base.html' %}
+{% extends 'harvests/base_harvests.html' %}
 
-{% block content %}
-<div class="harvests-container">
-    <div class="header">
-        <h1>Harvests</h1>
-        <div class="actions">
-            <a href="{% url 'harvests:add_harvest' %}" class="btn btn-primary">Add New Harvest</a>
+{% block harvest_content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Unallocated Harvests</h4>
+            <a href="{% url 'harvests:add_harvest' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Harvest
+            </a>
         </div>
-    </div>
-
-    {% if unallocated_harvests %}
-    <div class="harvest-section unallocated-section">
-        <h2>Unallocated Harvests</h2>
-        <div class="table-container">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th>Date</th>
-                        <th>Vineyard</th>
-                        <th>Grape Variety</th>
-                        <th>Juice Yield (L)</th>
-                        <th>Available (L)</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for harvest in unallocated_harvests %}
-                        <tr class="clickable-row" data-href="{% url 'harvests:harvest_detail' harvest.id %}">
-                            <td>{{ harvest.date }}</td>
-                            <td>{{ harvest.vineyard.name }}</td>
-                            <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
-                            <td>{{ harvest.juice_yield }}</td>
-                            <td>{{ harvest.remaining_juice }}</td>
-                            <td class="actions-cell">
-                                <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-sm btn-allocate" onclick="event.stopPropagation();">
-                                    Allocate
-                                </a>
-                            </td>
-                        </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
-    </div>
-    {% endif %}
-
-    <div class="harvest-section">
-        <h2>All Harvests</h2>
-        {% if harvests %}
-            <div class="table-container">
-                <table class="table">
+        {% if unallocated_harvests %}
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
                     <thead>
                         <tr>
                             <th>Date</th>
                             <th>Vineyard</th>
                             <th>Grape Variety</th>
-                            <th>Quantity (kg)</th>
-                            <th>Juice Yield (L)</th>
-                            <th>Allocated (L)</th>
+                            <th>Juice Yield</th>
+                            <th>Available</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for harvest in unallocated_harvests %}
+                        <tr class="clickable-row" data-href="{% url 'harvests:harvest_detail' harvest.id %}">
+                            <td>{{ harvest.date }}</td>
+                            <td>{{ harvest.vineyard.name }}</td>
+                            <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
+                            <td>{{ harvest.juice_yield }} L</td>
+                            <td>
+                                <span class="badge bg-warning text-dark">
+                                    {{ harvest.remaining_volume }} L
+                                </span>
+                            </td>
+                            <td>
+                                <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-sm btn-success" onclick="event.stopPropagation();">
+                                    <i class="fas fa-plus"></i> Allocate
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        {% else %}
+        <div class="card-body">
+            <div class="alert alert-info mb-0">
+                <i class="fas fa-info-circle"></i> No unallocated harvests found.
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <h4 class="mb-0">All Harvests</h4>
+        </div>
+        <div class="card-body p-0">
+            {% if harvests %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Vineyard</th>
+                            <th>Grape Variety</th>
+                            <th>Quantity</th>
+                            <th>Juice Yield</th>
+                            <th>Allocated</th>
+                            <th>Status</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for harvest in harvests %}
-                            <tr class="clickable-row" data-href="{% url 'harvests:harvest_detail' harvest.id %}">
-                                <td>{{ harvest.date }}</td>
-                                <td>{{ harvest.vineyard.name }}</td>
-                                <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
-                                <td>{{ harvest.quantity }}</td>
-                                <td>{{ harvest.juice_yield|default:"-" }}</td>
-                                <td>{{ harvest.total_allocated_volume|default:"0" }}</td>
-                                <td class="actions-cell">
-                                    <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-sm btn-edit" onclick="event.stopPropagation();">
-                                        Edit
-                                    </a>
-                                    {% if harvest.juice_yield and harvest.remaining_juice > 0 %}
-                                        <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-sm btn-allocate" onclick="event.stopPropagation();">
-                                            Allocate
-                                        </a>
-                                    {% endif %}
-                                </td>
-                            </tr>
+                        <tr class="clickable-row" data-href="{% url 'harvests:harvest_detail' harvest.id %}">
+                            <td>{{ harvest.date }}</td>
+                            <td>{{ harvest.vineyard.name }}</td>
+                            <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
+                            <td>{{ harvest.quantity }} kg</td>
+                            <td>{{ harvest.juice_yield|default:"-" }} L</td>
+                            <td>{{ harvest.allocated_volume_sum }} L</td>
+                            <td>
+                                {% if not harvest.juice_yield %}
+                                    <span class="badge bg-secondary">Pending</span>
+                                {% elif harvest.remaining_volume > 0 %}
+                                    <span class="badge bg-warning text-dark">Partially Allocated</span>
+                                {% else %}
+                                    <span class="badge bg-success">Fully Allocated</span>
+                                {% endif %}
+                            </td>
+                            <td>
+                                <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-sm btn-primary" onclick="event.stopPropagation();">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                {% if harvest.juice_yield and harvest.remaining_volume > 0 %}
+                                <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-sm btn-success" onclick="event.stopPropagation();">
+                                    <i class="fas fa-plus"></i>
+                                </a>
+                                {% endif %}
+                            </td>
+                        </tr>
                         {% endfor %}
                     </tbody>
                 </table>
             </div>
-        {% else %}
-            <p class="no-data">No harvests recorded yet.</p>
-        {% endif %}
+            {% else %}
+            <div class="alert alert-info m-3">
+                <i class="fas fa-info-circle"></i> No harvests recorded yet.
+                <a href="{% url 'harvests:add_harvest' %}" class="alert-link">Add your first harvest</a>
+            </div>
+            {% endif %}
+        </div>
     </div>
 </div>
 
 <style>
-    .harvests-container {
-        padding: 20px;
-    }
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-    .header h1 {
-        margin: 0;
-    }
-    .harvest-section {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-    }
-    .unallocated-section {
-        border-left: 4px solid #ffc107;
-    }
-    .harvest-section h2 {
-        color: #333;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #eee;
-    }
-    .table-container {
-        overflow-x: auto;
-    }
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .table th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        padding: 12px;
-        text-align: left;
-    }
-    .table td {
-        padding: 12px;
-        border-bottom: 1px solid #dee2e6;
-    }
-    .clickable-row {
-        cursor: pointer;
-        transition: background-color 0.2s;
-    }
-    .clickable-row:hover {
-        background-color: #f8f9fa;
-    }
-    .btn {
-        display: inline-block;
-        padding: 8px 16px;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: 500;
-        margin: 0 4px;
-    }
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 0.875rem;
-    }
-    .btn-edit {
-        background-color: #28a745;
-        color: white;
-    }
-    .btn-allocate {
-        background-color: #ffc107;
-        color: #000;
-    }
-    .actions-cell {
-        white-space: nowrap;
-    }
-    .no-data {
-        text-align: center;
-        color: #6c757d;
-        font-style: italic;
-        padding: 20px;
-    }
+.clickable-row {
+    cursor: pointer;
+}
+.clickable-row:hover {
+    background-color: rgba(0,0,0,.075);
+}
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
-    const rows = document.querySelectorAll('.clickable-row');
-    rows.forEach(row => {
-        row.addEventListener('click', function() {
-            window.location.href = this.dataset.href;
+    document.querySelectorAll('.clickable-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            if (!e.target.closest('.btn')) {
+                window.location.href = this.dataset.href;
+            }
         });
     });
 });

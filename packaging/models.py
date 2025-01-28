@@ -163,3 +163,56 @@ class Box(models.Model):
     class Meta:
         ordering = ['name']
         verbose_name_plural = "boxes"
+
+class Bottling(models.Model):
+    BOTTLING_STATUS = [
+        ('unfinished', 'Unfinished'),
+        ('finished', 'Finished'),
+    ]
+
+    tank = models.ForeignKey('cellars.Tank', on_delete=models.PROTECT, related_name='bottlings')
+    bottle = models.ForeignKey('packaging.Bottle', on_delete=models.PROTECT, related_name='bottlings')
+    closure = models.ForeignKey('packaging.Closure', on_delete=models.PROTECT, related_name='bottlings', null=True, blank=True)
+    label = models.ForeignKey('packaging.Label', on_delete=models.PROTECT, related_name='bottlings', null=True, blank=True)
+    box = models.ForeignKey('packaging.Box', on_delete=models.PROTECT, related_name='bottlings', null=True, blank=True)
+    
+    bottling_date = models.DateField()
+    quantity = models.PositiveIntegerField(help_text='Number of bottles')
+    status = models.CharField(max_length=20, choices=BOTTLING_STATUS, default='unfinished')
+    notes = models.TextField(blank=True)
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+    created_by = models.ForeignKey('auth.User', on_delete=models.PROTECT, related_name='bottlings_created')
+
+    class Meta:
+        ordering = ['-bottling_date']
+        verbose_name = 'Bottling'
+        verbose_name_plural = 'Bottlings'
+
+    def __str__(self):
+        return f"{self.tank.wine_type} - {self.quantity} bottles ({self.get_status_display()})"
+
+    def save(self, *args, **kwargs):
+        # Automatically set status based on packaging materials
+        if self.closure and self.label and self.box:
+            self.status = 'finished'
+        else:
+            self.status = 'unfinished'
+        super().save(*args, **kwargs)
+
+    @property
+    def is_finished(self):
+        return self.status == 'finished'
+
+    @property
+    def missing_materials(self):
+        missing = []
+        if not self.closure:
+            missing.append('Closure')
+        if not self.label:
+            missing.append('Label')
+        if not self.box:
+            missing.append('Box')
+        return missing

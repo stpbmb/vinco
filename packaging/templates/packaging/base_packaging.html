@@ -1,32 +1,62 @@
-{% extends "vineyards/base.html" %}
+{% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
+<div class="container-fluid">
     <div class="row">
-        <div class="col-md-3">
+        <!-- Sidebar -->
+        <div class="col-md-3 col-lg-2">
             <div class="card mb-4">
                 <div class="card-header">
-                    <h5 class="mb-0">Packaging Materials</h5>
+                    <h5 class="mb-0">Packaging</h5>
                 </div>
                 <div class="list-group list-group-flush">
-                    <a href="{% url 'packaging:list_bottles' %}" class="list-group-item list-group-item-action {% if 'bottles' in request.path %}active{% endif %}">
-                        Bottles
+                    <a href="{% url 'packaging:list_bottles' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'list_bottles' %}active{% endif %}">
+                        <i class="fas fa-wine-bottle me-2"></i> Bottles
                     </a>
-                    <a href="{% url 'packaging:list_labels' %}" class="list-group-item list-group-item-action {% if 'labels' in request.path %}active{% endif %}">
-                        Labels
+                    <a href="{% url 'packaging:list_closures' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'list_closures' %}active{% endif %}">
+                        <i class="fas fa-circle me-2"></i> Closures
                     </a>
-                    <a href="{% url 'packaging:list_closures' %}" class="list-group-item list-group-item-action {% if 'closures' in request.path %}active{% endif %}">
-                        Closures
+                    <a href="{% url 'packaging:list_labels' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'list_labels' %}active{% endif %}">
+                        <i class="fas fa-tag me-2"></i> Labels
                     </a>
-                    <a href="{% url 'packaging:list_boxes' %}" class="list-group-item list-group-item-action {% if 'boxes' in request.path %}active{% endif %}">
-                        Boxes
+                    <a href="{% url 'packaging:list_boxes' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'list_boxes' %}active{% endif %}">
+                        <i class="fas fa-box me-2"></i> Boxes
+                    </a>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Bottling</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'packaging:add_bottling' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'add_bottling' %}active{% endif %}">
+                        <i class="fas fa-plus me-2"></i> New Bottling
+                    </a>
+                    <a href="{% url 'packaging:list_unfinished' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'list_unfinished' %}active{% endif %}">
+                        <i class="fas fa-hourglass-half me-2"></i> Unfinished
+                    </a>
+                    <a href="{% url 'packaging:list_finished' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'list_finished' %}active{% endif %}">
+                        <i class="fas fa-check-circle me-2"></i> Finished
                     </a>
                 </div>
             </div>
         </div>
-        <div class="col-md-9">
+
+        <!-- Main Content -->
+        <div class="col-md-9 col-lg-10">
             {% block packaging_content %}{% endblock %}
         </div>
     </div>
 </div>
+
+<style>
+.list-group-item i {
+    width: 20px;
+    text-align: center;
+}
+.list-group-item.active i {
+    color: white;
+}
+</style>
 {% endblock %}

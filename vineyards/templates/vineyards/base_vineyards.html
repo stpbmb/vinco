@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-md-3">
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="mb-0">Vineyard Management</h5>
+                </div>
+                <div class="list-group list-group-flush">
+                    <a href="{% url 'vineyards:list_vineyards' %}" class="list-group-item list-group-item-action {% if 'vineyards' in request.path and not 'suppliers' in request.path %}active{% endif %}">
+                        <i class="fas fa-mountain me-2"></i> Vineyards
+                    </a>
+                    <a href="{% url 'vineyards:list_suppliers' %}" class="list-group-item list-group-item-action {% if 'suppliers' in request.path %}active{% endif %}">
+                        <i class="fas fa-truck me-2"></i> Suppliers
+                    </a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-9">
+            {% block vineyard_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+
+<style>
+.list-group-item i {
+    width: 20px;
+    text-align: center;
+}
+.list-group-item.active i {
+    color: white;
+}
+</style>
+{% endblock %}

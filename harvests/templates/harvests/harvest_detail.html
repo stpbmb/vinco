@@ -1,312 +1,133 @@
-{% extends 'base.html' %}
+{% extends 'harvests/base_harvests.html' %}
 
-{% block content %}
-<div class="detail-container">
-    <div class="header">
-        <div class="title-section">
-            <h1>{{ harvest.vineyard.name }}</h1>
-            <span class="subtitle">Harvest on {{ harvest.date }}</span>
+{% block harvest_content %}
+<div class="container">
+    <div class="card mb-4">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">{{ harvest.vineyard.name }} - Harvest Details</h4>
+            <div>
+                <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-primary">
+                    <i class="fas fa-edit"></i> Edit Harvest
+                </a>
+                <a href="{% url 'harvests:list_harvests' %}" class="btn btn-secondary">
+                    <i class="fas fa-arrow-left"></i> Back to List
+                </a>
+            </div>
         </div>
-        <div class="actions">
-            <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-edit">Edit Harvest</a>
-            <a href="{% url 'harvests:list_harvests' %}" class="btn btn-secondary">Back to List</a>
-        </div>
-    </div>
+        <div class="card-body">
+            <!-- Main Information -->
+            <div class="row mb-4">
+                <div class="col-md-6">
+                    <h5 class="card-title">Harvest Information</h5>
+                    <table class="table">
+                        <tr>
+                            <th>Vineyard:</th>
+                            <td>{{ harvest.vineyard.name }}</td>
+                        </tr>
+                        <tr>
+                            <th>Grape Variety:</th>
+                            <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
+                        </tr>
+                        <tr>
+                            <th>Harvest Date:</th>
+                            <td>{{ harvest.date }}</td>
+                        </tr>
+                        <tr>
+                            <th>Quantity:</th>
+                            <td>{{ harvest.quantity }} kg</td>
+                        </tr>
+                        {% if harvest.notes %}
+                        <tr>
+                            <th>Notes:</th>
+                            <td>{{ harvest.notes|linebreaks }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+                <div class="col-md-6">
+                    <h5 class="card-title">Crushing/Pressing Details</h5>
+                    <table class="table">
+                        <tr>
+                            <th>Crushing Date:</th>
+                            <td>{{ harvest.crushing_date|default:"-" }}</td>
+                        </tr>
+                        <tr>
+                            <th>Juice Yield:</th>
+                            <td>{{ harvest.juice_yield|default:"-" }} L</td>
+                        </tr>
+                        <tr>
+                            <th>Allocated Volume:</th>
+                            <td>{{ harvest.total_allocated_volume }} L</td>
+                        </tr>
+                        <tr>
+                            <th>Remaining Juice:</th>
+                            <td>
+                                <span class="badge {% if harvest.remaining_juice > 0 %}bg-success{% else %}bg-secondary{% endif %}">
+                                    {{ harvest.remaining_juice }} L
+                                </span>
+                            </td>
+                        </tr>
+                        {% if harvest.pressing_notes %}
+                        <tr>
+                            <th>Pressing Notes:</th>
+                            <td>{{ harvest.pressing_notes|linebreaks }}</td>
+                        </tr>
+                        {% endif %}
+                    </table>
+                </div>
+            </div>
 
-    <div class="detail-sections">
-        <!-- Main Information -->
-        <div class="detail-section">
-            <h2>Harvest Information</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <label>Vineyard</label>
-                    <span>{{ harvest.vineyard.name }}</span>
-                </div>
-                <div class="info-item">
-                    <label>Grape Variety</label>
-                    <span>{{ harvest.vineyard.get_grape_variety_display }}</span>
-                </div>
-                <div class="info-item">
-                    <label>Harvest Date</label>
-                    <span>{{ harvest.date }}</span>
-                </div>
-                <div class="info-item">
-                    <label>Quantity</label>
-                    <span>{{ harvest.quantity }} kg</span>
+            <!-- Allocations -->
+            <div class="row">
+                <div class="col-12">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="card-title mb-0">Juice Allocations</h5>
+                        {% if harvest.juice_yield and harvest.remaining_juice > 0 %}
+                        <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-success">
+                            <i class="fas fa-plus"></i> Add Allocation
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% if allocations %}
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead>
+                                <tr>
+                                    <th>Tank</th>
+                                    <th>Type</th>
+                                    <th>Volume</th>
+                                    <th>Date</th>
+                                    <th>Notes</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for allocation in allocations %}
+                                <tr>
+                                    <td>
+                                        <a href="{% url 'cellars:tank_detail' allocation.tank.id %}">
+                                            {{ allocation.tank.name }}
+                                        </a>
+                                    </td>
+                                    <td>{{ allocation.tank.get_tank_type_display }}</td>
+                                    <td>{{ allocation.allocated_volume }} L</td>
+                                    <td>{{ allocation.allocation_date }}</td>
+                                    <td>{{ allocation.notes|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="fas fa-info-circle"></i> No juice allocations yet.
+                        {% if harvest.juice_yield and harvest.remaining_juice > 0 %}
+                        <a href="{% url 'harvests:add_allocation' harvest.id %}" class="alert-link">Add one now</a>
+                        {% endif %}
+                    </div>
+                    {% endif %}
                 </div>
             </div>
         </div>
-
-        <!-- Crushing/Pressing Information -->
-        <div class="detail-section">
-            <h2>Crushing/Pressing Details</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <label>Crushing Date</label>
-                    <span>{{ harvest.crushing_date|default:"-" }}</span>
-                </div>
-                <div class="info-item">
-                    <label>Juice Yield</label>
-                    <span>{{ harvest.juice_yield|default:"-" }} L</span>
-                </div>
-                <div class="info-item">
-                    <label>Allocated Volume</label>
-                    <span>{{ harvest.total_allocated_volume }} L</span>
-                </div>
-                <div class="info-item highlight">
-                    <label>Remaining Juice</label>
-                    <span>{{ harvest.remaining_juice }} L</span>
-                </div>
-            </div>
-            {% if harvest.pressing_notes %}
-            <div class="notes-section">
-                <label>Pressing Notes</label>
-                <p>{{ harvest.pressing_notes|linebreaks }}</p>
-            </div>
-            {% endif %}
-        </div>
-
-        <!-- Allocations -->
-        <div class="detail-section">
-            <div class="section-header">
-                <h2>Juice Allocations</h2>
-                {% if harvest.remaining_juice > 0 %}
-                    <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-small btn-allocate">Add Allocation</a>
-                {% endif %}
-            </div>
-            {% if allocations %}
-                <div class="allocations-grid">
-                    {% for allocation in allocations %}
-                        <div class="allocation-card">
-                            <div class="card-header">
-                                <h3>{{ allocation.tank.name }}</h3>
-                                <span class="tank-type">{{ allocation.tank.get_tank_type_display }}</span>
-                            </div>
-                            <div class="card-content">
-                                <div class="info-row">
-                                    <label>Volume</label>
-                                    <span>{{ allocation.allocated_volume }} L</span>
-                                </div>
-                                <div class="info-row">
-                                    <label>Date</label>
-                                    <span>{{ allocation.allocation_date }}</span>
-                                </div>
-                                {% if allocation.notes %}
-                                    <div class="allocation-notes">
-                                        <label>Notes</label>
-                                        <p>{{ allocation.notes }}</p>
-                                    </div>
-                                {% endif %}
-                            </div>
-                        </div>
-                    {% endfor %}
-                </div>
-            {% else %}
-                <p class="no-data">No allocations recorded yet.</p>
-            {% endif %}
-        </div>
-
-        {% if harvest.notes %}
-        <!-- General Notes -->
-        <div class="detail-section">
-            <h2>Additional Notes</h2>
-            <div class="notes-content">
-                {{ harvest.notes|linebreaks }}
-            </div>
-        </div>
-        {% endif %}
     </div>
 </div>
-
-<style>
-    .detail-container {
-        max-width: 1200px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid #eee;
-    }
-    .title-section h1 {
-        margin: 0;
-        color: #2c3e50;
-        font-size: 2em;
-    }
-    .subtitle {
-        color: #6c757d;
-        font-size: 1.1em;
-        margin-top: 5px;
-        display: block;
-    }
-    .actions {
-        display: flex;
-        gap: 10px;
-    }
-    .detail-sections {
-        display: grid;
-        gap: 30px;
-    }
-    .detail-section {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    }
-    .detail-section h2 {
-        margin: 0 0 20px 0;
-        color: #2c3e50;
-        font-size: 1.3em;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
-    }
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-        gap: 20px;
-    }
-    .info-item {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-    .info-item label {
-        color: #6c757d;
-        font-size: 0.9em;
-        font-weight: 500;
-    }
-    .info-item span {
-        color: #2c3e50;
-        font-size: 1.1em;
-    }
-    .info-item.highlight {
-        padding: 10px;
-        background-color: #e9ecef;
-        border-radius: 6px;
-    }
-    .notes-section {
-        margin-top: 20px;
-        padding-top: 20px;
-        border-top: 1px solid #eee;
-    }
-    .notes-section label,
-    .allocation-notes label {
-        display: block;
-        color: #6c757d;
-        font-size: 0.9em;
-        font-weight: 500;
-        margin-bottom: 5px;
-    }
-    .section-header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 20px;
-    }
-    .section-header h2 {
-        margin: 0;
-        padding: 0;
-        border: none;
-    }
-    .allocations-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-        gap: 20px;
-    }
-    .allocation-card {
-        border: 1px solid #eee;
-        border-radius: 6px;
-        overflow: hidden;
-    }
-    .card-header {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-bottom: 1px solid #eee;
-    }
-    .card-header h3 {
-        margin: 0;
-        color: #2c3e50;
-        font-size: 1.1em;
-    }
-    .tank-type {
-        color: #6c757d;
-        font-size: 0.9em;
-        display: block;
-        margin-top: 3px;
-    }
-    .card-content {
-        padding: 15px;
-    }
-    .info-row {
-        display: flex;
-        justify-content: space-between;
-        margin-bottom: 10px;
-    }
-    .info-row label {
-        color: #6c757d;
-        font-size: 0.9em;
-    }
-    .allocation-notes {
-        margin-top: 15px;
-        padding-top: 15px;
-        border-top: 1px solid #eee;
-    }
-    .btn {
-        padding: 8px 16px;
-        border-radius: 4px;
-        text-decoration: none;
-        color: white;
-        font-weight: 500;
-        transition: background-color 0.2s;
-    }
-    .btn-edit {
-        background-color: #007bff;
-    }
-    .btn-edit:hover {
-        background-color: #0056b3;
-    }
-    .btn-secondary {
-        background-color: #6c757d;
-    }
-    .btn-secondary:hover {
-        background-color: #545b62;
-    }
-    .btn-allocate {
-        background-color: #28a745;
-    }
-    .btn-allocate:hover {
-        background-color: #218838;
-    }
-    .no-data {
-        text-align: center;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        color: #6c757d;
-    }
-    @media (max-width: 768px) {
-        .header {
-            flex-direction: column;
-            gap: 15px;
-        }
-        .actions {
-            width: 100%;
-            flex-direction: column;
-        }
-        .btn {
-            width: 100%;
-            text-align: center;
-        }
-        .info-grid {
-            grid-template-columns: 1fr;
-        }
-        .allocations-grid {
-            grid-template-columns: 1fr;
-        }
-    }
-</style>
 {% endblock %}

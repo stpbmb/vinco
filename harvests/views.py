@@ -2,7 +2,8 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 from django.views.generic import ListView, DetailView, CreateView, UpdateView
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
-from django.db.models import F, ExpressionWrapper, DecimalField, Q
+from django.db.models import F, ExpressionWrapper, DecimalField, Q, Sum, Value, FloatField
+from django.db.models.functions import Coalesce
 from .models import Harvest, HarvestAllocation
 from .forms import HarvestForm, HarvestAllocationForm
 
@@ -12,6 +13,14 @@ class HarvestListView(LoginRequiredMixin, ListView):
     context_object_name = 'harvests'
     ordering = ['-date']
 
+    def get_queryset(self):
+        return Harvest.objects.annotate(
+            allocated_volume_sum=Coalesce(
+                Sum('harvest_allocations__allocated_volume'), 
+                Value(0, output_field=FloatField())
+            )
+        )
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['active_tab'] = 'harvests'
@@ -20,12 +29,17 @@ class HarvestListView(LoginRequiredMixin, ListView):
         unallocated_harvests = Harvest.objects.exclude(
             juice_yield__isnull=True
         ).annotate(
+            allocated_volume_sum=Coalesce(
+                Sum('harvest_allocations__allocated_volume'), 
+                Value(0, output_field=FloatField())
+            )
+        ).annotate(
             remaining_volume=ExpressionWrapper(
-                F('juice_yield') - F('total_allocated_volume'),
-                output_field=DecimalField()
+                F('juice_yield') - F('allocated_volume_sum'),
+                output_field=FloatField()
             )
         ).filter(
-            Q(total_allocated_volume__isnull=True) | 
+            Q(allocated_volume_sum__isnull=True) | 
             Q(remaining_volume__gt=0)
         ).order_by('-date')
         
@@ -40,6 +54,8 @@ class HarvestDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['active_tab'] = 'harvests'
+        # Get allocations ordered by date
+        context['allocations'] = self.object.harvest_allocations.select_related('tank').order_by('-allocation_date')
         return context
 
 class HarvestCreateView(LoginRequiredMixin, CreateView):
@@ -78,6 +94,13 @@ class HarvestAllocationCreateView(LoginRequiredMixin, CreateView):
     def get_harvest(self):
         return get_object_or_404(Harvest, pk=self.kwargs['harvest_id'])
 
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        kwargs['harvest'] = self.get_harvest()
+        if kwargs.get('instance') is None:
+            kwargs['instance'] = self.model(harvest=self.get_harvest())
+        return kwargs
+
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['active_tab'] = 'harvests'
@@ -85,20 +108,9 @@ class HarvestAllocationCreateView(LoginRequiredMixin, CreateView):
         context['title'] = f'Allocate Juice from {context["harvest"]}'
         return context
 
-    def get_form_kwargs(self):
-        kwargs = super().get_form_kwargs()
-        kwargs['harvest'] = self.get_harvest()
-        return kwargs
-
     def form_valid(self, form):
-        form.instance.harvest = self.get_harvest()
         form.instance.created_by = self.request.user
-        response = super().form_valid(form)
-        
-        # Update tank volume
-        form.instance.tank.update_volume(form.instance.allocated_volume)
-        
-        return response
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse_lazy('harvests:harvest_detail', kwargs={'pk': self.kwargs['harvest_id']})

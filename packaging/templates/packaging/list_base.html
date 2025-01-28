@@ -14,14 +14,31 @@
             <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Low Stock Alert</h5>
             <ul class="mb-0">
                 {% for item in low_stock %}
-                <li>{{ item.name }} - Current stock: {{ item.stock }} (Minimum: {{ item.minimum_stock }})</li>
+                <li>
+                    <strong>{{ item.name }}</strong> - 
+                    <span class="stock-indicator">
+                        <span class="badge {% if item.stock <= item.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                            {{ item.stock }}
+                        </span>
+                        <div class="progress">
+                            <div class="progress-bar {% if item.stock <= item.minimum_stock %}bg-danger{% else %}bg-success{% endif %}" 
+                                 role="progressbar" 
+                                 style="width: {{ item.stock|default:0|floatformat:0 }}%"
+                                 aria-valuenow="{{ item.stock }}" 
+                                 aria-valuemin="0" 
+                                 aria-valuemax="{{ item.minimum_stock|add:10 }}">
+                            </div>
+                        </div>
+                        (Minimum: {{ item.minimum_stock }})
+                    </span>
+                </li>
                 {% endfor %}
             </ul>
         </div>
         {% endif %}
 
         <div class="table-responsive">
-            <table class="table table-hover">
+            <table class="table table-hover" id="itemsTable">
                 <thead>
                     <tr>
                         {% block table_headers %}{% endblock %}
@@ -34,4 +51,95 @@
         </div>
     </div>
 </div>
+
+<style>
+    .clickable-row {
+        cursor: pointer;
+    }
+    .clickable-row:hover {
+        background-color: rgba(0,0,0,.075);
+    }
+    .clickable-row td:last-child {
+        width: 100px;
+    }
+    .clickable-row td:last-child .btn {
+        opacity: 0.7;
+    }
+    .clickable-row:hover td:last-child .btn {
+        opacity: 1;
+    }
+    .stock-indicator {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+    }
+    .stock-indicator .progress {
+        width: 100px;
+        height: 8px;
+        margin: 0 8px;
+    }
+    .sortable {
+        cursor: pointer;
+        position: relative;
+        padding-right: 20px;
+    }
+    .sortable:after {
+        content: '↕';
+        position: absolute;
+        right: 5px;
+        color: #999;
+    }
+    .sortable.asc:after {
+        content: '↑';
+        color: #333;
+    }
+    .sortable.desc:after {
+        content: '↓';
+        color: #333;
+    }
+    .badge {
+        font-size: 0.9rem;
+        padding: 6px 12px;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Add click handlers for clickable rows
+    document.querySelectorAll('.clickable-row').forEach(row => {
+        row.addEventListener('click', function(e) {
+            // Don't navigate if clicking on action buttons
+            if (e.target.closest('.btn')) {
+                return;
+            }
+            window.location.href = this.dataset.href;
+        });
+    });
+
+    // Add sorting functionality
+    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
+    
+    const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
+        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
+    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+
+    document.querySelectorAll('th').forEach(th => {
+        th.classList.add('sortable');
+        th.addEventListener('click', (() => {
+            const table = th.closest('table');
+            const tbody = table.querySelector('tbody');
+            Array.from(tbody.querySelectorAll('tr'))
+                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+                .forEach(tr => tbody.appendChild(tr));
+            
+            // Update sort indicators
+            th.closest('tr').querySelectorAll('th').forEach(header => {
+                header.classList.remove('asc', 'desc');
+            });
+            th.classList.toggle('asc', this.asc);
+            th.classList.toggle('desc', !this.asc);
+        }));
+    });
+});
+</script>
 {% endblock %}

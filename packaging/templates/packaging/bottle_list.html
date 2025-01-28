@@ -1,0 +1,65 @@
+{% extends 'packaging/base_packaging.html' %}
+
+{% block packaging_content %}
+<div class="container-fluid">
+    <div class="card">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h4 class="mb-0">Bottles</h4>
+            <a href="{% url 'packaging:add_bottle' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Bottle
+            </a>
+        </div>
+        <div class="card-body p-0">
+            {% if bottles %}
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Volume (L)</th>
+                            <th>Color</th>
+                            <th>Stock</th>
+                            <th>Last Updated</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bottle in bottles %}
+                        <tr>
+                            <td>
+                                <a href="{% url 'packaging:bottle_detail' bottle.id %}" class="text-decoration-none">
+                                    {{ bottle.name }}
+                                </a>
+                            </td>
+                            <td>{{ bottle.volume }}</td>
+                            <td>{{ bottle.get_color_display }}</td>
+                            <td>
+                                {% if bottle.stock < bottle.min_quantity %}
+                                <span class="badge bg-danger">Low Stock</span>
+                                {% endif %}
+                                {{ bottle.stock }}
+                            </td>
+                            <td>{{ bottle.updated_at|date:"Y-m-d H:i" }}</td>
+                            <td>
+                                <a href="{% url 'packaging:edit_bottle' bottle.id %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'packaging:bottle_detail' bottle.id %}" class="btn btn-sm btn-info">
+                                    <i class="fas fa-info-circle"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="alert alert-info m-3">
+                <i class="fas fa-info-circle"></i> No bottles found.
+                <a href="{% url 'packaging:add_bottle' %}" class="alert-link">Add your first bottle</a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
