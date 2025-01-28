@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Cellar Details</h1>
+<p><strong>Name:</strong> {{ cellar.name }}</p>
+<p><strong>Location:</strong> {{ cellar.location }}</p>
+<p><strong>Capacity:</strong> {{ cellar.capacity }} liters</p>
+<p><strong>Notes:</strong> {{ cellar.notes }}</p>
+
+<h2>Tanks</h2>
+<a href="{% url 'add_tank' cellar.id %}">Add Tank</a>
+<ul>
+    {% for tank in tanks %}
+        <li>
+            <a href="{% url 'edit_tank' tank.id %}">{{ tank.name }} ({{ tank.tank_type }})</a>
+            <p>Capacity: {{ tank.capacity }} liters, Current Volume: {{ tank.current_volume }} liters</p>
+        </li>
+    {% endfor %}
+</ul>
+
+<a href="{% url 'list_cellars' %}">Back to List</a>
+{% endblock %}

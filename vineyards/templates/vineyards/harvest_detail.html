@@ -1,0 +1,36 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Harvest Details</h1>
+<p><strong>Vineyard:</strong> {{ harvest.vineyard.name }}</p>
+<p><strong>Harvest Date:</strong> {{ harvest.date }}</p>
+<p><strong>Quantity:</strong> {{ harvest.quantity }} kg</p>
+<p><strong>Juice Yield:</strong> {{ harvest.juice_yield }} liters</p>
+<p><strong>Remaining Juice:</strong> {{ harvest.remaining_juice }} liters</p>
+<p><strong>Harvest Notes:</strong> {{ harvest.notes }}</p>
+
+<h2>Crushing/Pressing Details</h2>
+<p><strong>Crushing Date:</strong> {{ harvest.crushing_date }}</p>
+<p><strong>Pressing Notes:</strong> {{ harvest.pressing_notes }}</p>
+
+<h2>Crushed Juice Allocations</h2>
+<ul>
+    {% for allocation in allocations %}
+        <li>
+            <p><strong>Tank:</strong> {{ allocation.tank.name }} ({{ allocation.tank.tank_type }})</p>
+            <p><strong>Allocated Volume:</strong> {{ allocation.allocated_volume }} liters</p>
+            <p><strong>Allocation Date:</strong> {{ allocation.allocation_date }}</p>
+            <p><strong>Notes:</strong> {{ allocation.notes }}</p>
+        </li>
+    {% endfor %}
+</ul>
+
+<h3>Add Allocation</h3>
+<form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit">Save</button>
+</form>
+
+<a href="{% url 'list_harvests' %}">Back to List</a>
+{% endblock %}

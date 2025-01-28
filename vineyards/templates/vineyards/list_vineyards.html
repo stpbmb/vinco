@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Vineyards</h1>
+<a href="{% url 'add_vineyard' %}">Add Vineyard</a>
+<ul>
+    {% for vineyard in vineyards %}
+        <li>
+            <a href="{% url 'vineyard_detail' vineyard.id %}">{{ vineyard.name }} - {{ vineyard.location }}</a>
+            <a href="{% url 'edit_vineyard' vineyard.id %}">Edit</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

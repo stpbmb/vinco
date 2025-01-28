@@ -1,0 +1,22 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Vineyard Details</h1>
+<p><strong>Name:</strong> {{ vineyard.name }}</p>
+<p><strong>Location:</strong> {{ vineyard.location }}</p>
+<p><strong>Size:</strong> {{ vineyard.size }} hectares</p>
+<p><strong>Grape Variety:</strong> {{ vineyard.grape_variety }}</p>
+<p><strong>Ownership Type:</strong> {{ vineyard.get_ownership_type_display }}</p>
+{% if vineyard.ownership_type == 'supplied' %}
+    <p><strong>Supplier:</strong> {{ vineyard.supplier.name }}</p>
+{% endif %}
+<p><strong>Contact Person:</strong> {{ vineyard.contact_person }}</p>
+<p><strong>Contact Email:</strong> {{ vineyard.contact_email }}</p>
+<p><strong>Contact Phone:</strong> {{ vineyard.contact_phone }}</p>
+<p><strong>ARKOD ID:</strong> {{ vineyard.arkod_id }}</p>
+<p><strong>Planting Year:</strong> {{ vineyard.planting_year }}</p>
+<p><strong>Cadastral Parcel:</strong> {{ vineyard.cadastral_parcel }}</p>
+<p><strong>Cadastral County:</strong> {{ vineyard.cadastral_county }}</p>
+<p><strong>Notes:</strong> {{ vineyard.notes }}</p>
+<a href="{% url 'list_vineyards' %}">Back to List</a>
+{% endblock %}
