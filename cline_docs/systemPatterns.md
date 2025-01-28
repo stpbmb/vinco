@@ -1,0 +1,51 @@
+# System Patterns
+
+## Architecture
+1. Django MVT (Model-View-Template) Architecture
+   - Models for data structure and business logic
+   - Views for request handling and processing
+   - Templates for presentation layer
+
+## Key Technical Decisions
+1. Database Design
+   - Hierarchical structure (Company → Suppliers → Vineyards)
+   - Relational database with foreign key relationships
+   - Built-in data validation
+
+2. Authentication & Security
+   - Django's built-in authentication system
+   - Login required for sensitive operations
+   - User tracking for all operations
+
+3. Volume Management
+   - Real-time tank volume tracking
+   - Automated volume updates on allocation
+   - Validation checks for capacity limits
+
+4. Data Validation
+   - Model-level validation for data integrity
+   - Form-level validation for user input
+   - Business logic validation for operations
+
+## Implementation Patterns
+1. Models
+   - Timestamped models (created_at, updated_at)
+   - User association tracking
+   - Descriptive string representations
+   - Help text for field documentation
+
+2. Views
+   - Class-based views for CRUD operations
+   - Form handling with validation
+   - Object-level permissions
+   - Nested resource handling
+
+3. Forms
+   - Model-based forms
+   - Custom validation rules
+   - Formset support for related data
+
+4. URLs
+   - RESTful-style routing
+   - Semantic URL naming
+   - Resource-based organization
