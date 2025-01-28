@@ -1,0 +1,137 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Tank History: {{ tank.name }}</h1>
+
+<div class="tank-info">
+    <h2>Tank Details</h2>
+    <table class="details-table">
+        <tr>
+            <th>Location:</th>
+            <td>{{ tank.cellar.name }}</td>
+        </tr>
+        <tr>
+            <th>Type:</th>
+            <td>{{ tank.get_tank_type_display }}</td>
+        </tr>
+        <tr>
+            <th>Capacity:</th>
+            <td>{{ tank.capacity }} L</td>
+        </tr>
+        <tr>
+            <th>Current Volume:</th>
+            <td>{{ tank.current_volume }} L</td>
+        </tr>
+    </table>
+</div>
+
+<div class="history-list">
+    <h2>Volume Changes History</h2>
+    {% if history %}
+        <table class="history-table">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Operation</th>
+                    <th>Volume Change</th>
+                    <th>Details</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for entry in history %}
+                    <tr>
+                        <td>{{ entry.date }}</td>
+                        <td>{{ entry.get_operation_type_display }}</td>
+                        <td class="volume {% if entry.volume > 0 %}positive{% else %}negative{% endif %}">
+                            {% if entry.volume > 0 %}+{% endif %}{{ entry.volume }} L
+                        </td>
+                        <td>
+                            {% if entry.operation_type == 'allocation' %}
+                                From harvest: {{ entry.harvest.vineyard.name }} 
+                                ({{ entry.harvest.vineyard.get_grape_variety_display }})
+                            {% elif entry.operation_type == 'transfer_in' %}
+                                From tank: {{ entry.source.name }}
+                            {% elif entry.operation_type == 'transfer_out' %}
+                                To tank: {{ entry.destination.name }}
+                            {% endif %}
+                            {% if entry.notes %}
+                                <br>
+                                <small>{{ entry.notes }}</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    {% else %}
+        <p class="no-history">No history records found for this tank.</p>
+    {% endif %}
+</div>
+
+<div class="actions">
+    <a href="{% url 'list_cellars' %}" class="btn">Back to Cellars</a>
+</div>
+
+<style>
+    .tank-info {
+        margin-bottom: 30px;
+        padding: 15px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+    }
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .details-table th {
+        text-align: left;
+        padding: 8px;
+        width: 150px;
+    }
+    .details-table td {
+        padding: 8px;
+    }
+    .history-table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-top: 15px;
+    }
+    .history-table th,
+    .history-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .history-table th {
+        background-color: #f8f9fa;
+        font-weight: bold;
+    }
+    .volume {
+        font-weight: bold;
+    }
+    .volume.positive {
+        color: #28a745;
+    }
+    .volume.negative {
+        color: #dc3545;
+    }
+    .no-history {
+        color: #6c757d;
+        font-style: italic;
+    }
+    .actions {
+        margin-top: 20px;
+    }
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #007bff;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+    }
+    small {
+        color: #6c757d;
+    }
+</style>
+{% endblock %}

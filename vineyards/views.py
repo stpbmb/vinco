@@ -1,6 +1,6 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
-from .models import Vineyard, Supplier, Harvest, Cellar, Tank, CrushedJuiceAllocation
+from .models import Vineyard, Supplier, Harvest, Cellar, Tank, CrushedJuiceAllocation, TankHistory
 from .forms import VineyardForm, SupplierForm, HarvestForm, CrushedJuiceAllocationFormSet, CrushedJuiceAllocationForm, CellarForm, TankForm
 
 # Vineyard Views
@@ -83,6 +83,16 @@ def add_harvest(request):
                 allocation.harvest = harvest
                 allocation.save()
                 allocation.tank.update_volume(allocation.allocated_volume)
+                # Create history record for allocation
+                TankHistory.objects.create(
+                    tank=allocation.tank,
+                    operation_type='allocation',
+                    date=allocation.allocation_date,
+                    volume=allocation.allocated_volume,
+                    harvest=harvest,
+                    created_by=request.user,
+                    notes=f"Allocation from harvest of {harvest.vineyard.grape_variety}"
+                )
             return redirect('list_harvests')
     else:
         form = HarvestForm()
@@ -115,6 +125,16 @@ def harvest_detail(request, harvest_id):
             allocation.harvest = harvest
             allocation.save()
             allocation.tank.update_volume(allocation.allocated_volume)
+            # Create history record for allocation
+            TankHistory.objects.create(
+                tank=allocation.tank,
+                operation_type='allocation',
+                date=allocation.allocation_date,
+                volume=allocation.allocated_volume,
+                harvest=harvest,
+                created_by=request.user,
+                notes=f"Allocation from harvest of {harvest.vineyard.grape_variety}"
+            )
             return redirect('harvest_detail', harvest_id=harvest.id)
     else:
         form = CrushedJuiceAllocationForm()
@@ -180,6 +200,14 @@ def edit_tank(request, tank_id):
         form = TankForm(instance=tank)
     return render(request, 'vineyards/edit_tank.html', {'form': form, 'tank': tank})
 
+def tank_history(request, tank_id):
+    tank = get_object_or_404(Tank, id=tank_id)
+    history = tank.history.all()  # Already ordered by -date, -created_at from Meta
+    return render(request, 'vineyards/tank_history.html', {
+        'tank': tank,
+        'history': history
+    })
+
 # Allocation Views
 def list_allocations(request, harvest_id):
     harvest = get_object_or_404(Harvest, id=harvest_id)
@@ -195,6 +223,16 @@ def add_allocation(request, harvest_id):
             allocation.harvest = harvest
             allocation.save()
             allocation.tank.update_volume(allocation.allocated_volume)
+            # Create history record for allocation
+            TankHistory.objects.create(
+                tank=allocation.tank,
+                operation_type='allocation',
+                date=allocation.allocation_date,
+                volume=allocation.allocated_volume,
+                harvest=harvest,
+                created_by=request.user,
+                notes=f"Allocation from harvest of {harvest.vineyard.grape_variety}"
+            )
             return redirect('list_allocations', harvest_id=harvest.id)
     else:
         form = CrushedJuiceAllocationForm()
@@ -202,15 +240,44 @@ def add_allocation(request, harvest_id):
 
 def edit_allocation(request, allocation_id):
     allocation = get_object_or_404(CrushedJuiceAllocation, id=allocation_id)
+    old_volume = allocation.allocated_volume
+    old_tank = allocation.tank
+    
     if request.method == 'POST':
         form = CrushedJuiceAllocationForm(request.POST, instance=allocation)
         if form.is_valid():
-            # Revert the old volume
-            allocation.tank.update_volume(-allocation.allocated_volume)
+            # Create history record for removing from old tank
+            if old_volume > 0:
+                TankHistory.objects.create(
+                    tank=old_tank,
+                    operation_type='transfer_out',
+                    date=form.cleaned_data['allocation_date'],
+                    volume=-old_volume,
+                    destination=form.cleaned_data['tank'],
+                    created_by=request.user,
+                    notes="Transfer due to allocation edit"
+                )
+            
             # Save the updated allocation
             allocation = form.save()
-            # Update the tank's current volume with the new allocation
-            allocation.tank.update_volume(allocation.allocated_volume)
+            
+            # Create history record for adding to new tank
+            TankHistory.objects.create(
+                tank=allocation.tank,
+                operation_type='transfer_in',
+                date=allocation.allocation_date,
+                volume=allocation.allocated_volume,
+                source=old_tank if old_tank != allocation.tank else None,
+                harvest=allocation.harvest,
+                created_by=request.user,
+                notes=f"Transfer from allocation edit of {allocation.harvest.vineyard.grape_variety}"
+            )
+            
+            # Update tank volumes
+            old_tank.update_volume(-old_volume)
+            if old_tank != allocation.tank:
+                allocation.tank.update_volume(allocation.allocated_volume)
+                
             return redirect('list_allocations', harvest_id=allocation.harvest.id)
     else:
         form = CrushedJuiceAllocationForm(instance=allocation)

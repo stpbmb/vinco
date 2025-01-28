@@ -20,6 +20,7 @@ urlpatterns = [
     path('cellars/<int:cellar_id>/', views.cellar_detail, name='cellar_detail'),
     path('cellars/<int:cellar_id>/tanks/add/', views.add_tank, name='add_tank'),
     path('tanks/edit/<int:tank_id>/', views.edit_tank, name='edit_tank'),
+    path('tanks/<int:tank_id>/history/', views.tank_history, name='tank_history'),
     path('harvests/<int:harvest_id>/allocations/', views.list_allocations, name='list_allocations'),
     path('harvests/<int:harvest_id>/allocations/add/', views.add_allocation, name='add_allocation'),
     path('allocations/edit/<int:allocation_id>/', views.edit_allocation, name='edit_allocation'),

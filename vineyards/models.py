@@ -60,7 +60,7 @@ class Vineyard(models.Model):
     name = models.CharField(max_length=255)
     location = models.CharField(max_length=255)
     size = models.FloatField(help_text="Size in hectares")
-    grape_variety = models.CharField(max_length=255, choices=GRAPE_VARIETY_CHOICES)  # Updated field
+    grape_variety = models.CharField(max_length=255, choices=GRAPE_VARIETY_CHOICES)
     ownership_type = models.CharField(max_length=50, choices=OWNERSHIP_CHOICES)
     supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, blank=True, null=True, related_name='vineyards')
     contact_person = models.CharField(max_length=255, blank=True, null=True)
@@ -111,8 +111,6 @@ class Harvest(models.Model):
             return self.juice_yield - self.total_allocated_volume()
         return 0
 
-
-
 class Cellar(models.Model):
     name = models.CharField(max_length=100, help_text="Name of the cellar")
     location = models.CharField(max_length=200, help_text="Location of the cellar")
@@ -124,7 +122,6 @@ class Cellar(models.Model):
 
     def __str__(self):
         return self.name
-
 
 class Tank(models.Model):
     TANK_TYPES = [
@@ -153,7 +150,6 @@ class Tank(models.Model):
         if self.current_volume < 0:
             self.current_volume = 0
         self.save()
-
 
 class CrushedJuiceAllocation(models.Model):
     harvest = models.ForeignKey(Harvest, on_delete=models.CASCADE, related_name='allocations')
@@ -185,3 +181,32 @@ class CrushedJuiceAllocation(models.Model):
             raise ValidationError({
                 'allocated_volume': f'Allocated volume exceeds remaining juice from {self.harvest}.'
             })
+
+class TankHistory(models.Model):
+    OPERATION_TYPES = [
+        ('allocation', 'Allocation from Harvest'),
+        ('transfer_in', 'Transfer In'),
+        ('transfer_out', 'Transfer Out'),
+    ]
+
+    tank = models.ForeignKey(Tank, on_delete=models.CASCADE, related_name='history')
+    operation_type = models.CharField(max_length=20, choices=OPERATION_TYPES)
+    date = models.DateField()
+    volume = models.FloatField(help_text="Volume change in liters (positive for in, negative for out)")
+    source = models.ForeignKey(Tank, on_delete=models.SET_NULL, null=True, blank=True, related_name='transfers_out')
+    destination = models.ForeignKey(Tank, on_delete=models.SET_NULL, null=True, blank=True, related_name='transfers_in')
+    harvest = models.ForeignKey(Harvest, on_delete=models.SET_NULL, null=True, blank=True)
+    notes = models.TextField(blank=True, null=True)
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        if self.operation_type == 'allocation':
+            return f"Allocation of {abs(self.volume)}L from harvest to {self.tank.name}"
+        elif self.operation_type == 'transfer_in':
+            return f"Transfer of {abs(self.volume)}L from {self.source.name} to {self.tank.name}"
+        else:
+            return f"Transfer of {abs(self.volume)}L from {self.tank.name} to {self.destination.name}"
+
+    class Meta:
+        ordering = ['-date', '-created_at']
