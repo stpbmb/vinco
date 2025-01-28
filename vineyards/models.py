@@ -99,11 +99,12 @@ class Harvest(models.Model):
         """Calculate the total volume of juice allocated to tanks."""
         return sum(allocation.allocated_volume for allocation in self.allocations.all())
 
+    @property
     def remaining_juice(self):
-        """Calculate the remaining juice volume to be allocated."""
-        if self.juice_yield is not None:
-            return self.juice_yield - self.total_allocated_volume()
-        return 0
+        """Calculate the remaining unallocated juice volume."""
+        if not self.juice_yield:
+            return 0
+        return self.juice_yield - self.total_allocated_volume()
 
 class Cellar(models.Model):
     name = models.CharField(max_length=100, help_text="Name of the cellar")
@@ -171,7 +172,7 @@ class CrushedJuiceAllocation(models.Model):
                 'allocated_volume': f'Allocated volume exceeds available capacity in {self.tank.name}.'
             })
         # Ensure the allocated volume does not exceed the remaining juice from the harvest
-        if self.allocated_volume > self.harvest.remaining_juice():
+        if self.allocated_volume > self.harvest.remaining_juice:
             raise ValidationError({
                 'allocated_volume': f'Allocated volume exceeds remaining juice from {self.harvest}.'
             })

@@ -1,36 +1,312 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Harvest Details</h1>
-<p><strong>Vineyard:</strong> {{ harvest.vineyard.name }}</p>
-<p><strong>Harvest Date:</strong> {{ harvest.date }}</p>
-<p><strong>Quantity:</strong> {{ harvest.quantity }} kg</p>
-<p><strong>Juice Yield:</strong> {{ harvest.juice_yield }} liters</p>
-<p><strong>Remaining Juice:</strong> {{ harvest.remaining_juice }} liters</p>
-<p><strong>Harvest Notes:</strong> {{ harvest.notes }}</p>
+<div class="detail-container">
+    <div class="header">
+        <div class="title-section">
+            <h1>{{ harvest.vineyard.name }}</h1>
+            <span class="subtitle">Harvest on {{ harvest.date }}</span>
+        </div>
+        <div class="actions">
+            <a href="{% url 'edit_harvest' harvest.id %}" class="btn btn-edit">Edit Harvest</a>
+            <a href="{% url 'list_harvests' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
 
-<h2>Crushing/Pressing Details</h2>
-<p><strong>Crushing Date:</strong> {{ harvest.crushing_date }}</p>
-<p><strong>Pressing Notes:</strong> {{ harvest.pressing_notes }}</p>
+    <div class="detail-sections">
+        <!-- Main Information -->
+        <div class="detail-section">
+            <h2>Harvest Information</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Vineyard</label>
+                    <span>{{ harvest.vineyard.name }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Grape Variety</label>
+                    <span>{{ harvest.vineyard.get_grape_variety_display }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Harvest Date</label>
+                    <span>{{ harvest.date }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Quantity</label>
+                    <span>{{ harvest.quantity }} kg</span>
+                </div>
+            </div>
+        </div>
 
-<h2>Crushed Juice Allocations</h2>
-<ul>
-    {% for allocation in allocations %}
-        <li>
-            <p><strong>Tank:</strong> {{ allocation.tank.name }} ({{ allocation.tank.tank_type }})</p>
-            <p><strong>Allocated Volume:</strong> {{ allocation.allocated_volume }} liters</p>
-            <p><strong>Allocation Date:</strong> {{ allocation.allocation_date }}</p>
-            <p><strong>Notes:</strong> {{ allocation.notes }}</p>
-        </li>
-    {% endfor %}
-</ul>
+        <!-- Crushing/Pressing Information -->
+        <div class="detail-section">
+            <h2>Crushing/Pressing Details</h2>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Crushing Date</label>
+                    <span>{{ harvest.crushing_date|default:"-" }}</span>
+                </div>
+                <div class="info-item">
+                    <label>Juice Yield</label>
+                    <span>{{ harvest.juice_yield|default:"-" }} L</span>
+                </div>
+                <div class="info-item">
+                    <label>Allocated Volume</label>
+                    <span>{{ harvest.total_allocated_volume }} L</span>
+                </div>
+                <div class="info-item highlight">
+                    <label>Remaining Juice</label>
+                    <span>{{ harvest.remaining_juice }} L</span>
+                </div>
+            </div>
+            {% if harvest.pressing_notes %}
+            <div class="notes-section">
+                <label>Pressing Notes</label>
+                <p>{{ harvest.pressing_notes|linebreaks }}</p>
+            </div>
+            {% endif %}
+        </div>
 
-<h3>Add Allocation</h3>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
+        <!-- Allocations -->
+        <div class="detail-section">
+            <div class="section-header">
+                <h2>Juice Allocations</h2>
+                {% if harvest.remaining_juice > 0 %}
+                    <a href="{% url 'add_allocation' harvest.id %}" class="btn btn-small btn-allocate">Add Allocation</a>
+                {% endif %}
+            </div>
+            {% if allocations %}
+                <div class="allocations-grid">
+                    {% for allocation in allocations %}
+                        <div class="allocation-card">
+                            <div class="card-header">
+                                <h3>{{ allocation.tank.name }}</h3>
+                                <span class="tank-type">{{ allocation.tank.get_tank_type_display }}</span>
+                            </div>
+                            <div class="card-content">
+                                <div class="info-row">
+                                    <label>Volume</label>
+                                    <span>{{ allocation.allocated_volume }} L</span>
+                                </div>
+                                <div class="info-row">
+                                    <label>Date</label>
+                                    <span>{{ allocation.allocation_date }}</span>
+                                </div>
+                                {% if allocation.notes %}
+                                    <div class="allocation-notes">
+                                        <label>Notes</label>
+                                        <p>{{ allocation.notes }}</p>
+                                    </div>
+                                {% endif %}
+                            </div>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% else %}
+                <p class="no-data">No allocations recorded yet.</p>
+            {% endif %}
+        </div>
 
-<a href="{% url 'list_harvests' %}">Back to List</a>
+        {% if harvest.notes %}
+        <!-- General Notes -->
+        <div class="detail-section">
+            <h2>Additional Notes</h2>
+            <div class="notes-content">
+                {{ harvest.notes|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .detail-container {
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        margin-bottom: 30px;
+        padding-bottom: 20px;
+        border-bottom: 2px solid #eee;
+    }
+    .title-section h1 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 2em;
+    }
+    .subtitle {
+        color: #6c757d;
+        font-size: 1.1em;
+        margin-top: 5px;
+        display: block;
+    }
+    .actions {
+        display: flex;
+        gap: 10px;
+    }
+    .detail-sections {
+        display: grid;
+        gap: 30px;
+    }
+    .detail-section {
+        background: white;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .detail-section h2 {
+        margin: 0 0 20px 0;
+        color: #2c3e50;
+        font-size: 1.3em;
+        padding-bottom: 10px;
+        border-bottom: 1px solid #eee;
+    }
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 20px;
+    }
+    .info-item {
+        display: flex;
+        flex-direction: column;
+        gap: 5px;
+    }
+    .info-item label {
+        color: #6c757d;
+        font-size: 0.9em;
+        font-weight: 500;
+    }
+    .info-item span {
+        color: #2c3e50;
+        font-size: 1.1em;
+    }
+    .info-item.highlight {
+        padding: 10px;
+        background-color: #e9ecef;
+        border-radius: 6px;
+    }
+    .notes-section {
+        margin-top: 20px;
+        padding-top: 20px;
+        border-top: 1px solid #eee;
+    }
+    .notes-section label,
+    .allocation-notes label {
+        display: block;
+        color: #6c757d;
+        font-size: 0.9em;
+        font-weight: 500;
+        margin-bottom: 5px;
+    }
+    .section-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+    }
+    .section-header h2 {
+        margin: 0;
+        padding: 0;
+        border: none;
+    }
+    .allocations-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+        gap: 20px;
+    }
+    .allocation-card {
+        border: 1px solid #eee;
+        border-radius: 6px;
+        overflow: hidden;
+    }
+    .card-header {
+        background-color: #f8f9fa;
+        padding: 15px;
+        border-bottom: 1px solid #eee;
+    }
+    .card-header h3 {
+        margin: 0;
+        color: #2c3e50;
+        font-size: 1.1em;
+    }
+    .tank-type {
+        color: #6c757d;
+        font-size: 0.9em;
+        display: block;
+        margin-top: 3px;
+    }
+    .card-content {
+        padding: 15px;
+    }
+    .info-row {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 10px;
+    }
+    .info-row label {
+        color: #6c757d;
+        font-size: 0.9em;
+    }
+    .allocation-notes {
+        margin-top: 15px;
+        padding-top: 15px;
+        border-top: 1px solid #eee;
+    }
+    .btn {
+        padding: 8px 16px;
+        border-radius: 4px;
+        text-decoration: none;
+        color: white;
+        font-weight: 500;
+        transition: background-color 0.2s;
+    }
+    .btn-edit {
+        background-color: #007bff;
+    }
+    .btn-edit:hover {
+        background-color: #0056b3;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+    .btn-secondary:hover {
+        background-color: #545b62;
+    }
+    .btn-allocate {
+        background-color: #28a745;
+    }
+    .btn-allocate:hover {
+        background-color: #218838;
+    }
+    .no-data {
+        text-align: center;
+        padding: 20px;
+        background-color: #f8f9fa;
+        border-radius: 5px;
+        color: #6c757d;
+    }
+    @media (max-width: 768px) {
+        .header {
+            flex-direction: column;
+            gap: 15px;
+        }
+        .actions {
+            width: 100%;
+            flex-direction: column;
+        }
+        .btn {
+            width: 100%;
+            text-align: center;
+        }
+        .info-grid {
+            grid-template-columns: 1fr;
+        }
+        .allocations-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
 {% endblock %}

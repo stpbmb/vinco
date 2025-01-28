@@ -28,7 +28,7 @@
                     </thead>
                     <tbody>
                         {% for harvest in all_harvests %}
-                            <tr>
+                            <tr class="clickable-row" data-href="{% url 'harvest_detail' harvest.id %}">
                                 <td>{{ harvest.date }}</td>
                                 <td>{{ harvest.vineyard.name }}</td>
                                 <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
@@ -36,9 +36,9 @@
                                 <td>{{ harvest.juice_yield|default:"-" }}</td>
                                 <td>{{ harvest.total_allocated_volume }}</td>
                                 <td class="actions-cell">
-                                    <a href="{% url 'edit_harvest' harvest.id %}" class="btn-small">Edit</a>
+                                    <a href="{% url 'edit_harvest' harvest.id %}" class="btn-small" onclick="event.stopPropagation();">Edit</a>
                                     {% if harvest.juice_yield %}
-                                        <a href="{% url 'add_allocation' harvest.id %}" class="btn-small btn-allocate">Allocate</a>
+                                        <a href="{% url 'add_allocation' harvest.id %}" class="btn-small btn-allocate" onclick="event.stopPropagation();">Allocate</a>
                                     {% endif %}
                                 </td>
                             </tr>
@@ -70,15 +70,15 @@
                     </thead>
                     <tbody>
                         {% for harvest in unallocated_harvests %}
-                            <tr>
+                            <tr class="clickable-row" data-href="{% url 'harvest_detail' harvest.id %}">
                                 <td>{{ harvest.date }}</td>
                                 <td>{{ harvest.vineyard.name }}</td>
                                 <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
                                 <td>{{ harvest.juice_yield }}</td>
                                 <td>{{ harvest.total_allocated_volume }}</td>
-                                <td class="highlight">{{ harvest.juice_yield|sub:harvest.total_allocated_volume }}</td>
+                                <td class="highlight">{{ harvest.remaining_juice }}</td>
                                 <td class="actions-cell">
-                                    <a href="{% url 'add_allocation' harvest.id %}" class="btn-small btn-allocate">Allocate</a>
+                                    <a href="{% url 'add_allocation' harvest.id %}" class="btn-small btn-allocate" onclick="event.stopPropagation();">Allocate</a>
                                 </td>
                             </tr>
                         {% endfor %}
@@ -185,6 +185,13 @@
         border-radius: 5px;
         color: #6c757d;
     }
+    .clickable-row {
+        cursor: pointer;
+        transition: background-color 0.2s;
+    }
+    .clickable-row:hover {
+        background-color: #e9ecef !important;
+    }
     @media (max-width: 768px) {
         .header {
             flex-direction: column;
@@ -208,5 +215,16 @@
         }
     }
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const rows = document.querySelectorAll('.clickable-row');
+        rows.forEach(row => {
+            row.addEventListener('click', function() {
+                window.location.href = this.dataset.href;
+            });
+        });
+    });
+</script>
 
 {% endblock %}
