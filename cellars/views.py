@@ -118,7 +118,8 @@ class TankHistoryView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['active_tab'] = 'cellars'
-        context['allocations'] = self.object.crushedjuiceallocation_set.all().order_by('-allocation_date')
+        context['allocations'] = self.object.crushed_juice_allocations.all().order_by('-allocation_date')
+        context['history'] = self.object.history.all().order_by('-date', '-created_at')
         return context
 
 class AllocationListView(LoginRequiredMixin, ListView):
