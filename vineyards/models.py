@@ -35,6 +35,7 @@ class Vineyard(models.Model):
     # Predefined grape varieties
     GRAPE_VARIETY_CHOICES = [
         ('cabernet_sauvignon', 'Cabernet Sauvignon'),
+        ('grasevina', 'Graševina'),
         ('merlot', 'Merlot'),
         ('pinot_noir', 'Pinot Noir'),
         ('chardonnay', 'Chardonnay'),
