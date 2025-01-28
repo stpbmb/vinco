@@ -195,11 +195,37 @@ class Bottling(models.Model):
         return f"{self.tank.wine_type} - {self.quantity} bottles ({self.get_status_display()})"
 
     def save(self, *args, **kwargs):
+        is_new = self.pk is None
+        old_quantity = None if is_new else Bottling.objects.get(pk=self.pk).quantity
+        
         # Automatically set status based on packaging materials
         if self.closure and self.label and self.box:
             self.status = 'finished'
         else:
             self.status = 'unfinished'
+            
+        # Calculate volume change in liters
+        if is_new:
+            volume_change = -(self.quantity * self.bottle.volume / 1000)  # Convert ml to L
+        else:
+            # If quantity changed, adjust the volume change
+            volume_change = -((self.quantity - old_quantity) * self.bottle.volume / 1000)
+            
+        if volume_change != 0:
+            # Update tank volume
+            self.tank.update_volume(volume_change)
+            
+            # Create tank history entry
+            from cellars.models import TankHistory
+            TankHistory.objects.create(
+                tank=self.tank,
+                operation_type='bottling',
+                date=self.bottling_date,
+                volume=volume_change,
+                notes=f"Bottled {abs(volume_change)}L ({self.quantity} bottles)",
+                created_by=self.created_by
+            )
+            
         super().save(*args, **kwargs)
 
     @property

@@ -1,0 +1,203 @@
+{% extends 'packaging/base_packaging.html' %}
+{% load static %}
+
+{% block packaging_content %}
+<div class="container-fluid py-4">
+    <!-- Bottles Section -->
+    <section id="bottles" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Bottles</h2>
+            <a href="{% url 'packaging:add_bottle' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Bottle
+            </a>
+        </div>
+        {% include 'packaging/includes/bottle_table.html' with bottles=bottles %}
+    </section>
+
+    <!-- Closures Section -->
+    <section id="closures" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Closures</h2>
+            <a href="{% url 'packaging:add_closure' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Closure
+            </a>
+        </div>
+        {% include 'packaging/includes/closure_table.html' with closures=closures %}
+    </section>
+
+    <!-- Labels Section -->
+    <section id="labels" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Labels</h2>
+            <a href="{% url 'packaging:add_label' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Label
+            </a>
+        </div>
+        {% include 'packaging/includes/label_table.html' with labels=labels %}
+    </section>
+
+    <!-- Boxes Section -->
+    <section id="boxes" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Boxes</h2>
+            <a href="{% url 'packaging:add_box' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add Box
+            </a>
+        </div>
+        {% include 'packaging/includes/box_table.html' with boxes=boxes %}
+    </section>
+
+    <!-- Unfinished Bottlings Section -->
+    <section id="unfinished" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Unfinished Bottlings</h2>
+            <a href="{% url 'packaging:add_bottling' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Bottling
+            </a>
+        </div>
+        {% if unfinished_bottlings %}
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Tank</th>
+                                <th>Bottle</th>
+                                <th>Quantity</th>
+                                <th>Missing Materials</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bottling in unfinished_bottlings %}
+                            <tr>
+                                <td>{{ bottling.bottling_date }}</td>
+                                <td>{{ bottling.tank.name }}</td>
+                                <td>{{ bottling.bottle.name }}</td>
+                                <td>{{ bottling.quantity }} bottles</td>
+                                <td>
+                                    {% with missing=bottling.missing_materials %}
+                                        {% if missing %}
+                                            <ul class="list-unstyled mb-0">
+                                            {% if 'closure' in missing %}
+                                                <li><span class="badge bg-warning">Closure</span></li>
+                                            {% endif %}
+                                            {% if 'label' in missing %}
+                                                <li><span class="badge bg-warning">Label</span></li>
+                                            {% endif %}
+                                            {% if 'box' in missing %}
+                                                <li><span class="badge bg-warning">Box</span></li>
+                                            {% endif %}
+                                            </ul>
+                                        {% else %}
+                                            <span class="badge bg-success">All materials ready</span>
+                                        {% endif %}
+                                    {% endwith %}
+                                </td>
+                                <td>
+                                    <a href="{% url 'packaging:edit_bottling' bottling.pk %}" class="btn btn-sm btn-outline-primary">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No unfinished bottlings found.
+        </div>
+        {% endif %}
+    </section>
+
+    <!-- Finished Bottlings Section -->
+    <section id="finished" class="mb-5">
+        <div class="d-flex justify-content-between align-items-center mb-4">
+            <h2>Finished Bottlings</h2>
+        </div>
+        {% if finished_bottlings %}
+        <div class="card">
+            <div class="card-body p-0">
+                <div class="table-responsive">
+                    <table class="table table-hover mb-0">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Tank</th>
+                                <th>Bottle</th>
+                                <th>Quantity</th>
+                                <th>Packaging</th>
+                                <th>Notes</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for bottling in finished_bottlings %}
+                            <tr>
+                                <td>{{ bottling.bottling_date }}</td>
+                                <td>{{ bottling.tank.name }}</td>
+                                <td>{{ bottling.bottle.name }}</td>
+                                <td>{{ bottling.quantity }} bottles</td>
+                                <td>
+                                    <ul class="list-unstyled mb-0">
+                                        <li><span class="badge bg-success">{{ bottling.closure.name }}</span></li>
+                                        <li><span class="badge bg-success">{{ bottling.label.name }}</span></li>
+                                        <li><span class="badge bg-success">{{ bottling.box.name }}</span></li>
+                                    </ul>
+                                </td>
+                                <td>{{ bottling.notes|default:"-" }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        {% else %}
+        <div class="alert alert-info">
+            <i class="fas fa-info-circle"></i> No finished bottlings found.
+        </div>
+        {% endif %}
+    </section>
+</div>
+
+<style>
+section:target {
+    scroll-margin-top: 60px;
+}
+.badge { margin: 2px 0; }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Highlight active section in sidebar based on scroll position
+    const sections = document.querySelectorAll('section[id]');
+    const navLinks = document.querySelectorAll('.nav-link');
+
+    function highlightNavigation() {
+        let scrollY = window.pageYOffset;
+        
+        sections.forEach(current => {
+            const sectionHeight = current.offsetHeight;
+            const sectionTop = current.offsetTop - 100;
+            const sectionId = current.getAttribute('id');
+            
+            if (scrollY > sectionTop && scrollY <= sectionTop + sectionHeight) {
+                navLinks.forEach(link => {
+                    link.classList.remove('active');
+                    if (link.getAttribute('href') === '#' + sectionId) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        });
+    }
+
+    window.addEventListener('scroll', highlightNavigation);
+});
+</script>
+{% endblock %}

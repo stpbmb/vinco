@@ -6,7 +6,7 @@ from .models import Bottle, Label, Closure, Box, Bottling
 from .forms import BottleForm, LabelForm, ClosureForm, BoxForm, BottlingForm
 from django.urls import reverse_lazy
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 from cellars.models import Tank
 
 # Bottle Views
@@ -257,7 +257,9 @@ def list_unfinished_bottlings(request):
 
 @login_required
 def list_finished_bottlings(request):
-    bottlings = Bottling.objects.filter(status='finished')
+    bottlings = Bottling.objects.exclude(
+        Q(closure__isnull=True) | Q(label__isnull=True) | Q(box__isnull=True)
+    ).order_by('-bottling_date')
     context = {
         'bottlings': bottlings,
         'title': 'Finished Bottlings'
@@ -275,23 +277,95 @@ class BottlingCreateView(LoginRequiredMixin, CreateView):
         response = super().form_valid(form)
 
         # Update inventory quantities
-        tank = form.cleaned_data['tank']
         bottle = form.cleaned_data['bottle']
         quantity = form.cleaned_data['quantity']
 
-        # Reduce wine volume in tank
-        tank.current_volume -= quantity * bottle.volume
-        tank.save()
-
-        # Reduce packaging materials
-        bottle.quantity -= quantity
+        # Reduce bottle stock
+        bottle.stock -= quantity
         bottle.save()
 
+        # Reduce packaging materials stock if provided
         for material in ['closure', 'label', 'box']:
             item = form.cleaned_data.get(material)
             if item:
-                item.quantity -= quantity
+                if material == 'box':
+                    # Calculate boxes needed (round up)
+                    boxes_needed = (quantity + item.bottle_capacity - 1) // item.bottle_capacity
+                    item.stock -= boxes_needed
+                else:
+                    item.stock -= quantity
                 item.save()
 
         messages.success(self.request, 'Bottling created successfully!')
+        return response
+
+class BottlingUpdateView(LoginRequiredMixin, UpdateView):
+    model = Bottling
+    form_class = BottlingForm
+    template_name = 'packaging/bottling_form.html'
+    success_url = reverse_lazy('packaging:list_unfinished')
+
+    def form_valid(self, form):
+        # Get the old instance before it's updated
+        old_instance = Bottling.objects.get(pk=self.object.pk)
+        
+        # Update the instance
+        response = super().form_valid(form)
+        
+        # Update packaging materials stock if changed
+        quantity_diff = form.instance.quantity - old_instance.quantity
+        
+        if quantity_diff != 0:
+            # Update bottle stock
+            form.instance.bottle.stock -= quantity_diff
+            form.instance.bottle.save()
+            
+            # Update other materials if they're the same as before
+            for material in ['closure', 'label', 'box']:
+                old_item = getattr(old_instance, material)
+                new_item = getattr(form.instance, material)
+                
+                if old_item and new_item:
+                    if old_item.pk == new_item.pk:
+                        # Same material, just update quantity
+                        if material == 'box':
+                            # Calculate box difference
+                            old_boxes = (old_instance.quantity + old_item.bottle_capacity - 1) // old_item.bottle_capacity
+                            new_boxes = (form.instance.quantity + new_item.bottle_capacity - 1) // new_item.bottle_capacity
+                            new_item.stock -= (new_boxes - old_boxes)
+                        else:
+                            new_item.stock -= quantity_diff
+                        new_item.save()
+                    else:
+                        # Different material
+                        if material == 'box':
+                            # Return old boxes to stock
+                            old_boxes = (old_instance.quantity + old_item.bottle_capacity - 1) // old_item.bottle_capacity
+                            old_item.stock += old_boxes
+                            # Take new boxes from stock
+                            new_boxes = (form.instance.quantity + new_item.bottle_capacity - 1) // new_item.bottle_capacity
+                            new_item.stock -= new_boxes
+                        else:
+                            old_item.stock += old_instance.quantity
+                            new_item.stock -= form.instance.quantity
+                        old_item.save()
+                        new_item.save()
+                elif old_item:
+                    # Material removed, return to stock
+                    if material == 'box':
+                        old_boxes = (old_instance.quantity + old_item.bottle_capacity - 1) // old_item.bottle_capacity
+                        old_item.stock += old_boxes
+                    else:
+                        old_item.stock += old_instance.quantity
+                    old_item.save()
+                elif new_item:
+                    # Material added, take from stock
+                    if material == 'box':
+                        new_boxes = (form.instance.quantity + new_item.bottle_capacity - 1) // new_item.bottle_capacity
+                        new_item.stock -= new_boxes
+                    else:
+                        new_item.stock -= form.instance.quantity
+                    new_item.save()
+        
+        messages.success(self.request, 'Bottling updated successfully!')
         return response

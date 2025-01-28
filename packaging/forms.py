@@ -94,25 +94,40 @@ class BottlingForm(forms.ModelForm):
         bottle = cleaned_data.get('bottle')
 
         if tank and quantity and bottle:
-            # Check if there's enough wine in the tank
-            required_volume = quantity * bottle.volume
+            # Check if there's enough wine in the tank (convert ml to L)
+            required_volume = (quantity * bottle.volume) / 1000  # Convert ml to L
             if required_volume > tank.current_volume:
                 raise forms.ValidationError(
                     f'Not enough wine in tank. Need {required_volume}L but only {tank.current_volume}L available.'
                 )
 
-            # Check if there are enough bottles
+            # Check if there are enough bottles in stock
             if quantity > bottle.stock:
                 raise forms.ValidationError(
                     f'Not enough bottles in stock. Need {quantity} but only {bottle.stock} available.'
                 )
 
-            # Check packaging materials if provided
-            for material in ['closure', 'label', 'box']:
-                item = cleaned_data.get(material)
-                if item and quantity > item.stock:
+            # Check packaging materials if status would be finished
+            closure = cleaned_data.get('closure')
+            label = cleaned_data.get('label')
+            box = cleaned_data.get('box')
+
+            if all([closure, label, box]):
+                # Check closure stock
+                if quantity > closure.stock:
                     raise forms.ValidationError(
-                        f'Not enough {material}s in stock. Need {quantity} but only {item.stock} available.'
+                        f'Not enough closures in stock. Need {quantity} but only {closure.stock} available.'
+                    )
+                # Check label stock
+                if quantity > label.stock:
+                    raise forms.ValidationError(
+                        f'Not enough labels in stock. Need {quantity} but only {label.stock} available.'
+                    )
+                # Check box stock and capacity
+                boxes_needed = (quantity + box.bottle_capacity - 1) // box.bottle_capacity  # Round up division
+                if boxes_needed > box.stock:
+                    raise forms.ValidationError(
+                        f'Not enough boxes in stock. Need {boxes_needed} but only {box.stock} available.'
                     )
 
         return cleaned_data

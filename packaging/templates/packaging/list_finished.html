@@ -1,0 +1,68 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Finished Bottlings</h1>
+        <div>
+            <a href="{% url 'packaging:add_bottling' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Bottling
+            </a>
+        </div>
+    </div>
+
+    {% if bottlings %}
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Tank</th>
+                            <th>Bottle</th>
+                            <th>Quantity</th>
+                            <th>Packaging</th>
+                            <th>Notes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bottling in bottlings %}
+                        <tr>
+                            <td>{{ bottling.bottling_date }}</td>
+                            <td>{{ bottling.tank.name }}</td>
+                            <td>{{ bottling.bottle.name }}</td>
+                            <td>{{ bottling.quantity }} bottles</td>
+                            <td>
+                                <ul class="list-unstyled mb-0">
+                                    <li><span class="badge bg-success">{{ bottling.closure.name }}</span></li>
+                                    <li><span class="badge bg-success">{{ bottling.label.name }}</span></li>
+                                    <li><span class="badge bg-success">{{ bottling.box.name }}</span></li>
+                                </ul>
+                            </td>
+                            <td>{{ bottling.notes|default:"-" }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> No finished bottlings found.
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'packaging:list_unfinished' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-flask"></i> View Unfinished Bottlings
+        </a>
+    </div>
+</div>
+
+<style>
+.badge { margin: 2px 0; }
+</style>
+{% endblock %}

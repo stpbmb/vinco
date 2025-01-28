@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block content %}
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-4">
+        <h1>Unfinished Bottlings</h1>
+        <div>
+            <a href="{% url 'packaging:add_bottling' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> New Bottling
+            </a>
+        </div>
+    </div>
+
+    {% if bottlings %}
+    <div class="card">
+        <div class="card-body p-0">
+            <div class="table-responsive">
+                <table class="table table-hover mb-0">
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Tank</th>
+                            <th>Bottle</th>
+                            <th>Quantity</th>
+                            <th>Missing Materials</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for bottling in bottlings %}
+                        <tr>
+                            <td>{{ bottling.bottling_date }}</td>
+                            <td>{{ bottling.tank.name }}</td>
+                            <td>{{ bottling.bottle.name }}</td>
+                            <td>{{ bottling.quantity }} bottles</td>
+                            <td>
+                                {% with missing=bottling.missing_materials %}
+                                    {% if missing %}
+                                        <ul class="list-unstyled mb-0">
+                                        {% if 'closure' in missing %}
+                                            <li><span class="badge bg-warning">Closure</span></li>
+                                        {% endif %}
+                                        {% if 'label' in missing %}
+                                            <li><span class="badge bg-warning">Label</span></li>
+                                        {% endif %}
+                                        {% if 'box' in missing %}
+                                            <li><span class="badge bg-warning">Box</span></li>
+                                        {% endif %}
+                                        </ul>
+                                    {% else %}
+                                        <span class="badge bg-success">All materials ready</span>
+                                    {% endif %}
+                                {% endwith %}
+                            </td>
+                            <td>
+                                <a href="{% url 'packaging:edit_bottling' bottling.pk %}" class="btn btn-sm btn-outline-primary">
+                                    <i class="fas fa-edit"></i> Edit
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    {% else %}
+    <div class="alert alert-info">
+        <i class="fas fa-info-circle"></i> No unfinished bottlings found.
+    </div>
+    {% endif %}
+
+    <div class="mt-4">
+        <a href="{% url 'packaging:list_finished' %}" class="btn btn-outline-secondary">
+            <i class="fas fa-check"></i> View Finished Bottlings
+        </a>
+    </div>
+</div>
+
+<style>
+.badge { margin: 2px 0; }
+</style>
+{% endblock %}
