@@ -1,0 +1,9 @@
+{% extends "packaging/form_base.html" %}
+
+{% block cancel_url %}
+    {% if closure %}
+        {% url 'packaging:closure_detail' closure.pk %}
+    {% else %}
+        {% url 'packaging:list_closures' %}
+    {% endif %}
+{% endblock %}

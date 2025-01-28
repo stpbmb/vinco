@@ -1,0 +1,22 @@
+{% extends "packaging/base_packaging.html" %}
+
+{% block packaging_content %}
+<div class="card">
+    <div class="card-header d-flex justify-content-between align-items-center">
+        <h4 class="mb-0">{{ title }}</h4>
+        <div>
+            <a href="{% block edit_url %}{% endblock %}" class="btn btn-primary">
+                <i class="fas fa-edit"></i> Edit
+            </a>
+            <a href="{% block list_url %}{% endblock %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left"></i> Back to List
+            </a>
+        </div>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            {% block detail_content %}{% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}

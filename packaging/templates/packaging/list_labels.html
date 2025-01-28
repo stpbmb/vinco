@@ -1,0 +1,39 @@
+{% extends "packaging/list_base.html" %}
+
+{% block add_url %}{% url 'packaging:add_label' %}{% endblock %}
+
+{% block table_headers %}
+    <th>Name</th>
+    <th>Type</th>
+    <th>Material</th>
+    <th>Dimensions</th>
+    <th>Stock</th>
+    <th>Price</th>
+    <th>Actions</th>
+{% endblock %}
+
+{% block table_rows %}
+    {% for label in labels %}
+    <tr class="clickable-row" data-href="{% url 'packaging:label_detail' label.pk %}">
+        <td>{{ label.name }}</td>
+        <td>{{ label.get_label_type_display }}</td>
+        <td>{{ label.get_material_display }}</td>
+        <td>{{ label.width }}x{{ label.height }} mm</td>
+        <td>
+            <span class="badge {% if label.stock <= label.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                {{ label.stock }}
+            </span>
+        </td>
+        <td>${{ label.price }}</td>
+        <td>
+            <a href="{% url 'packaging:edit_label' label.pk %}" class="btn btn-sm btn-primary">
+                <i class="fas fa-edit"></i>
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7" class="text-center">No labels found.</td>
+    </tr>
+    {% endfor %}
+{% endblock %}

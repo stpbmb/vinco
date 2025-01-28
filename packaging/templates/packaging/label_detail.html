@@ -1,0 +1,82 @@
+{% extends "packaging/detail_base.html" %}
+
+{% block edit_url %}{% url 'packaging:edit_label' label.pk %}{% endblock %}
+{% block list_url %}{% url 'packaging:list_labels' %}{% endblock %}
+
+{% block detail_content %}
+    <div class="col-md-6">
+        <h5>Basic Information</h5>
+        <table class="table">
+            <tr>
+                <th>Name:</th>
+                <td>{{ label.name }}</td>
+            </tr>
+            <tr>
+                <th>Type:</th>
+                <td>{{ label.get_label_type_display }}</td>
+            </tr>
+            <tr>
+                <th>Material:</th>
+                <td>{{ label.get_material_display }}</td>
+            </tr>
+        </table>
+
+        <h5 class="mt-4">Dimensions</h5>
+        <table class="table">
+            <tr>
+                <th>Width:</th>
+                <td>{{ label.width }} mm</td>
+            </tr>
+            <tr>
+                <th>Height:</th>
+                <td>{{ label.height }} mm</td>
+            </tr>
+        </table>
+
+        {% if label.design_file %}
+        <h5 class="mt-4">Design File</h5>
+        <div class="card">
+            <div class="card-body">
+                <a href="{{ label.design_file.url }}" class="btn btn-primary" target="_blank">
+                    <i class="fas fa-download"></i> Download Design File
+                </a>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+
+    <div class="col-md-6">
+        <h5>Inventory Information</h5>
+        <table class="table">
+            <tr>
+                <th>Supplier:</th>
+                <td>{{ label.supplier }}</td>
+            </tr>
+            <tr>
+                <th>Price:</th>
+                <td>${{ label.price }}</td>
+            </tr>
+            <tr>
+                <th>Current Stock:</th>
+                <td>
+                    <span class="badge {% if label.stock <= label.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                        {{ label.stock }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Minimum Stock:</th>
+                <td>{{ label.minimum_stock }}</td>
+            </tr>
+        </table>
+
+        {% if label.notes %}
+        <h5 class="mt-4">Notes</h5>
+        <div class="card">
+            <div class="card-body">
+                {{ label.notes|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

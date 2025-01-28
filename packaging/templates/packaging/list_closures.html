@@ -1,0 +1,39 @@
+{% extends "packaging/list_base.html" %}
+
+{% block add_url %}{% url 'packaging:add_closure' %}{% endblock %}
+
+{% block table_headers %}
+    <th>Name</th>
+    <th>Type</th>
+    <th>Material</th>
+    <th>Color</th>
+    <th>Stock</th>
+    <th>Price</th>
+    <th>Actions</th>
+{% endblock %}
+
+{% block table_rows %}
+    {% for closure in closures %}
+    <tr class="clickable-row" data-href="{% url 'packaging:closure_detail' closure.pk %}">
+        <td>{{ closure.name }}</td>
+        <td>{{ closure.get_closure_type_display }}</td>
+        <td>{{ closure.get_material_display }}</td>
+        <td>{{ closure.color }}</td>
+        <td>
+            <span class="badge {% if closure.stock <= closure.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                {{ closure.stock }}
+            </span>
+        </td>
+        <td>${{ closure.price }}</td>
+        <td>
+            <a href="{% url 'packaging:edit_closure' closure.pk %}" class="btn btn-sm btn-primary">
+                <i class="fas fa-edit"></i>
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7" class="text-center">No closures found.</td>
+    </tr>
+    {% endfor %}
+{% endblock %}

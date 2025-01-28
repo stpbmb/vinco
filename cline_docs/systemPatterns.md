@@ -35,12 +35,16 @@
    - User association tracking
    - Descriptive string representations
    - Help text for field documentation
+   - Property methods for derived data
+   - Clear business logic encapsulation
 
 2. Views
    - Class-based views for CRUD operations
    - Form handling with validation
    - Object-level permissions
    - Nested resource handling
+   - Context enrichment for UI components
+   - Separation of list and detail views
 
 3. Forms
    - Model-based forms
@@ -48,14 +52,41 @@
    - Dynamic field visibility
    - Conditional field requirements
    - Formset support for related data
+   - Enhanced error display
+   - Responsive form layouts
 
 4. URLs
    - RESTful-style routing
    - Semantic URL naming
    - Resource-based organization
+   - Clear URL patterns for detail views
 
 5. Templates
    - Base template inheritance
    - Dynamic form behavior with JavaScript
    - Responsive design patterns
    - Consistent styling across forms
+   - Card-based layouts for data display
+   - Grid systems for flexible layouts
+   - Interactive data tables
+   - Clear visual hierarchy
+   - Mobile-first approach
+   - Component-based organization
+   - Event delegation for dynamic elements
+   - Contextual action buttons
+   - Enhanced data visualization
+   - Consistent color schemes and typography
+
+6. UI/UX Patterns
+   - Card-based information display
+   - Interactive row clicks for detail views
+   - Clear section organization
+   - Contextual highlighting
+   - Responsive grid layouts
+   - Mobile-optimized buttons and forms
+   - Consistent spacing and alignment
+   - Visual feedback on interactions
+   - Clear action hierarchies
+   - Intuitive navigation patterns
+   - Error state handling
+   - Loading state indicators

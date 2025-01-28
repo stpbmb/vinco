@@ -1,0 +1,39 @@
+{% extends "packaging/list_base.html" %}
+
+{% block add_url %}{% url 'packaging:add_bottle' %}{% endblock %}
+
+{% block table_headers %}
+    <th>Name</th>
+    <th>Type</th>
+    <th>Volume (ml)</th>
+    <th>Color</th>
+    <th>Stock</th>
+    <th>Price</th>
+    <th>Actions</th>
+{% endblock %}
+
+{% block table_rows %}
+    {% for bottle in bottles %}
+    <tr class="clickable-row" data-href="{% url 'packaging:bottle_detail' bottle.pk %}">
+        <td>{{ bottle.name }}</td>
+        <td>{{ bottle.get_bottle_type_display }}</td>
+        <td>{{ bottle.volume }}</td>
+        <td>{{ bottle.get_glass_color_display }}</td>
+        <td>
+            <span class="badge {% if bottle.stock <= bottle.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                {{ bottle.stock }}
+            </span>
+        </td>
+        <td>${{ bottle.price }}</td>
+        <td>
+            <a href="{% url 'packaging:edit_bottle' bottle.pk %}" class="btn btn-sm btn-primary">
+                <i class="fas fa-edit"></i>
+            </a>
+        </td>
+    </tr>
+    {% empty %}
+    <tr>
+        <td colspan="7" class="text-center">No bottles found.</td>
+    </tr>
+    {% endfor %}
+{% endblock %}

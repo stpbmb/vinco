@@ -1,0 +1,9 @@
+{% extends "packaging/form_base.html" %}
+
+{% block cancel_url %}
+    {% if box %}
+        {% url 'packaging:box_detail' box.pk %}
+    {% else %}
+        {% url 'packaging:list_boxes' %}
+    {% endif %}
+{% endblock %}

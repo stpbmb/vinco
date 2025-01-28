@@ -1,0 +1,79 @@
+{% extends "packaging/detail_base.html" %}
+
+{% block edit_url %}{% url 'packaging:edit_bottle' bottle.pk %}{% endblock %}
+{% block list_url %}{% url 'packaging:list_bottles' %}{% endblock %}
+
+{% block detail_content %}
+    <div class="col-md-6">
+        <h5>Basic Information</h5>
+        <table class="table">
+            <tr>
+                <th>Name:</th>
+                <td>{{ bottle.name }}</td>
+            </tr>
+            <tr>
+                <th>Type:</th>
+                <td>{{ bottle.get_bottle_type_display }}</td>
+            </tr>
+            <tr>
+                <th>Volume:</th>
+                <td>{{ bottle.volume }} ml</td>
+            </tr>
+            <tr>
+                <th>Glass Color:</th>
+                <td>{{ bottle.get_glass_color_display }}</td>
+            </tr>
+        </table>
+
+        <h5 class="mt-4">Physical Properties</h5>
+        <table class="table">
+            <tr>
+                <th>Height:</th>
+                <td>{{ bottle.height }} mm</td>
+            </tr>
+            <tr>
+                <th>Diameter:</th>
+                <td>{{ bottle.diameter }} mm</td>
+            </tr>
+            <tr>
+                <th>Weight:</th>
+                <td>{{ bottle.weight }} g</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <h5>Inventory Information</h5>
+        <table class="table">
+            <tr>
+                <th>Supplier:</th>
+                <td>{{ bottle.supplier }}</td>
+            </tr>
+            <tr>
+                <th>Price:</th>
+                <td>${{ bottle.price }}</td>
+            </tr>
+            <tr>
+                <th>Current Stock:</th>
+                <td>
+                    <span class="badge {% if bottle.stock <= bottle.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                        {{ bottle.stock }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Minimum Stock:</th>
+                <td>{{ bottle.minimum_stock }}</td>
+            </tr>
+        </table>
+
+        {% if bottle.notes %}
+        <h5 class="mt-4">Notes</h5>
+        <div class="card">
+            <div class="card-body">
+                {{ bottle.notes|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

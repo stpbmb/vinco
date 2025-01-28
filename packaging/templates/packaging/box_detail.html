@@ -1,0 +1,83 @@
+{% extends "packaging/detail_base.html" %}
+
+{% block edit_url %}{% url 'packaging:edit_box' box.pk %}{% endblock %}
+{% block list_url %}{% url 'packaging:list_boxes' %}{% endblock %}
+
+{% block detail_content %}
+    <div class="col-md-6">
+        <h5>Basic Information</h5>
+        <table class="table">
+            <tr>
+                <th>Name:</th>
+                <td>{{ box.name }}</td>
+            </tr>
+            <tr>
+                <th>Type:</th>
+                <td>{{ box.get_box_type_display }}</td>
+            </tr>
+            <tr>
+                <th>Material:</th>
+                <td>{{ box.get_material_display }}</td>
+            </tr>
+            <tr>
+                <th>Bottle Capacity:</th>
+                <td>{{ box.bottle_capacity }} bottles</td>
+            </tr>
+        </table>
+
+        <h5 class="mt-4">Physical Properties</h5>
+        <table class="table">
+            <tr>
+                <th>Length:</th>
+                <td>{{ box.length }} mm</td>
+            </tr>
+            <tr>
+                <th>Width:</th>
+                <td>{{ box.width }} mm</td>
+            </tr>
+            <tr>
+                <th>Height:</th>
+                <td>{{ box.height }} mm</td>
+            </tr>
+            <tr>
+                <th>Weight:</th>
+                <td>{{ box.weight }} g</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <h5>Inventory Information</h5>
+        <table class="table">
+            <tr>
+                <th>Supplier:</th>
+                <td>{{ box.supplier }}</td>
+            </tr>
+            <tr>
+                <th>Price:</th>
+                <td>${{ box.price }}</td>
+            </tr>
+            <tr>
+                <th>Current Stock:</th>
+                <td>
+                    <span class="badge {% if box.stock <= box.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                        {{ box.stock }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Minimum Stock:</th>
+                <td>{{ box.minimum_stock }}</td>
+            </tr>
+        </table>
+
+        {% if box.notes %}
+        <h5 class="mt-4">Notes</h5>
+        <div class="card">
+            <div class="card-body">
+                {{ box.notes|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}

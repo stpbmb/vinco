@@ -1,0 +1,75 @@
+{% extends "packaging/detail_base.html" %}
+
+{% block edit_url %}{% url 'packaging:edit_closure' closure.pk %}{% endblock %}
+{% block list_url %}{% url 'packaging:list_closures' %}{% endblock %}
+
+{% block detail_content %}
+    <div class="col-md-6">
+        <h5>Basic Information</h5>
+        <table class="table">
+            <tr>
+                <th>Name:</th>
+                <td>{{ closure.name }}</td>
+            </tr>
+            <tr>
+                <th>Type:</th>
+                <td>{{ closure.get_closure_type_display }}</td>
+            </tr>
+            <tr>
+                <th>Material:</th>
+                <td>{{ closure.get_material_display }}</td>
+            </tr>
+            <tr>
+                <th>Color:</th>
+                <td>{{ closure.color }}</td>
+            </tr>
+        </table>
+
+        <h5 class="mt-4">Physical Properties</h5>
+        <table class="table">
+            <tr>
+                <th>Diameter:</th>
+                <td>{{ closure.diameter }} mm</td>
+            </tr>
+            <tr>
+                <th>Height:</th>
+                <td>{{ closure.height }} mm</td>
+            </tr>
+        </table>
+    </div>
+
+    <div class="col-md-6">
+        <h5>Inventory Information</h5>
+        <table class="table">
+            <tr>
+                <th>Supplier:</th>
+                <td>{{ closure.supplier }}</td>
+            </tr>
+            <tr>
+                <th>Price:</th>
+                <td>${{ closure.price }}</td>
+            </tr>
+            <tr>
+                <th>Current Stock:</th>
+                <td>
+                    <span class="badge {% if closure.stock <= closure.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
+                        {{ closure.stock }}
+                    </span>
+                </td>
+            </tr>
+            <tr>
+                <th>Minimum Stock:</th>
+                <td>{{ closure.minimum_stock }}</td>
+            </tr>
+        </table>
+
+        {% if closure.notes %}
+        <h5 class="mt-4">Notes</h5>
+        <div class="card">
+            <div class="card-body">
+                {{ closure.notes|linebreaks }}
+            </div>
+        </div>
+        {% endif %}
+    </div>
+{% endblock %}
