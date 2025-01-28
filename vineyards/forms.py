@@ -5,8 +5,30 @@ class VineyardForm(forms.ModelForm):
     class Meta:
         model = Vineyard
         fields = ['name', 'location', 'size', 'grape_variety', 'ownership_type', 'supplier',
-                 'contact_person', 'contact_email', 'contact_phone', 'notes', 'arkod_id',
-                 'planting_year', 'cadastral_parcel', 'cadastral_county']
+                 'notes', 'arkod_id', 'planting_year', 'cadastral_parcel', 'cadastral_county']
+        widgets = {
+            'supplier': forms.Select(attrs={'class': 'supplier-field', 'style': 'display: none;'}),
+        }
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['supplier'].required = False
+        
+        # If instance exists and ownership is not 'supplied', hide supplier field
+        if self.instance.pk and self.instance.ownership_type != 'supplied':
+            self.fields['supplier'].widget = forms.HiddenInput()
+
+    def clean(self):
+        cleaned_data = super().clean()
+        ownership_type = cleaned_data.get('ownership_type')
+        supplier = cleaned_data.get('supplier')
+
+        if ownership_type == 'supplied' and not supplier:
+            self.add_error('supplier', 'Supplier is required for supplied vineyards.')
+        elif ownership_type == 'owned' and supplier:
+            cleaned_data['supplier'] = None
+
+        return cleaned_data
 
 class SupplierForm(forms.ModelForm):
     class Meta:

@@ -63,9 +63,6 @@ class Vineyard(models.Model):
     grape_variety = models.CharField(max_length=255, choices=GRAPE_VARIETY_CHOICES)
     ownership_type = models.CharField(max_length=50, choices=OWNERSHIP_CHOICES)
     supplier = models.ForeignKey(Supplier, on_delete=models.SET_NULL, blank=True, null=True, related_name='vineyards')
-    contact_person = models.CharField(max_length=255, blank=True, null=True)
-    contact_email = models.EmailField(blank=True, null=True)
-    contact_phone = models.CharField(max_length=20, blank=True, null=True)
     notes = models.TextField(blank=True, null=True)
     company = models.ForeignKey(Company, on_delete=models.CASCADE, related_name='vineyards')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -80,9 +77,6 @@ class Vineyard(models.Model):
 
     def __str__(self):
         return self.name
-
-
-from django.core.exceptions import ValidationError
 
 class Harvest(models.Model):
     vineyard = models.ForeignKey(Vineyard, on_delete=models.CASCADE, related_name='harvests')

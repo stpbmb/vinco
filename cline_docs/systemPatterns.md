@@ -11,6 +11,7 @@
    - Hierarchical structure (Company → Suppliers → Vineyards)
    - Relational database with foreign key relationships
    - Built-in data validation
+   - Conditional field relationships (e.g., supplier only for supplied vineyards)
 
 2. Authentication & Security
    - Django's built-in authentication system
@@ -26,6 +27,7 @@
    - Model-level validation for data integrity
    - Form-level validation for user input
    - Business logic validation for operations
+   - Dynamic field validation based on form state
 
 ## Implementation Patterns
 1. Models
@@ -43,9 +45,17 @@
 3. Forms
    - Model-based forms
    - Custom validation rules
+   - Dynamic field visibility
+   - Conditional field requirements
    - Formset support for related data
 
 4. URLs
    - RESTful-style routing
    - Semantic URL naming
    - Resource-based organization
+
+5. Templates
+   - Base template inheritance
+   - Dynamic form behavior with JavaScript
+   - Responsive design patterns
+   - Consistent styling across forms

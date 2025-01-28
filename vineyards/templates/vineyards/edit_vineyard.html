@@ -1,11 +1,117 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Edit Vineyard</h1>
-<form method="post">
-    {% csrf_token %}
-    {{ form.as_p }}
-    <button type="submit">Save</button>
-</form>
-<a href="{% url 'list_vineyards' %}">Back to List</a>
+<div class="form-container">
+    <h1>Edit Vineyard</h1>
+    <form method="post" class="vineyard-form">
+        {% csrf_token %}
+        {% for field in form %}
+            <div class="form-group {% if field.name == 'supplier' %}supplier-group{% endif %}">
+                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+                {{ field }}
+                {% if field.errors %}
+                    <div class="field-errors">
+                        {% for error in field.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+                {% if field.help_text %}
+                    <small class="help-text">{{ field.help_text }}</small>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary">Save</button>
+            <a href="{% url 'list_vineyards' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </form>
+</div>
+
+<style>
+    .form-container {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 5px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .vineyard-form {
+        display: grid;
+        gap: 15px;
+    }
+    .form-group {
+        display: grid;
+        gap: 5px;
+    }
+    .form-group label {
+        font-weight: 500;
+    }
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        font-size: 16px;
+        width: 100%;
+    }
+    .field-errors {
+        color: #dc3545;
+        font-size: 14px;
+    }
+    .help-text {
+        color: #6c757d;
+        font-size: 14px;
+    }
+    .form-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 20px;
+    }
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 16px;
+        text-decoration: none;
+        color: white;
+    }
+    .btn-primary {
+        background-color: #007bff;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+    }
+    .supplier-group {
+        display: none;
+    }
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const ownershipSelect = document.querySelector('select[name="ownership_type"]');
+    const supplierGroup = document.querySelector('.supplier-group');
+    const supplierSelect = document.querySelector('select[name="supplier"]');
+
+    function updateSupplierVisibility() {
+        if (ownershipSelect.value === 'supplied') {
+            supplierGroup.style.display = 'grid';
+            supplierSelect.required = true;
+        } else {
+            supplierGroup.style.display = 'none';
+            supplierSelect.required = false;
+            supplierSelect.value = '';
+        }
+    }
+
+    // Initial visibility
+    updateSupplierVisibility();
+
+    // Update visibility when ownership type changes
+    ownershipSelect.addEventListener('change', updateSupplierVisibility);
+});
+</script>
 {% endblock %}
