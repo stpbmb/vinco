@@ -9,8 +9,12 @@ from .forms import (
 
 # Vineyard Views
 def list_vineyards(request):
-    vineyards = Vineyard.objects.all()
-    return render(request, 'vineyards/list_vineyards.html', {'vineyards': vineyards})
+    owned_vineyards = Vineyard.objects.filter(ownership_type='owned').order_by('name')
+    supplied_vineyards = Vineyard.objects.filter(ownership_type='supplied').order_by('name')
+    return render(request, 'vineyards/list_vineyards.html', {
+        'owned_vineyards': owned_vineyards,
+        'supplied_vineyards': supplied_vineyards
+    })
 
 def add_vineyard(request):
     if request.method == 'POST':
@@ -74,41 +78,31 @@ def supplier_detail(request, supplier_id):
 # Harvest Views
 @login_required
 def list_harvests(request):
-    harvests = Harvest.objects.all()
-    return render(request, 'vineyards/list_harvests.html', {'harvests': harvests})
+    all_harvests = Harvest.objects.all().order_by('-date')
+    
+    # Get harvests with unallocated juice
+    unallocated_harvests = [
+        harvest for harvest in all_harvests
+        if harvest.juice_yield and harvest.juice_yield > harvest.total_allocated_volume()
+    ]
+    
+    return render(request, 'vineyards/list_harvests.html', {
+        'all_harvests': all_harvests,
+        'unallocated_harvests': unallocated_harvests
+    })
 
 @login_required
 def add_harvest(request):
     if request.method == 'POST':
         form = HarvestForm(request.POST)
-        formset = CrushedJuiceAllocationFormSet(request.POST)
-        if form.is_valid() and formset.is_valid():
+        if form.is_valid():
             harvest = form.save(commit=False)
             harvest.created_by = request.user
             harvest.save()
-            allocations = formset.save(commit=False)
-            for allocation in allocations:
-                allocation.harvest = harvest
-                allocation.save()
-                allocation.tank.update_volume(allocation.allocated_volume)
-                # Create history record for allocation
-                TankHistory.objects.create(
-                    tank=allocation.tank,
-                    operation_type='allocation',
-                    date=allocation.allocation_date,
-                    volume=allocation.allocated_volume,
-                    harvest=harvest,
-                    created_by=request.user,
-                    notes=f"Allocation from harvest of {harvest.vineyard.grape_variety}"
-                )
             return redirect('list_harvests')
     else:
         form = HarvestForm()
-        formset = CrushedJuiceAllocationFormSet()
-    return render(request, 'vineyards/add_harvest.html', {
-        'form': form,
-        'formset': formset,
-    })
+    return render(request, 'vineyards/add_harvest.html', {'form': form})
 
 @login_required
 def edit_harvest(request, harvest_id):

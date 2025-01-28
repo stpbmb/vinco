@@ -86,7 +86,15 @@
         background-color: #6c757d;
     }
     .supplier-group {
-        display: none;
+        max-height: 0;
+        opacity: 0;
+        overflow: hidden;
+        transition: all 0.3s ease-in-out;
+    }
+    .supplier-group.visible {
+        max-height: 100px;
+        opacity: 1;
+        margin-top: 15px;
     }
 </style>
 
@@ -98,12 +106,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
     function updateSupplierVisibility() {
         if (ownershipSelect.value === 'supplied') {
-            supplierGroup.style.display = 'grid';
+            supplierGroup.classList.add('visible');
             supplierSelect.required = true;
         } else {
-            supplierGroup.style.display = 'none';
+            supplierGroup.classList.remove('visible');
             supplierSelect.required = false;
-            supplierSelect.value = '';
+            supplierSelect.value = ''; // Clear selection when hidden
         }
     }
 

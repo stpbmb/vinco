@@ -7,16 +7,22 @@ class VineyardForm(forms.ModelForm):
         fields = ['name', 'location', 'size', 'grape_variety', 'ownership_type', 'supplier',
                  'notes', 'arkod_id', 'planting_year', 'cadastral_parcel', 'cadastral_county']
         widgets = {
-            'supplier': forms.Select(attrs={'class': 'supplier-field', 'style': 'display: none;'}),
+            'supplier': forms.Select(attrs={
+                'class': 'form-control supplier-field',
+            }),
+            'ownership_type': forms.Select(attrs={
+                'class': 'form-control',
+            }),
         }
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['supplier'].required = False
         
-        # If instance exists and ownership is not 'supplied', hide supplier field
-        if self.instance.pk and self.instance.ownership_type != 'supplied':
-            self.fields['supplier'].widget = forms.HiddenInput()
+        # Initialize supplier visibility based on ownership type
+        if self.instance.pk:
+            if self.instance.ownership_type != 'supplied':
+                self.fields['supplier'].widget = forms.HiddenInput()
 
     def clean(self):
         cleaned_data = super().clean()
