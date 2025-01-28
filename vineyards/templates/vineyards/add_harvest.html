@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Add Harvest</h1>
+<form method="post">
+    {% csrf_token %}
+    <h2>Harvest Details</h2>
+    {{ form.as_p }}
+
+    <h2>Crushed Juice Allocations</h2>
+    {{ formset.management_form }}
+    {% for allocation_form in formset %}
+        <div class="allocation-form">
+            {{ allocation_form.as_p }}
+        </div>
+    {% endfor %}
+
+    <button type="submit">Save</button>
+</form>
+<a href="{% url 'list_harvests' %}">Back to List</a>
+{% endblock %}

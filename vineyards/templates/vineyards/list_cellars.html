@@ -1,0 +1,14 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Cellars</h1>
+<a href="{% url 'add_cellar' %}">Add Cellar</a>
+<ul>
+    {% for cellar in cellars %}
+        <li>
+            <a href="{% url 'cellar_detail' cellar.id %}">{{ cellar.name }}</a>
+            <a href="{% url 'edit_cellar' cellar.id %}">Edit</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

@@ -1,0 +1,33 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<h1>Harvests</h1>
+<a href="{% url 'add_harvest' %}">Add Harvest</a>
+<table>
+    <thead>
+        <tr>
+            <th>Vineyard</th>
+            <th>Harvest Date</th>
+            <th>Quantity (kg)</th>
+            <th>Juice Yield (liters)</th>
+            <th>Remaining Juice (liters)</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for harvest in harvests %}
+            <tr>
+                <td>{{ harvest.vineyard.name }}</td>
+                <td>{{ harvest.date }}</td>
+                <td>{{ harvest.quantity }}</td>
+                <td>{{ harvest.juice_yield }}</td>
+                <td>{{ harvest.remaining_juice }}</td>
+                <td>
+                    <a href="{% url 'harvest_detail' harvest.id %}">View</a>
+                    <a href="{% url 'edit_harvest' harvest.id %}">Edit</a>
+                </td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
