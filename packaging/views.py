@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from django.db.models import Q
+from django.db.models import Q, F
 from .models import Bottle, Label, Closure, Box
 from .forms import BottleForm, LabelForm, ClosureForm, BoxForm
 
@@ -9,7 +9,7 @@ from .forms import BottleForm, LabelForm, ClosureForm, BoxForm
 @login_required
 def list_bottles(request):
     bottles = Bottle.objects.all()
-    low_stock = bottles.filter(stock__lte=models.F('minimum_stock'))
+    low_stock = bottles.filter(stock__lte=F('minimum_stock'))
     context = {
         'bottles': bottles,
         'low_stock': low_stock,

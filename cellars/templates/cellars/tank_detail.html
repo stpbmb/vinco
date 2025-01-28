@@ -1,0 +1,105 @@
+{% extends "cellars/base_cellars.html" %}
+{% load cellar_tags %}
+
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1>{{ tank.name }}</h1>
+    <div>
+        <a href="{% url 'cellars:edit_tank' tank.pk %}" class="btn btn-warning">
+            <i class="fas fa-edit me-2"></i>Edit
+        </a>
+        <a href="{% url 'cellars:list_tanks' %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="card-title">Tank Information</h5>
+                <dl class="row mb-0">
+                    <dt class="col-sm-4">Cellar</dt>
+                    <dd class="col-sm-8">{{ tank.cellar.name }}</dd>
+
+                    <dt class="col-sm-4">Type</dt>
+                    <dd class="col-sm-8">{{ tank.get_tank_type_display }}</dd>
+
+                    <dt class="col-sm-4">Capacity</dt>
+                    <dd class="col-sm-8">{{ tank.capacity }} L</dd>
+
+                    <dt class="col-sm-4">Current Volume</dt>
+                    <dd class="col-sm-8">{{ tank.current_volume }} L</dd>
+
+                    <dt class="col-sm-4">Notes</dt>
+                    <dd class="col-sm-8">{{ tank.notes|default:"-" }}</dd>
+                </dl>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Volume Status</h5>
+                {% with usage_percent=tank.current_volume|div:tank.capacity|mul:100 %}
+                <div class="progress mb-3" style="height: 25px;">
+                    <div class="progress-bar {% if usage_percent > 90 %}bg-danger{% elif usage_percent > 70 %}bg-warning{% else %}bg-success{% endif %}"
+                         role="progressbar"
+                         style="width: {{ usage_percent }}%"
+                         aria-valuenow="{{ usage_percent }}"
+                         aria-valuemin="0"
+                         aria-valuemax="100">
+                        {{ usage_percent|floatformat:1 }}%
+                    </div>
+                </div>
+                <small class="text-muted">
+                    Available Space: {{ tank.capacity|sub:tank.current_volume }} L
+                </small>
+                {% endwith %}
+            </div>
+        </div>
+    </div>
+    
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-body">
+                <h5 class="card-title">Tank History</h5>
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Operation</th>
+                                <th>Volume</th>
+                                <th>Details</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for entry in history %}
+                            <tr>
+                                <td>{{ entry.date }}</td>
+                                <td>{{ entry.get_operation_type_display }}</td>
+                                <td>{{ entry.volume }} L</td>
+                                <td>
+                                    {% if entry.operation_type == 'allocation' %}
+                                        From harvest: {{ entry.harvest }}
+                                    {% elif entry.operation_type == 'transfer_in' %}
+                                        From tank: {{ entry.source.name }}
+                                    {% else %}
+                                        To tank: {{ entry.destination.name }}
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center">No history records yet.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

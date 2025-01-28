@@ -4,8 +4,8 @@
 {% block content %}
 <h1>Cellars and Tanks</h1>
 <div class="actions">
-    <a href="{% url 'add_cellar' %}" class="btn">Add New Cellar</a>
-    <a href="{% url 'transfer_wine' %}" class="btn btn-secondary">Transfer Wine</a>
+    <a href="{% url 'cellars:add_cellar' %}" class="btn">Add New Cellar</a>
+    <a href="{% url 'cellars:transfer_wine' %}" class="btn btn-secondary">Transfer Wine</a>
 </div>
 
 <div class="cellars-list">
@@ -15,8 +15,8 @@
                 {{ cellar.name }}
                 <span class="cellar-meta">
                     (Capacity: {{ cellar.capacity }} L)
-                    <a href="{% url 'edit_cellar' cellar.id %}" class="btn-small">Edit Cellar</a>
-                    <a href="{% url 'add_tank' cellar.id %}" class="btn-small">Add Tank</a>
+                    <a href="{% url 'cellars:edit_cellar' cellar.id %}" class="btn-small">Edit Cellar</a>
+                    <a href="{% url 'cellars:add_tank' cellar.id %}" class="btn-small">Add Tank</a>
                 </span>
             </h2>
             
@@ -37,15 +37,15 @@
                             {% for tank in cellar.tanks.all %}
                                 <tr>
                                     <td>
-                                        <a href="{% url 'tank_history' tank.id %}" class="tank-link">{{ tank.name }}</a>
+                                        <a href="{% url 'cellars:tank_history' tank.id %}" class="tank-link">{{ tank.name }}</a>
                                     </td>
                                     <td>{{ tank.get_tank_type_display }}</td>
                                     <td>{{ tank.capacity }} L</td>
                                     <td>{{ tank.current_volume }} L</td>
-                                    <td>{{ tank.capacity|sub:tank.current_volume }} L</td>
+                                    <td>{{ tank.capacity|subtract:tank.current_volume }} L</td>
                                     <td class="actions-cell">
-                                        <a href="{% url 'edit_tank' tank.id %}" class="btn-small">Edit</a>
-                                        <a href="{% url 'transfer_wine' %}?source={{ tank.id }}" class="btn-small btn-transfer">Transfer From</a>
+                                        <a href="{% url 'cellars:edit_tank' tank.id %}" class="btn-small">Edit</a>
+                                        <a href="{% url 'cellars:transfer_wine' %}?source={{ tank.id }}" class="btn-small btn-transfer">Transfer From</a>
                                     </td>
                                 </tr>
                             {% endfor %}

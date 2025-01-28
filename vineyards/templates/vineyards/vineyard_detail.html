@@ -1,73 +1,76 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="detail-container">
+<div class="vineyard-detail-container">
     <div class="header">
-        <div class="title-section">
-            <h1>{{ vineyard.name }}</h1>
-            <span class="subtitle">{{ vineyard.get_ownership_type_display }} Vineyard</span>
-        </div>
+        <h1>{{ vineyard.name }}</h1>
         <div class="actions">
-            <a href="{% url 'edit_vineyard' vineyard.id %}" class="btn btn-edit">Edit Vineyard</a>
-            <a href="{% url 'list_vineyards' %}" class="btn btn-secondary">Back to List</a>
+            <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn btn-edit">Edit Vineyard</a>
+            <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-secondary">Back to List</a>
         </div>
     </div>
 
-    <div class="detail-sections">
-        <!-- Main Information -->
-        <div class="detail-section">
-            <h2>General Information</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <label>Location</label>
-                    <span>{{ vineyard.location }}</span>
-                </div>
-                <div class="info-item">
-                    <label>Size</label>
-                    <span>{{ vineyard.size }} hectares</span>
-                </div>
-                <div class="info-item">
-                    <label>Grape Variety</label>
-                    <span>{{ vineyard.get_grape_variety_display }}</span>
-                </div>
-                {% if vineyard.ownership_type == 'supplied' %}
-                <div class="info-item highlight">
-                    <label>Supplier</label>
-                    <span>{{ vineyard.supplier.name }}</span>
-                </div>
+    <div class="vineyard-info">
+        <div class="info-section">
+            <h2>Basic Information</h2>
+            <table class="details-table">
+                <tr>
+                    <th>Location:</th>
+                    <td>{{ vineyard.location }}</td>
+                </tr>
+                <tr>
+                    <th>Size:</th>
+                    <td>{{ vineyard.size }} ha</td>
+                </tr>
+                <tr>
+                    <th>Grape Variety:</th>
+                    <td>{{ vineyard.get_grape_variety_display }}</td>
+                </tr>
+                <tr>
+                    <th>ARKOD ID:</th>
+                    <td>{{ vineyard.arkod_id|default:"-" }}</td>
+                </tr>
+                {% if vineyard.supplier %}
+                <tr>
+                    <th>Supplier:</th>
+                    <td>
+                        <a href="{% url 'vineyards:supplier_detail' vineyard.supplier.id %}">{{ vineyard.supplier.name }}</a>
+                    </td>
+                </tr>
                 {% endif %}
-            </div>
+            </table>
         </div>
 
-        <!-- Registration Information -->
-        <div class="detail-section">
-            <h2>Registration Details</h2>
-            <div class="info-grid">
-                <div class="info-item">
-                    <label>ARKOD ID</label>
-                    <span>{{ vineyard.arkod_id|default:"-" }}</span>
-                </div>
-                <div class="info-item">
-                    <label>Planting Year</label>
-                    <span>{{ vineyard.planting_year|default:"-" }}</span>
-                </div>
-                <div class="info-item">
-                    <label>Cadastral Parcel</label>
-                    <span>{{ vineyard.cadastral_parcel|default:"-" }}</span>
-                </div>
-                <div class="info-item">
-                    <label>Cadastral County</label>
-                    <span>{{ vineyard.cadastral_county|default:"-" }}</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Notes Section -->
-        {% if vineyard.notes %}
-        <div class="detail-section">
-            <h2>Notes</h2>
-            <div class="notes-content">
-                {{ vineyard.notes|linebreaks }}
+        {% if vineyard.harvests.exists %}
+        <div class="info-section">
+            <h2>Harvest History</h2>
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Date</th>
+                            <th>Volume (L)</th>
+                            <th>Sugar Content (°Oe)</th>
+                            <th>Total Acid (g/L)</th>
+                            <th>pH</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for harvest in vineyard.harvests.all %}
+                            <tr>
+                                <td>{{ harvest.harvest_date }}</td>
+                                <td>{{ harvest.volume }}</td>
+                                <td>{{ harvest.sugar_content }}</td>
+                                <td>{{ harvest.total_acid }}</td>
+                                <td>{{ harvest.ph }}</td>
+                                <td class="actions-cell">
+                                    <a href="{% url 'harvests:harvest_detail' harvest.id %}" class="btn-small btn-view">View Details</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
         </div>
         {% endif %}
@@ -75,120 +78,113 @@
 </div>
 
 <style>
-    .detail-container {
-        max-width: 1200px;
-        margin: 0 auto;
+    .vineyard-detail-container {
         padding: 20px;
     }
     .header {
         display: flex;
         justify-content: space-between;
-        align-items: flex-start;
-        margin-bottom: 30px;
-        padding-bottom: 20px;
-        border-bottom: 2px solid #eee;
-    }
-    .title-section {
-        flex-grow: 1;
-    }
-    .title-section h1 {
-        margin: 0;
-        color: #2c3e50;
-        font-size: 2em;
-    }
-    .subtitle {
-        color: #6c757d;
-        font-size: 1.1em;
-        margin-top: 5px;
-        display: block;
+        align-items: center;
+        margin-bottom: 2rem;
     }
     .actions {
         display: flex;
-        gap: 10px;
-        align-items: center;
+        gap: 1rem;
+    }
+    .vineyard-info {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+    .info-section {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .info-section h2 {
+        color: #2c3e50;
+        font-size: 1.5rem;
+        margin-bottom: 1rem;
+    }
+    .details-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .details-table th,
+    .details-table td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    .details-table th {
+        width: 200px;
+        color: #4a5568;
+        font-weight: 600;
+    }
+    .table-container {
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+        background-color: #f8fafc;
+        font-weight: 600;
+        color: #4a5568;
+    }
+    .actions-cell {
+        white-space: nowrap;
     }
     .btn {
+        display: inline-block;
         padding: 8px 16px;
-        border-radius: 4px;
         text-decoration: none;
-        color: white;
-        font-weight: 500;
+        border-radius: 4px;
         transition: background-color 0.2s;
     }
     .btn-edit {
-        background-color: #007bff;
+        background-color: #3498db;
+        color: white;
     }
     .btn-edit:hover {
-        background-color: #0056b3;
+        background-color: #2980b9;
+        color: white;
     }
     .btn-secondary {
         background-color: #6c757d;
+        color: white;
     }
     .btn-secondary:hover {
-        background-color: #545b62;
+        background-color: #5a6268;
+        color: white;
     }
-    .detail-sections {
-        display: grid;
-        gap: 30px;
+    .btn-small {
+        padding: 4px 8px;
+        font-size: 0.875rem;
+        background-color: #e2e8f0;
+        color: #4a5568;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-right: 4px;
+        transition: all 0.2s;
     }
-    .detail-section {
-        background: white;
-        border-radius: 8px;
-        padding: 20px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    .btn-small:hover {
+        background-color: #cbd5e0;
     }
-    .detail-section h2 {
-        margin: 0 0 20px 0;
-        color: #2c3e50;
-        font-size: 1.3em;
-        padding-bottom: 10px;
-        border-bottom: 1px solid #eee;
+    .btn-view {
+        background-color: #4299e1;
+        color: white;
     }
-    .info-grid {
-        display: grid;
-        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-        gap: 20px;
-    }
-    .info-item {
-        display: flex;
-        flex-direction: column;
-        gap: 5px;
-    }
-    .info-item label {
-        color: #6c757d;
-        font-size: 0.9em;
-        font-weight: 500;
-    }
-    .info-item span {
-        color: #2c3e50;
-        font-size: 1.1em;
-    }
-    .info-item.highlight {
-        padding: 10px;
-        background-color: #e9ecef;
-        border-radius: 6px;
-    }
-    .notes-content {
-        color: #2c3e50;
-        line-height: 1.6;
-        white-space: pre-line;
-    }
-    @media (max-width: 768px) {
-        .header {
-            flex-direction: column;
-            gap: 20px;
-        }
-        .actions {
-            width: 100%;
-            justify-content: stretch;
-        }
-        .btn {
-            flex: 1;
-            text-align: center;
-        }
-        .info-grid {
-            grid-template-columns: 1fr;
-        }
+    .btn-view:hover {
+        background-color: #3182ce;
+        color: white;
     }
 </style>
 {% endblock %}

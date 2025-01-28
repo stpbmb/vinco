@@ -1,21 +1,21 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
-from .models import Vineyard, Supplier, Harvest, Cellar, Tank, CrushedJuiceAllocation, TankHistory
-from .forms import (
-    VineyardForm, SupplierForm, HarvestForm, CrushedJuiceAllocationFormSet,
-    CrushedJuiceAllocationForm, CellarForm, TankForm, TankTransferForm
-)
+from .models import Vineyard, Supplier
+from .forms import VineyardForm, SupplierForm
 
 # Vineyard Views
+@login_required
 def list_vineyards(request):
     owned_vineyards = Vineyard.objects.filter(ownership_type='owned').order_by('name')
     supplied_vineyards = Vineyard.objects.filter(ownership_type='supplied').order_by('name')
     return render(request, 'vineyards/list_vineyards.html', {
         'owned_vineyards': owned_vineyards,
-        'supplied_vineyards': supplied_vineyards
+        'supplied_vineyards': supplied_vineyards,
+        'active_tab': 'vineyards'
     })
 
+@login_required
 def add_vineyard(request):
     if request.method == 'POST':
         form = VineyardForm(request.POST)
@@ -23,31 +23,49 @@ def add_vineyard(request):
             vineyard = form.save(commit=False)
             vineyard.created_by = request.user
             vineyard.save()
-            return redirect('list_vineyards')
+            return redirect('vineyards:vineyard_detail', vineyard_id=vineyard.id)
     else:
         form = VineyardForm()
-    return render(request, 'vineyards/add_vineyard.html', {'form': form})
+    return render(request, 'vineyards/vineyard_form.html', {
+        'form': form, 
+        'title': 'Add New Vineyard',
+        'active_tab': 'vineyards'
+    })
 
+@login_required
 def edit_vineyard(request, vineyard_id):
     vineyard = get_object_or_404(Vineyard, id=vineyard_id)
     if request.method == 'POST':
         form = VineyardForm(request.POST, instance=vineyard)
         if form.is_valid():
-            form.save()
-            return redirect('list_vineyards')
+            vineyard = form.save()
+            return redirect('vineyards:vineyard_detail', vineyard_id=vineyard.id)
     else:
         form = VineyardForm(instance=vineyard)
-    return render(request, 'vineyards/edit_vineyard.html', {'form': form})
+    return render(request, 'vineyards/vineyard_form.html', {
+        'form': form, 
+        'title': 'Edit Vineyard',
+        'active_tab': 'vineyards'
+    })
 
+@login_required
 def vineyard_detail(request, vineyard_id):
     vineyard = get_object_or_404(Vineyard, id=vineyard_id)
-    return render(request, 'vineyards/vineyard_detail.html', {'vineyard': vineyard})
+    return render(request, 'vineyards/vineyard_detail.html', {
+        'vineyard': vineyard,
+        'active_tab': 'vineyards'
+    })
 
 # Supplier Views
+@login_required
 def list_suppliers(request):
-    suppliers = Supplier.objects.all()
-    return render(request, 'vineyards/list_suppliers.html', {'suppliers': suppliers})
+    suppliers = Supplier.objects.all().order_by('name')
+    return render(request, 'vineyards/list_suppliers.html', {
+        'suppliers': suppliers,
+        'active_tab': 'vineyards'
+    })
 
+@login_required
 def add_supplier(request):
     if request.method == 'POST':
         form = SupplierForm(request.POST)
@@ -55,296 +73,38 @@ def add_supplier(request):
             supplier = form.save(commit=False)
             supplier.created_by = request.user
             supplier.save()
-            return redirect('list_suppliers')
+            return redirect('vineyards:supplier_detail', supplier_id=supplier.id)
     else:
         form = SupplierForm()
-    return render(request, 'vineyards/add_supplier.html', {'form': form})
+    return render(request, 'vineyards/supplier_form.html', {
+        'form': form, 
+        'title': 'Add New Supplier',
+        'active_tab': 'vineyards'
+    })
 
+@login_required
 def edit_supplier(request, supplier_id):
     supplier = get_object_or_404(Supplier, id=supplier_id)
     if request.method == 'POST':
         form = SupplierForm(request.POST, instance=supplier)
         if form.is_valid():
-            form.save()
-            return redirect('list_suppliers')
+            supplier = form.save()
+            return redirect('vineyards:supplier_detail', supplier_id=supplier.id)
     else:
         form = SupplierForm(instance=supplier)
-    return render(request, 'vineyards/edit_supplier.html', {'form': form})
+    return render(request, 'vineyards/supplier_form.html', {
+        'form': form, 
+        'title': 'Edit Supplier',
+        'active_tab': 'vineyards'
+    })
 
+@login_required
 def supplier_detail(request, supplier_id):
-    supplier = get_object_or_404(Supplier, id=supplier_id)
-    return render(request, 'vineyards/supplier_detail.html', {'supplier': supplier})
-
-# Harvest Views
-@login_required
-def list_harvests(request):
-    all_harvests = Harvest.objects.all().order_by('-date')
-    
-    # Get harvests with unallocated juice
-    unallocated_harvests = [
-        harvest for harvest in all_harvests
-        if harvest.juice_yield and harvest.juice_yield > harvest.total_allocated_volume()
-    ]
-    
-    return render(request, 'vineyards/list_harvests.html', {
-        'all_harvests': all_harvests,
-        'unallocated_harvests': unallocated_harvests
+    supplier = get_object_or_404(
+        Supplier.objects.prefetch_related('vineyards'),
+        id=supplier_id
+    )
+    return render(request, 'vineyards/supplier_detail.html', {
+        'supplier': supplier,
+        'active_tab': 'vineyards'
     })
-
-@login_required
-def add_harvest(request):
-    if request.method == 'POST':
-        form = HarvestForm(request.POST)
-        if form.is_valid():
-            harvest = form.save(commit=False)
-            harvest.created_by = request.user
-            harvest.save()
-            return redirect('list_harvests')
-    else:
-        form = HarvestForm()
-    return render(request, 'vineyards/add_harvest.html', {'form': form})
-
-@login_required
-def edit_harvest(request, harvest_id):
-    harvest = get_object_or_404(Harvest, id=harvest_id)
-    if request.method == 'POST':
-        form = HarvestForm(request.POST, instance=harvest)
-        if form.is_valid():
-            form.save()
-            return redirect('list_harvests')
-    else:
-        form = HarvestForm(instance=harvest)
-    return render(request, 'vineyards/edit_harvest.html', {'form': form})
-
-@login_required
-def harvest_detail(request, harvest_id):
-    harvest = get_object_or_404(Harvest, id=harvest_id)
-    allocations = harvest.allocations.all()
-    if request.method == 'POST':
-        form = CrushedJuiceAllocationForm(request.POST)
-        if form.is_valid():
-            allocation = form.save(commit=False)
-            allocation.harvest = harvest
-            allocation.save()
-            allocation.tank.update_volume(allocation.allocated_volume)
-            # Create history record for allocation
-            TankHistory.objects.create(
-                tank=allocation.tank,
-                operation_type='allocation',
-                date=allocation.allocation_date,
-                volume=allocation.allocated_volume,
-                harvest=harvest,
-                created_by=request.user,
-                notes=f"Allocation from harvest of {harvest.vineyard.grape_variety}"
-            )
-            return redirect('harvest_detail', harvest_id=harvest.id)
-    else:
-        form = CrushedJuiceAllocationForm()
-    return render(request, 'vineyards/harvest_detail.html', {
-        'harvest': harvest,
-        'allocations': allocations,
-        'form': form,
-    })
-
-# Cellar Views
-def list_cellars(request):
-    cellars = Cellar.objects.all()
-    return render(request, 'vineyards/list_cellars.html', {'cellars': cellars})
-
-def add_cellar(request):
-    if request.method == 'POST':
-        form = CellarForm(request.POST)
-        if form.is_valid():
-            cellar = form.save(commit=False)
-            cellar.created_by = request.user
-            cellar.save()
-            return redirect('list_cellars')
-    else:
-        form = CellarForm()
-    return render(request, 'vineyards/add_cellar.html', {'form': form})
-
-def edit_cellar(request, cellar_id):
-    cellar = get_object_or_404(Cellar, id=cellar_id)
-    if request.method == 'POST':
-        form = CellarForm(request.POST, instance=cellar)
-        if form.is_valid():
-            form.save()
-            return redirect('list_cellars')
-    else:
-        form = CellarForm(instance=cellar)
-    return render(request, 'vineyards/edit_cellar.html', {'form': form})
-
-def cellar_detail(request, cellar_id):
-    cellar = get_object_or_404(Cellar, id=cellar_id)
-    tanks = cellar.tanks.all()
-    return render(request, 'vineyards/cellar_detail.html', {'cellar': cellar, 'tanks': tanks})
-
-# Tank Views
-def add_tank(request, cellar_id):
-    cellar = get_object_or_404(Cellar, id=cellar_id)
-    if request.method == 'POST':
-        form = TankForm(request.POST)
-        if form.is_valid():
-            tank = form.save(commit=False)
-            tank.cellar = cellar
-            tank.created_by = request.user
-            tank.save()
-            return redirect('cellar_detail', cellar_id=cellar.id)
-    else:
-        form = TankForm()
-    return render(request, 'vineyards/add_tank.html', {'form': form, 'cellar': cellar})
-
-def edit_tank(request, tank_id):
-    tank = get_object_or_404(Tank, id=tank_id)
-    if request.method == 'POST':
-        form = TankForm(request.POST, instance=tank)
-        if form.is_valid():
-            form.save()
-            return redirect('cellar_detail', cellar_id=tank.cellar.id)
-    else:
-        form = TankForm(instance=tank)
-    return render(request, 'vineyards/edit_tank.html', {'form': form, 'tank': tank})
-
-def tank_history(request, tank_id):
-    tank = get_object_or_404(Tank, id=tank_id)
-    history = tank.history.all()  # Already ordered by -date, -created_at from Meta
-    return render(request, 'vineyards/tank_history.html', {
-        'tank': tank,
-        'history': history
-    })
-
-@login_required
-def transfer_wine(request):
-    # Get source tank from URL parameter if provided
-    source_tank_id = request.GET.get('source')
-    initial_data = {}
-    
-    if source_tank_id:
-        try:
-            source_tank = Tank.objects.get(id=source_tank_id)
-            initial_data['source_tank'] = source_tank
-        except Tank.DoesNotExist:
-            pass
-
-    if request.method == 'POST':
-        form = TankTransferForm(request.POST)
-        if form.is_valid():
-            source_tank = form.cleaned_data['source_tank']
-            destination_tank = form.cleaned_data['destination_tank']
-            volume = form.cleaned_data['volume']
-            notes = form.cleaned_data['notes']
-            
-            # Create history records for both tanks
-            transfer_date = timezone.now().date()
-            
-            # Record for source tank (negative volume)
-            TankHistory.objects.create(
-                tank=source_tank,
-                operation_type='transfer_out',
-                date=transfer_date,
-                volume=-volume,
-                destination=destination_tank,
-                created_by=request.user,
-                notes=notes
-            )
-            
-            # Record for destination tank (positive volume)
-            TankHistory.objects.create(
-                tank=destination_tank,
-                operation_type='transfer_in',
-                date=transfer_date,
-                volume=volume,
-                source=source_tank,
-                created_by=request.user,
-                notes=notes
-            )
-            
-            # Update tank volumes
-            source_tank.update_volume(-volume)
-            destination_tank.update_volume(volume)
-            
-            return redirect('list_cellars')
-    else:
-        form = TankTransferForm(initial=initial_data)
-        
-        # If source tank is selected, exclude it from destination choices
-        if source_tank_id:
-            form.fields['destination_tank'].queryset = Tank.objects.exclude(id=source_tank_id)
-    
-    return render(request, 'vineyards/transfer_wine.html', {'form': form})
-
-# Allocation Views
-def list_allocations(request, harvest_id):
-    harvest = get_object_or_404(Harvest, id=harvest_id)
-    allocations = harvest.allocations.all()
-    return render(request, 'vineyards/list_allocations.html', {'harvest': harvest, 'allocations': allocations})
-
-def add_allocation(request, harvest_id):
-    harvest = get_object_or_404(Harvest, id=harvest_id)
-    if request.method == 'POST':
-        form = CrushedJuiceAllocationForm(request.POST)
-        if form.is_valid():
-            allocation = form.save(commit=False)
-            allocation.harvest = harvest
-            allocation.created_by = request.user
-            allocation.save()
-            allocation.tank.update_volume(allocation.allocated_volume)
-            # Create history record for allocation
-            TankHistory.objects.create(
-                tank=allocation.tank,
-                operation_type='allocation',
-                date=allocation.allocation_date,
-                volume=allocation.allocated_volume,
-                harvest=harvest,
-                created_by=request.user,
-                notes=f"Allocation from harvest of {harvest.vineyard.grape_variety}"
-            )
-            return redirect('list_allocations', harvest_id=harvest.id)
-    else:
-        form = CrushedJuiceAllocationForm()
-    return render(request, 'vineyards/add_allocation.html', {'form': form, 'harvest': harvest})
-
-def edit_allocation(request, allocation_id):
-    allocation = get_object_or_404(CrushedJuiceAllocation, id=allocation_id)
-    old_volume = allocation.allocated_volume
-    old_tank = allocation.tank
-    
-    if request.method == 'POST':
-        form = CrushedJuiceAllocationForm(request.POST, instance=allocation)
-        if form.is_valid():
-            # Create history record for removing from old tank
-            if old_volume > 0:
-                TankHistory.objects.create(
-                    tank=old_tank,
-                    operation_type='transfer_out',
-                    date=form.cleaned_data['allocation_date'],
-                    volume=-old_volume,
-                    destination=form.cleaned_data['tank'],
-                    created_by=request.user,
-                    notes="Transfer due to allocation edit"
-                )
-            
-            # Save the updated allocation
-            allocation = form.save()
-            
-            # Create history record for adding to new tank
-            TankHistory.objects.create(
-                tank=allocation.tank,
-                operation_type='transfer_in',
-                date=allocation.allocation_date,
-                volume=allocation.allocated_volume,
-                source=old_tank if old_tank != allocation.tank else None,
-                harvest=allocation.harvest,
-                created_by=request.user,
-                notes=f"Transfer from allocation edit of {allocation.harvest.vineyard.grape_variety}"
-            )
-            
-            # Update tank volumes
-            old_tank.update_volume(-old_volume)
-            if old_tank != allocation.tank:
-                allocation.tank.update_volume(allocation.allocated_volume)
-                
-            return redirect('list_allocations', harvest_id=allocation.harvest.id)
-    else:
-        form = CrushedJuiceAllocationForm(instance=allocation)
-    return render(request, 'vineyards/edit_allocation.html', {'form': form, 'allocation': allocation})

@@ -1,0 +1,63 @@
+{% extends 'base.html' %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="tank-form-container">
+    <div class="header">
+        <h1>{% if tank %}Edit Tank{% else %}Add New Tank{% endif %}</h1>
+        <a href="{% url 'cellars:cellar_detail' cellar.id %}" class="btn btn-secondary">Back to Cellar</a>
+    </div>
+
+    <div class="form-section">
+        <form method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <button type="submit" class="btn btn-primary">Save Tank</button>
+        </form>
+    </div>
+</div>
+
+<style>
+    .tank-form-container {
+        padding: 20px;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .form-section {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        max-width: 800px;
+        margin: 0 auto;
+    }
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    .btn-secondary:hover {
+        background-color: #5a6268;
+        color: white;
+    }
+    .btn-primary {
+        background-color: #3498db;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .btn-primary:hover {
+        background-color: #2980b9;
+    }
+</style>
+{% endblock %}

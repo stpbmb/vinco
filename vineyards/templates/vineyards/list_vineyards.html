@@ -5,7 +5,7 @@
     <div class="header">
         <h1>Vineyards</h1>
         <div class="actions">
-            <a href="{% url 'add_vineyard' %}" class="btn">Add New Vineyard</a>
+            <a href="{% url 'vineyards:add_vineyard' %}" class="btn">Add New Vineyard</a>
         </div>
     </div>
 
@@ -35,8 +35,8 @@
                                     <td>{{ vineyard.get_grape_variety_display }}</td>
                                     <td>{{ vineyard.arkod_id|default:"-" }}</td>
                                     <td class="actions-cell">
-                                        <a href="{% url 'edit_vineyard' vineyard.id %}" class="btn-small">Edit</a>
-                                        <a href="{% url 'vineyard_detail' vineyard.id %}" class="btn-small btn-view">Details</a>
+                                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn-small">Edit</a>
+                                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" class="btn-small btn-view">Details</a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -73,8 +73,8 @@
                                     <td>{{ vineyard.get_grape_variety_display }}</td>
                                     <td>{{ vineyard.supplier.name }}</td>
                                     <td class="actions-cell">
-                                        <a href="{% url 'edit_vineyard' vineyard.id %}" class="btn-small">Edit</a>
-                                        <a href="{% url 'vineyard_detail' vineyard.id %}" class="btn-small btn-view">Details</a>
+                                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn-small">Edit</a>
+                                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" class="btn-small btn-view">Details</a>
                                     </td>
                                 </tr>
                             {% endfor %}

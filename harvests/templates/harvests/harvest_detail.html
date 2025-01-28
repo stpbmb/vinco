@@ -8,8 +8,8 @@
             <span class="subtitle">Harvest on {{ harvest.date }}</span>
         </div>
         <div class="actions">
-            <a href="{% url 'edit_harvest' harvest.id %}" class="btn btn-edit">Edit Harvest</a>
-            <a href="{% url 'list_harvests' %}" class="btn btn-secondary">Back to List</a>
+            <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-edit">Edit Harvest</a>
+            <a href="{% url 'harvests:list_harvests' %}" class="btn btn-secondary">Back to List</a>
         </div>
     </div>
 
@@ -71,7 +71,7 @@
             <div class="section-header">
                 <h2>Juice Allocations</h2>
                 {% if harvest.remaining_juice > 0 %}
-                    <a href="{% url 'add_allocation' harvest.id %}" class="btn btn-small btn-allocate">Add Allocation</a>
+                    <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-small btn-allocate">Add Allocation</a>
                 {% endif %}
             </div>
             {% if allocations %}

@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+
+{% block sidebar %}
+<div class="list-group">
+    <a href="{% url 'cellars:list_cellars' %}" class="list-group-item list-group-item-action {% if active_tab == 'cellars' %}active{% endif %}">
+        <i class="fas fa-warehouse me-2"></i>Cellars
+    </a>
+    <a href="{% url 'cellars:list_tanks' %}" class="list-group-item list-group-item-action {% if active_tab == 'tanks' %}active{% endif %}">
+        <i class="fas fa-wine-bottle me-2"></i>Tanks
+    </a>
+    <a href="{% url 'cellars:list_allocations' %}" class="list-group-item list-group-item-action {% if active_tab == 'allocations' %}active{% endif %}">
+        <i class="fas fa-exchange-alt me-2"></i>Allocations
+    </a>
+</div>
+{% endblock %}

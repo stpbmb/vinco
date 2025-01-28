@@ -1,5 +1,6 @@
 from django import forms
-from .models import Vineyard, Supplier, Harvest, CrushedJuiceAllocation, Cellar, Tank
+from .models import Vineyard, Supplier
+from cellars.models import Cellar, Tank
 
 class VineyardForm(forms.ModelForm):
     class Meta:
@@ -40,23 +41,6 @@ class SupplierForm(forms.ModelForm):
     class Meta:
         model = Supplier
         fields = ['name', 'address', 'oib', 'ibk', 'mibpg']
-
-class HarvestForm(forms.ModelForm):
-    class Meta:
-        model = Harvest
-        fields = ['vineyard', 'date', 'quantity', 'notes', 'crushing_date', 'juice_yield', 'pressing_notes']
-
-class CrushedJuiceAllocationForm(forms.ModelForm):
-    class Meta:
-        model = CrushedJuiceAllocation
-        fields = ['tank', 'allocated_volume', 'allocation_date', 'notes']
-
-CrushedJuiceAllocationFormSet = forms.inlineformset_factory(
-    Harvest, CrushedJuiceAllocation,
-    form=CrushedJuiceAllocationForm,
-    extra=1,
-    can_delete=True
-)
 
 class CellarForm(forms.ModelForm):
     class Meta:

@@ -1,19 +1,18 @@
 from django.contrib import admin
 from .models import (
-    Company,
-    Supplier,
     Vineyard,
-    Harvest,
-    Cellar,
-    Tank,
-    CrushedJuiceAllocation
+    Supplier,
 )
 
 # Register all models in one place
-admin.site.register(Company)
-admin.site.register(Supplier)
-admin.site.register(Vineyard)
-admin.site.register(Harvest)
-admin.site.register(Cellar)
-admin.site.register(Tank)
-admin.site.register(CrushedJuiceAllocation)
+
+@admin.register(Vineyard)
+class VineyardAdmin(admin.ModelAdmin):
+    list_display = ('name', 'location', 'size', 'grape_variety', 'ownership_type', 'supplier')
+    list_filter = ('ownership_type', 'grape_variety')
+    search_fields = ('name', 'location', 'grape_variety')
+
+@admin.register(Supplier)
+class SupplierAdmin(admin.ModelAdmin):
+    list_display = ('name', 'oib', 'ibk', 'mibpg')
+    search_fields = ('name', 'oib', 'ibk', 'mibpg')

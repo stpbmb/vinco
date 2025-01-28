@@ -2,7 +2,7 @@
 
 {% block content %}
 <h1>Crushed Juice Allocations for {{ harvest }}</h1>
-<a href="{% url 'add_allocation' harvest.id %}">Add Allocation</a>
+<a href="{% url 'cellars:add_allocation' harvest.id %}">Add Allocation</a>
 <ul>
     {% for allocation in allocations %}
         <li>
@@ -10,9 +10,9 @@
             <p><strong>Allocated Volume:</strong> {{ allocation.allocated_volume }} liters</p>
             <p><strong>Allocation Date:</strong> {{ allocation.allocation_date }}</p>
             <p><strong>Notes:</strong> {{ allocation.notes }}</p>
-            <a href="{% url 'edit_allocation' allocation.id %}">Edit</a>
+            <a href="{% url 'cellars:edit_allocation' allocation.id %}">Edit</a>
         </li>
     {% endfor %}
 </ul>
-<a href="{% url 'harvest_detail' harvest.id %}">Back to Harvest</a>
+<a href="{% url 'cellars:harvest_detail' harvest.id %}">Back to Harvest</a>
 {% endblock %}

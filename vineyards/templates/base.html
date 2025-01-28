@@ -95,20 +95,20 @@
         
         <div class="nav-section">
             <div class="nav-section-title">Vineyard Management</div>
-            <a href="{% url 'list_vineyards' %}" {% if 'vineyards' in request.path and 'suppliers' not in request.path %}class="active"{% endif %}>
+            <a href="{% url 'vineyards:list_vineyards' %}" {% if 'vineyards' in request.path and 'suppliers' not in request.path %}class="active"{% endif %}>
                 <i class="fas fa-mountain"></i> Vineyards
             </a>
-            <a href="{% url 'list_suppliers' %}" {% if 'suppliers' in request.path %}class="active"{% endif %}>
+            <a href="{% url 'vineyards:list_suppliers' %}" {% if 'suppliers' in request.path %}class="active"{% endif %}>
                 <i class="fas fa-truck"></i> Suppliers
             </a>
         </div>
 
         <div class="nav-section">
             <div class="nav-section-title">Production</div>
-            <a href="{% url 'list_harvests' %}" {% if 'harvests' in request.path %}class="active"{% endif %}>
+            <a href="{% url 'harvests:list_harvests' %}" {% if 'harvests' in request.path %}class="active"{% endif %}>
                 <i class="fas fa-leaf"></i> Harvests
             </a>
-            <a href="{% url 'list_cellars' %}" {% if 'cellars' in request.path %}class="active"{% endif %}>
+            <a href="{% url 'cellars:list_cellars' %}" {% if 'cellars' in request.path %}class="active"{% endif %}>
                 <i class="fas fa-warehouse"></i> Cellars
             </a>
         </div>
@@ -125,7 +125,7 @@
                 <i class="fas fa-circle"></i> Closures
             </a>
             <a href="{% url 'packaging:list_boxes' %}" {% if 'boxes' in request.path %}class="active"{% endif %}>
-                <i class="fas fa-box"></i> Boxes
+                <i class="fas fa-boxes"></i> Boxes
             </a>
         </div>
     </div>

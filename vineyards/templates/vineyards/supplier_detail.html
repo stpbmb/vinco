@@ -1,11 +1,181 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Supplier Details</h1>
-<p><strong>Name:</strong> {{ supplier.name }}</p>
-<p><strong>Address:</strong> {{ supplier.address }}</p>
-<p><strong>OIB:</strong> {{ supplier.oib }}</p>
-<p><strong>IBK:</strong> {{ supplier.ibk }}</p>
-<p><strong>MIBPG:</strong> {{ supplier.mibpg }}</p>
-<a href="{% url 'list_suppliers' %}">Back to List</a>
+<div class="supplier-detail-container">
+    <div class="header">
+        <h1>{{ supplier.name }}</h1>
+        <div class="actions">
+            <a href="{% url 'vineyards:edit_supplier' supplier.id %}" class="btn btn-edit">Edit Supplier</a>
+            <a href="{% url 'vineyards:list_suppliers' %}" class="btn btn-secondary">Back to List</a>
+        </div>
+    </div>
+
+    <div class="supplier-info">
+        <div class="info-section">
+            <h2>Contact Information</h2>
+            <table class="details-table">
+                <tr>
+                    <th>Contact Person:</th>
+                    <td>{{ supplier.contact_person }}</td>
+                </tr>
+                <tr>
+                    <th>Phone:</th>
+                    <td>{{ supplier.phone }}</td>
+                </tr>
+                <tr>
+                    <th>Email:</th>
+                    <td>{{ supplier.email }}</td>
+                </tr>
+                <tr>
+                    <th>Address:</th>
+                    <td>{{ supplier.address }}</td>
+                </tr>
+                <tr>
+                    <th>OIB:</th>
+                    <td>{{ supplier.oib }}</td>
+                </tr>
+                <tr>
+                    <th>IBK:</th>
+                    <td>{{ supplier.ibk }}</td>
+                </tr>
+                <tr>
+                    <th>MIBPG:</th>
+                    <td>{{ supplier.mibpg }}</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="info-section">
+            <h2>Supplied Vineyards</h2>
+            {% if supplier.vineyards.all %}
+                <div class="table-container">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Name</th>
+                                <th>Location</th>
+                                <th>Size (ha)</th>
+                                <th>Grape Variety</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for vineyard in supplier.vineyards.all %}
+                                <tr>
+                                    <td>{{ vineyard.name }}</td>
+                                    <td>{{ vineyard.location }}</td>
+                                    <td>{{ vineyard.size }}</td>
+                                    <td>{{ vineyard.get_grape_variety_display }}</td>
+                                    <td>
+                                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" class="btn btn-sm btn-info">View</a>
+                                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn btn-sm btn-edit">Edit</a>
+                                    </td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            {% else %}
+                <p>No vineyards associated with this supplier.</p>
+            {% endif %}
+            
+            <div class="actions mt-3">
+                <a href="{% url 'vineyards:add_vineyard' %}?supplier={{ supplier.id }}" class="btn btn-primary">Add Vineyard</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .supplier-detail-container {
+        padding: 20px;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 30px;
+    }
+    .header h1 {
+        margin: 0;
+    }
+    .info-section {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        margin-bottom: 20px;
+    }
+    .info-section h2 {
+        color: #333;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #eee;
+    }
+    .details-table {
+        width: 100%;
+        margin-bottom: 0;
+    }
+    .details-table th {
+        width: 150px;
+        padding: 8px;
+        vertical-align: top;
+        color: #666;
+    }
+    .details-table td {
+        padding: 8px;
+    }
+    .table-container {
+        margin-top: 20px;
+        overflow-x: auto;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table th {
+        background-color: #f8f9fa;
+        border-bottom: 2px solid #dee2e6;
+        padding: 12px;
+        text-align: left;
+    }
+    .table td {
+        padding: 12px;
+        border-bottom: 1px solid #dee2e6;
+    }
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        margin: 0 4px;
+        border-radius: 4px;
+        text-decoration: none;
+        font-weight: 500;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+    }
+    .btn-edit {
+        background-color: #28a745;
+        color: white;
+    }
+    .btn-info {
+        background-color: #17a2b8;
+        color: white;
+    }
+    .btn-sm {
+        padding: 4px 8px;
+        font-size: 0.875rem;
+    }
+    .actions {
+        margin-top: 20px;
+    }
+    .mt-3 {
+        margin-top: 1rem;
+    }
+</style>
 {% endblock %}

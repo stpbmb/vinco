@@ -1,14 +1,128 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<h1>Suppliers</h1>
-<a href="{% url 'add_supplier' %}">Add Supplier</a>
-<ul>
-    {% for supplier in suppliers %}
-        <li>
-            <a href="{% url 'supplier_detail' supplier.id %}">{{ supplier.name }}</a>
-            <a href="{% url 'edit_supplier' supplier.id %}">Edit</a>
-        </li>
-    {% endfor %}
-</ul>
+<div class="suppliers-container">
+    <div class="header">
+        <h1>Suppliers</h1>
+        <div class="actions">
+            <a href="{% url 'vineyards:add_supplier' %}" class="btn">Add New Supplier</a>
+        </div>
+    </div>
+
+    <div class="suppliers-list">
+        {% if suppliers %}
+            <div class="table-container">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Contact Person</th>
+                            <th>Phone</th>
+                            <th>Email</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for supplier in suppliers %}
+                            <tr>
+                                <td>{{ supplier.name }}</td>
+                                <td>{{ supplier.contact_person }}</td>
+                                <td>{{ supplier.phone }}</td>
+                                <td>{{ supplier.email }}</td>
+                                <td class="actions-cell">
+                                    <a href="{% url 'vineyards:edit_supplier' supplier.id %}" class="btn-small">Edit</a>
+                                    <a href="{% url 'vineyards:supplier_detail' supplier.id %}" class="btn-small btn-view">Details</a>
+                                </td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        {% else %}
+            <p class="no-data">No suppliers added yet.</p>
+        {% endif %}
+    </div>
+</div>
+
+<style>
+    .suppliers-container {
+        padding: 20px;
+    }
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 2rem;
+    }
+    .actions {
+        display: flex;
+        gap: 1rem;
+    }
+    .suppliers-list {
+        background: white;
+        border-radius: 8px;
+        padding: 1.5rem;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+    .table-container {
+        overflow-x: auto;
+    }
+    table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    th, td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #e2e8f0;
+    }
+    th {
+        background-color: #f8fafc;
+        font-weight: 600;
+        color: #4a5568;
+    }
+    .actions-cell {
+        white-space: nowrap;
+    }
+    .btn {
+        display: inline-block;
+        padding: 8px 16px;
+        background-color: #3498db;
+        color: white;
+        text-decoration: none;
+        border-radius: 4px;
+        transition: background-color 0.2s;
+    }
+    .btn:hover {
+        background-color: #2980b9;
+        color: white;
+    }
+    .btn-small {
+        padding: 4px 8px;
+        font-size: 0.875rem;
+        background-color: #e2e8f0;
+        color: #4a5568;
+        text-decoration: none;
+        border-radius: 4px;
+        margin-right: 4px;
+        transition: all 0.2s;
+    }
+    .btn-small:hover {
+        background-color: #cbd5e0;
+    }
+    .btn-view {
+        background-color: #4299e1;
+        color: white;
+    }
+    .btn-view:hover {
+        background-color: #3182ce;
+        color: white;
+    }
+    .no-data {
+        color: #718096;
+        font-style: italic;
+        text-align: center;
+        padding: 2rem;
+    }
+</style>
 {% endblock %}
