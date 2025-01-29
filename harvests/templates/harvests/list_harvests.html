@@ -36,12 +36,12 @@
             <table class="table">
                 <thead>
                     <tr>
-                        <th>Date</th>
-                        <th>Vineyard</th>
-                        <th>Grape Variety</th>
-                        <th>Quantity</th>
-                        <th>Juice Yield</th>
-                        <th>Status</th>
+                        <th class="sortable" data-sort="date">Date <i class="fas fa-sort"></i></th>
+                        <th class="sortable" data-sort="vineyard">Vineyard <i class="fas fa-sort"></i></th>
+                        <th class="sortable" data-sort="variety">Grape Variety <i class="fas fa-sort"></i></th>
+                        <th class="sortable" data-sort="quantity">Quantity <i class="fas fa-sort"></i></th>
+                        <th class="sortable" data-sort="juice">Juice Yield <i class="fas fa-sort"></i></th>
+                        <th class="sortable" data-sort="status">Status <i class="fas fa-sort"></i></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -184,6 +184,31 @@
     border-radius: 4px;
 }
 
+.sortable {
+    cursor: pointer;
+    user-select: none;
+    position: relative;
+}
+
+.sortable i {
+    margin-left: 5px;
+    opacity: 0.3;
+    font-size: 0.8em;
+}
+
+.sortable.asc i {
+    opacity: 1;
+    transform: rotate(180deg);
+}
+
+.sortable.desc i {
+    opacity: 1;
+}
+
+.sortable:hover {
+    background-color: #e9ecef;
+}
+
 @media (max-width: 768px) {
     .header {
         flex-direction: column;
@@ -209,8 +234,85 @@
 document.addEventListener('DOMContentLoaded', function() {
     // Handle row clicks
     document.querySelectorAll('.clickable-row').forEach(row => {
-        row.addEventListener('click', function() {
-            window.location.href = this.dataset.href;
+        row.addEventListener('click', function(e) {
+            // Don't navigate if clicking on a sortable header
+            if (!e.target.closest('.sortable')) {
+                window.location.href = this.dataset.href;
+            }
+        });
+    });
+
+    // Sorting functionality
+    let currentSort = {
+        column: null,
+        direction: 'asc'
+    };
+
+    function sortTable(column) {
+        const table = document.querySelector('.table');
+        const tbody = table.querySelector('tbody');
+        const rows = Array.from(tbody.querySelectorAll('tr'));
+        
+        // Update sort direction
+        if (currentSort.column === column) {
+            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
+        } else {
+            currentSort.column = column;
+            currentSort.direction = 'asc';
+        }
+
+        // Update header classes
+        document.querySelectorAll('.sortable').forEach(th => {
+            th.classList.remove('asc', 'desc');
+            if (th.dataset.sort === column) {
+                th.classList.add(currentSort.direction);
+            }
+        });
+
+        // Sort rows
+        const sortedRows = rows.sort((a, b) => {
+            const aCol = a.children[getColumnIndex(column)].textContent.trim();
+            const bCol = b.children[getColumnIndex(column)].textContent.trim();
+            
+            let comparison = 0;
+            
+            // Handle different data types
+            if (column === 'date') {
+                comparison = new Date(aCol) - new Date(bCol);
+            } else if (column === 'quantity' || column === 'juice') {
+                const aNum = parseFloat(aCol.replace(/[^\d.-]/g, '')) || 0;
+                const bNum = parseFloat(bCol.replace(/[^\d.-]/g, '')) || 0;
+                comparison = aNum - bNum;
+            } else {
+                comparison = aCol.localeCompare(bCol);
+            }
+            
+            return currentSort.direction === 'asc' ? comparison : -comparison;
+        });
+
+        // Clear and re-append sorted rows
+        while (tbody.firstChild) {
+            tbody.removeChild(tbody.firstChild);
+        }
+        tbody.append(...sortedRows);
+    }
+
+    function getColumnIndex(column) {
+        const mapping = {
+            'date': 0,
+            'vineyard': 1,
+            'variety': 2,
+            'quantity': 3,
+            'juice': 4,
+            'status': 5
+        };
+        return mapping[column];
+    }
+
+    // Add click handlers to sortable headers
+    document.querySelectorAll('.sortable').forEach(th => {
+        th.addEventListener('click', () => {
+            sortTable(th.dataset.sort);
         });
     });
 

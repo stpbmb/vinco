@@ -76,7 +76,7 @@ def edit_vineyard(request, vineyard_id):
 
 @login_required
 def vineyard_detail(request, vineyard_id):
-    vineyard = get_object_or_404(Vineyard, id=vineyard_id)
+    vineyard = get_object_or_404(Vineyard.objects.prefetch_related('harvests'), id=vineyard_id)
     return render(request, 'vineyards/vineyard_detail.html', {
         'vineyard': vineyard,
         'active_tab': 'vineyards'
