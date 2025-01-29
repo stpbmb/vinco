@@ -21,31 +21,22 @@ class Vineyard(models.Model):
 
     GRAPE_VARIETY_CHOICES = [
         # Red varieties
-        ('plavac_mali', 'Plavac Mali'),
-        ('teran', 'Teran'),
-        ('babic', 'Babić'),
-        ('crljenak', 'Crljenak Kaštelanski (Zinfandel)'),
         ('merlot', 'Merlot'),
         ('cabernet_sauvignon', 'Cabernet Sauvignon'),
         ('syrah', 'Syrah'),
-        ('plavina', 'Plavina'),
-        ('lasina', 'Lasina'),
-        ('marsellan', 'Marsellan'),
+        ('cabernet_franc', 'Cabernet Franc'),
+        ('pinot_noir', 'Pinot Noir'),
+        ('zweigelt', 'Zweigelt'),
         
         # White varieties
-        ('malvazija', 'Malvazija Istarska'),
         ('grasevina', 'Graševina'),
-        ('posip', 'Pošip'),
-        ('debit', 'Debit'),
-        ('marastina', 'Maraština'),
-        ('kraljevina', 'Kraljevina'),
-        ('skrlet', 'Škrlet'),
         ('chardonnay', 'Chardonnay'),
         ('sauvignon_blanc', 'Sauvignon Blanc'),
         ('muskat', 'Muškat'),
-        ('vugava', 'Vugava'),
-        ('zlahtina', 'Žlahtina'),
-        ('malvasia_dubrovacka', 'Malvasija Dubrovačka'),
+        ('pinot_bijeli', 'Pinot Bijeli'),
+        ('pinot_sivi', 'Pinot Sivi'),
+        ('rajnski_rizling', 'Rajnski Rizling'),
+
         
         # Other
         ('other', 'Other (specify in notes)'),

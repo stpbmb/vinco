@@ -4,7 +4,26 @@
 <div class="vineyards-container">
     <div class="header">
         <h1>Vineyards</h1>
-        <div class="actions">
+        <div class="header-actions">
+            <form method="get" class="search-form" id="searchForm">
+                <div class="search-input-group">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Search vineyards..." 
+                           value="{{ search_query }}"
+                           aria-label="Search vineyards"
+                           id="searchInput">
+                    <button type="button" class="btn btn-outline-primary" id="searchButton">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    {% if search_query %}
+                        <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-outline-secondary" id="clearSearch">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
             <a href="{% url 'vineyards:add_vineyard' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Vineyard
             </a>
@@ -53,7 +72,12 @@
 
         <!-- Supplied Vineyards Section -->
         <div class="vineyard-section">
-            <h2>Supplied Vineyards</h2>
+            <div class="section-header">
+                <h2>Supplied Vineyards</h2>
+                <a href="{% url 'vineyards:add_supplier' %}" class="btn btn-outline-primary btn-sm">
+                    <i class="fas fa-plus"></i> Add Supplier
+                </a>
+            </div>
             {% if supplied_vineyards %}
                 <div class="table-container">
                     <table class="table">
@@ -101,6 +125,44 @@
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+.header h1 {
+    margin: 0;
+}
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+.search-form {
+    min-width: 300px;
+}
+.search-input-group {
+    display: flex;
+    gap: 8px;
+}
+.search-input-group input {
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    flex-grow: 1;
+    min-width: 200px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+.search-input-group input:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    outline: none;
+}
+.search-input-group .btn {
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
 }
 .vineyard-section {
     background: white;
@@ -139,7 +201,132 @@
     background: #f8f9fa;
     border-radius: 4px;
 }
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.section-header h2 {
+    margin: 0;
+}
+.btn-outline-primary {
+    color: #007bff;
+    border: 1px solid #007bff;
+    background: transparent;
+    transition: all 0.2s;
+}
+.btn-outline-primary:hover {
+    color: white;
+    background: #007bff;
+}
+.btn-sm {
+    padding: 6px 12px;
+    font-size: 0.875rem;
+}
 </style>
+
+<script>
+    document.addEventListener('DOMContentLoaded', function() {
+        const searchInput = document.getElementById('searchInput');
+        const searchForm = document.getElementById('searchForm');
+        const clearSearch = document.getElementById('clearSearch');
+        let searchTimeout;
+
+        // Function to show/hide rows based on search query
+        function filterVineyards(searchQuery) {
+            searchQuery = searchQuery.toLowerCase();
+            
+            // Function to check if a row matches the search query
+            function rowMatches(row) {
+                const searchableColumns = row.querySelectorAll('td:not(.actions-cell)');
+                return Array.from(searchableColumns).some(cell => {
+                    return cell.textContent.toLowerCase().includes(searchQuery);
+                });
+            }
+
+            // Filter owned vineyards
+            document.querySelectorAll('.vineyard-section table tbody tr').forEach(row => {
+                if (searchQuery === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = rowMatches(row) ? '' : 'none';
+                }
+            });
+
+            // Update empty state messages
+            document.querySelectorAll('.vineyard-section').forEach(section => {
+                const tbody = section.querySelector('tbody');
+                const noData = section.querySelector('.no-data');
+                const table = section.querySelector('.table-container');
+                
+                if (tbody) {
+                    const visibleRows = tbody.querySelectorAll('tr[style=""]').length;
+                    if (visibleRows === 0) {
+                        if (table) table.style.display = 'none';
+                        if (!noData) {
+                            const message = document.createElement('p');
+                            message.className = 'no-data';
+                            message.textContent = searchQuery ? 'No vineyards match your search.' : 'No vineyards yet.';
+                            section.appendChild(message);
+                        } else {
+                            noData.textContent = searchQuery ? 'No vineyards match your search.' : 'No vineyards yet.';
+                            noData.style.display = '';
+                        }
+                    } else {
+                        if (table) table.style.display = '';
+                        if (noData) noData.style.display = 'none';
+                    }
+                }
+            });
+
+            // Update URL without reloading the page
+            const url = new URL(window.location);
+            if (searchQuery) {
+                url.searchParams.set('search', searchQuery);
+            } else {
+                url.searchParams.delete('search');
+            }
+            window.history.pushState({}, '', url);
+
+            // Show/hide clear button
+            const clearButton = document.getElementById('clearSearch');
+            if (clearButton) {
+                clearButton.style.display = searchQuery ? '' : 'none';
+            } else if (searchQuery) {
+                const newClearButton = document.createElement('a');
+                newClearButton.href = '{% url 'vineyards:list_vineyards' %}';
+                newClearButton.className = 'btn btn-outline-secondary';
+                newClearButton.id = 'clearSearch';
+                newClearButton.innerHTML = '<i class="fas fa-times"></i>';
+                document.querySelector('.search-input-group').appendChild(newClearButton);
+            }
+        }
+
+        // Handle input changes with debouncing
+        searchInput.addEventListener('input', function(e) {
+            clearTimeout(searchTimeout);
+            searchTimeout = setTimeout(() => {
+                filterVineyards(e.target.value.trim());
+            }, 300); // Wait 300ms after user stops typing
+        });
+
+        // Handle form submission
+        searchForm.addEventListener('submit', function(e) {
+            e.preventDefault();
+            filterVineyards(searchInput.value.trim());
+        });
+
+        // Handle clear button click
+        if (clearSearch) {
+            clearSearch.addEventListener('click', function(e) {
+                e.preventDefault();
+                searchInput.value = '';
+                filterVineyards('');
+            });
+        }
+    });
+</script>
 
 {% block extra_js %}
 <script>

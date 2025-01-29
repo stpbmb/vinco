@@ -1,17 +1,42 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.utils import timezone
+from django.db.models import Q
 from .models import Vineyard, Supplier
 from .forms import VineyardForm, SupplierForm
 
 # Vineyard Views
 @login_required
 def list_vineyards(request):
-    owned_vineyards = Vineyard.objects.filter(ownership_type='owned').order_by('name')
-    supplied_vineyards = Vineyard.objects.filter(ownership_type='supplied').order_by('name')
+    search_query = request.GET.get('search', '').strip()
+    
+    owned_vineyards = Vineyard.objects.filter(ownership_type='owned')
+    supplied_vineyards = Vineyard.objects.filter(ownership_type='supplied')
+    
+    if search_query:
+        owned_vineyards = owned_vineyards.filter(
+            Q(name__icontains=search_query) |
+            Q(location__icontains=search_query) |
+            Q(grape_variety__icontains=search_query) |
+            Q(cadastral_county__icontains=search_query) |
+            Q(arkod_id__icontains=search_query)
+        )
+        supplied_vineyards = supplied_vineyards.filter(
+            Q(name__icontains=search_query) |
+            Q(location__icontains=search_query) |
+            Q(grape_variety__icontains=search_query) |
+            Q(cadastral_county__icontains=search_query) |
+            Q(arkod_id__icontains=search_query) |
+            Q(supplier__name__icontains=search_query)
+        )
+    
+    owned_vineyards = owned_vineyards.order_by('name')
+    supplied_vineyards = supplied_vineyards.order_by('name')
+    
     return render(request, 'vineyards/list_vineyards.html', {
         'owned_vineyards': owned_vineyards,
         'supplied_vineyards': supplied_vineyards,
+        'search_query': search_query,
         'active_tab': 'vineyards'
     })
 
