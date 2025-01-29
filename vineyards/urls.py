@@ -10,6 +10,7 @@ urlpatterns = [
     path('edit/<int:vineyard_id>/', views.edit_vineyard, name='edit_vineyard'),
     path('<int:vineyard_id>/', views.vineyard_detail, name='vineyard_detail'),
     path('vineyard/<int:vineyard_id>/delete/', views.delete_vineyard, name='delete_vineyard'),
+    path('api/vineyards/<int:vineyard_id>/', views.vineyard_api, name='vineyard_api'),
     
     # Supplier URLs
     path('suppliers/', views.list_suppliers, name='list_suppliers'),

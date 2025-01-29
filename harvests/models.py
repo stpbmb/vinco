@@ -14,6 +14,10 @@ class Harvest(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    # Price fields for supplied grapes
+    price_per_kg = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text="Price per kilogram")
+    vat_per_kg = models.DecimalField(max_digits=5, decimal_places=2, blank=True, null=True, help_text="VAT percentage (e.g., 25 for 25%)", default=0)
+
     # Crushing/Pressing fields
     crushing_date = models.DateField(blank=True, null=True, help_text="Date of crushing/pressing")
     juice_yield = models.FloatField(blank=True, null=True, help_text="Juice yield in liters")

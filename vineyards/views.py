@@ -4,6 +4,7 @@ from django.utils import timezone
 from django.db.models import Q
 from .models import Vineyard, Supplier
 from .forms import VineyardForm, SupplierForm
+from django.http import JsonResponse
 
 # Vineyard Views
 @login_required
@@ -92,6 +93,13 @@ def delete_vineyard(request, vineyard_id):
     return render(request, 'vineyards/delete_vineyard.html', {
         'vineyard': vineyard,
         'active_tab': 'vineyards'
+    })
+
+@login_required
+def vineyard_api(request, vineyard_id):
+    vineyard = get_object_or_404(Vineyard, id=vineyard_id)
+    return JsonResponse({
+        'ownership_type': vineyard.ownership_type,
     })
 
 # Supplier Views

@@ -1,16 +1,16 @@
-{% extends 'harvests/base_harvests.html' %}
+{% extends 'base.html' %}
 
-{% block harvest_content %}
-<div class="container">
+{% block content %}
+<div class="container mt-4">
     <div class="card mb-4">
         <div class="card-header d-flex justify-content-between align-items-center">
             <h4 class="mb-0">{{ harvest.vineyard.name }} - Harvest Details</h4>
-            <div>
+            <div class="btn-group">
                 <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-primary">
-                    <i class="fas fa-edit"></i> Edit Harvest
+                    <i class="fas fa-edit me-2"></i> Edit Harvest
                 </a>
                 <a href="{% url 'harvests:list_harvests' %}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left"></i> Back to List
+                    <i class="fas fa-arrow-left me-2"></i> Back to List
                 </a>
             </div>
         </div>
@@ -21,7 +21,7 @@
                     <h5 class="card-title">Harvest Information</h5>
                     <table class="table">
                         <tr>
-                            <th>Vineyard:</th>
+                            <th style="width: 35%">Vineyard:</th>
                             <td>{{ harvest.vineyard.name }}</td>
                         </tr>
                         <tr>
@@ -36,6 +36,16 @@
                             <th>Quantity:</th>
                             <td>{{ harvest.quantity }} kg</td>
                         </tr>
+                        {% if harvest.vineyard.ownership_type == 'supplied' %}
+                        <tr>
+                            <th>Price per kg:</th>
+                            <td>{{ harvest.price_per_kg|default:"-" }} kn</td>
+                        </tr>
+                        <tr>
+                            <th>VAT:</th>
+                            <td>{{ harvest.vat_per_kg|default:"0" }}%</td>
+                        </tr>
+                        {% endif %}
                         {% if harvest.notes %}
                         <tr>
                             <th>Notes:</th>
@@ -48,25 +58,25 @@
                     <h5 class="card-title">Crushing/Pressing Details</h5>
                     <table class="table">
                         <tr>
-                            <th>Crushing Date:</th>
+                            <th style="width: 35%">Crushing Date:</th>
                             <td>{{ harvest.crushing_date|default:"-" }}</td>
                         </tr>
                         <tr>
                             <th>Juice Yield:</th>
                             <td>{{ harvest.juice_yield|default:"-" }} L</td>
                         </tr>
+                        {% if harvest.juice_yield %}
                         <tr>
-                            <th>Allocated Volume:</th>
-                            <td>{{ harvest.total_allocated_volume }} L</td>
-                        </tr>
-                        <tr>
-                            <th>Remaining Juice:</th>
+                            <th>Available Juice:</th>
                             <td>
-                                <span class="badge {% if harvest.remaining_juice > 0 %}bg-success{% else %}bg-secondary{% endif %}">
-                                    {{ harvest.remaining_juice }} L
-                                </span>
+                                {% if harvest.remaining_juice > 0 %}
+                                <span class="badge bg-warning text-dark">{{ harvest.remaining_juice }} L</span>
+                                {% else %}
+                                <span class="badge bg-success">Fully Allocated</span>
+                                {% endif %}
                             </td>
                         </tr>
+                        {% endif %}
                         {% if harvest.pressing_notes %}
                         <tr>
                             <th>Pressing Notes:</th>
@@ -77,41 +87,42 @@
                 </div>
             </div>
 
-            <!-- Allocations -->
+            <!-- Juice Allocations -->
+            {% if harvest.juice_yield %}
             <div class="row">
                 <div class="col-12">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h5 class="card-title mb-0">Juice Allocations</h5>
-                        {% if harvest.juice_yield and harvest.remaining_juice > 0 %}
+                        {% if harvest.remaining_juice > 0 %}
                         <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-success">
-                            <i class="fas fa-plus"></i> Add Allocation
+                            <i class="fas fa-plus me-2"></i> Add Allocation
                         </a>
                         {% endif %}
                     </div>
-                    {% if allocations %}
+                    {% if harvest.harvestallocation_set.exists %}
                     <div class="table-responsive">
-                        <table class="table table-hover">
+                        <table class="table">
                             <thead>
                                 <tr>
                                     <th>Tank</th>
-                                    <th>Type</th>
                                     <th>Volume</th>
                                     <th>Date</th>
                                     <th>Notes</th>
+                                    <th>Actions</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                {% for allocation in allocations %}
+                                {% for allocation in harvest.harvestallocation_set.all %}
                                 <tr>
+                                    <td>{{ allocation.tank.name }}</td>
+                                    <td>{{ allocation.volume }} L</td>
+                                    <td>{{ allocation.date }}</td>
+                                    <td>{{ allocation.notes|default:"-" }}</td>
                                     <td>
-                                        <a href="{% url 'cellars:tank_detail' allocation.tank.id %}">
-                                            {{ allocation.tank.name }}
+                                        <a href="{% url 'harvests:edit_allocation' allocation.id %}" class="btn btn-sm btn-primary">
+                                            <i class="fas fa-edit"></i>
                                         </a>
                                     </td>
-                                    <td>{{ allocation.tank.get_tank_type_display }}</td>
-                                    <td>{{ allocation.allocated_volume }} L</td>
-                                    <td>{{ allocation.allocation_date }}</td>
-                                    <td>{{ allocation.notes|default:"-" }}</td>
                                 </tr>
                                 {% endfor %}
                             </tbody>
@@ -119,15 +130,55 @@
                     </div>
                     {% else %}
                     <div class="alert alert-info">
-                        <i class="fas fa-info-circle"></i> No juice allocations yet.
-                        {% if harvest.juice_yield and harvest.remaining_juice > 0 %}
-                        <a href="{% url 'harvests:add_allocation' harvest.id %}" class="alert-link">Add one now</a>
-                        {% endif %}
+                        No allocations recorded yet.
                     </div>
                     {% endif %}
                 </div>
             </div>
+            {% endif %}
         </div>
     </div>
 </div>
+
+<style>
+.btn-group {
+    display: flex;
+    gap: 10px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+}
+
+.badge {
+    font-size: 0.875rem;
+    padding: 0.4em 0.8em;
+}
+
+.table th {
+    background-color: #f8f9fa;
+}
+
+.btn-sm {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+}
+
+@media (max-width: 768px) {
+    .btn-group {
+        flex-direction: column;
+    }
+    
+    .card-header {
+        flex-direction: column;
+        gap: 10px;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
+}
+</style>
 {% endblock %}

@@ -1,144 +1,249 @@
-{% extends 'harvests/base_harvests.html' %}
+{% extends 'base.html' %}
 
-{% block harvest_content %}
-<div class="container">
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">Unallocated Harvests</h4>
+{% block content %}
+<div class="harvests-container">
+    <div class="header">
+        <h1>Harvests</h1>
+        <div class="header-actions">
+            <form method="get" class="search-form" id="searchForm">
+                <div class="search-input-group">
+                    <input type="text" 
+                           name="search" 
+                           class="form-control" 
+                           placeholder="Search harvests..." 
+                           value="{{ search_query }}"
+                           aria-label="Search harvests"
+                           id="searchInput">
+                    <button type="button" class="btn btn-outline-primary" id="searchButton">
+                        <i class="fas fa-search"></i>
+                    </button>
+                    {% if search_query %}
+                        <a href="{% url 'harvests:list_harvests' %}" class="btn btn-outline-secondary" id="clearSearch">
+                            <i class="fas fa-times"></i>
+                        </a>
+                    {% endif %}
+                </div>
+            </form>
             <a href="{% url 'harvests:add_harvest' %}" class="btn btn-primary">
                 <i class="fas fa-plus"></i> Add New Harvest
             </a>
         </div>
-        {% if unallocated_harvests %}
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Vineyard</th>
-                            <th>Grape Variety</th>
-                            <th>Juice Yield</th>
-                            <th>Available</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for harvest in unallocated_harvests %}
-                        <tr class="clickable-row" data-href="{% url 'harvests:harvest_detail' harvest.id %}">
-                            <td>{{ harvest.date }}</td>
-                            <td>{{ harvest.vineyard.name }}</td>
-                            <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
-                            <td>{{ harvest.juice_yield }} L</td>
-                            <td>
-                                <span class="badge bg-warning text-dark">
-                                    {{ harvest.remaining_volume }} L
-                                </span>
-                            </td>
-                            <td>
-                                <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-sm btn-success" onclick="event.stopPropagation();">
-                                    <i class="fas fa-plus"></i> Allocate
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-        </div>
-        {% else %}
-        <div class="card-body">
-            <div class="alert alert-info mb-0">
-                <i class="fas fa-info-circle"></i> No unallocated harvests found.
-            </div>
-        </div>
-        {% endif %}
     </div>
 
-    <div class="card">
-        <div class="card-header">
-            <h4 class="mb-0">All Harvests</h4>
+    <div class="harvest-section">
+        {% if harvests %}
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Vineyard</th>
+                        <th>Grape Variety</th>
+                        <th>Quantity</th>
+                        <th>Juice Yield</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for harvest in harvests %}
+                    <tr class="clickable-row" data-href="{% url 'harvests:harvest_detail' harvest.id %}">
+                        <td>{{ harvest.date }}</td>
+                        <td>{{ harvest.vineyard.name }}</td>
+                        <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
+                        <td>{{ harvest.quantity }} kg</td>
+                        <td>{{ harvest.juice_yield|default:"-" }} L</td>
+                        <td>
+                            {% if harvest.remaining_juice > 0 %}
+                            <span class="badge bg-warning text-dark">
+                                {{ harvest.remaining_juice }} L available
+                            </span>
+                            {% else %}
+                            <span class="badge bg-success">
+                                Allocated
+                            </span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-        <div class="card-body p-0">
-            {% if harvests %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Vineyard</th>
-                            <th>Grape Variety</th>
-                            <th>Quantity</th>
-                            <th>Juice Yield</th>
-                            <th>Allocated</th>
-                            <th>Status</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for harvest in harvests %}
-                        <tr class="clickable-row" data-href="{% url 'harvests:harvest_detail' harvest.id %}">
-                            <td>{{ harvest.date }}</td>
-                            <td>{{ harvest.vineyard.name }}</td>
-                            <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
-                            <td>{{ harvest.quantity }} kg</td>
-                            <td>{{ harvest.juice_yield|default:"-" }} L</td>
-                            <td>{{ harvest.allocated_volume_sum }} L</td>
-                            <td>
-                                {% if not harvest.juice_yield %}
-                                    <span class="badge bg-secondary">Pending</span>
-                                {% elif harvest.remaining_volume > 0 %}
-                                    <span class="badge bg-warning text-dark">Partially Allocated</span>
-                                {% else %}
-                                    <span class="badge bg-success">Fully Allocated</span>
-                                {% endif %}
-                            </td>
-                            <td>
-                                <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-sm btn-primary" onclick="event.stopPropagation();">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                {% if harvest.juice_yield and harvest.remaining_volume > 0 %}
-                                <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-sm btn-success" onclick="event.stopPropagation();">
-                                    <i class="fas fa-plus"></i>
-                                </a>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div class="alert alert-info m-3">
-                <i class="fas fa-info-circle"></i> No harvests recorded yet.
-                <a href="{% url 'harvests:add_harvest' %}" class="alert-link">Add your first harvest</a>
-            </div>
-            {% endif %}
-        </div>
+        {% else %}
+        <p class="no-data">No harvests recorded yet.</p>
+        {% endif %}
     </div>
 </div>
 
 <style>
+.harvests-container {
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.header h1 {
+    margin: 0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 15px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.search-form {
+    min-width: 300px;
+}
+
+.search-input-group {
+    display: flex;
+    gap: 8px;
+}
+
+.search-input-group input {
+    border: 2px solid #e9ecef;
+    border-radius: 6px;
+    padding: 8px 12px;
+    font-size: 1rem;
+    flex-grow: 1;
+    min-width: 200px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.search-input-group input:focus {
+    border-color: #80bdff;
+    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    outline: none;
+}
+
+.search-input-group .btn {
+    padding: 8px 12px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.harvest-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+    padding: 12px;
+}
+
+.table td {
+    padding: 12px;
+    vertical-align: middle;
+}
+
 .clickable-row {
     cursor: pointer;
+    transition: background-color 0.2s ease;
 }
+
 .clickable-row:hover {
-    background-color: rgba(0,0,0,.075);
+    background-color: #f8f9fa;
 }
-.btn-sm {
-    padding: 0.25rem 0.5rem;
+
+.no-data {
+    color: #6c757d;
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 6px;
+    margin: 0;
+}
+
+.badge {
     font-size: 0.875rem;
+    padding: 0.4em 0.8em;
+    border-radius: 4px;
+}
+
+@media (max-width: 768px) {
+    .header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+    
+    .header-actions {
+        flex-direction: column;
+    }
+    
+    .search-form {
+        min-width: 100%;
+    }
+    
+    .btn {
+        width: 100%;
+        justify-content: center;
+    }
 }
 </style>
 
 <script>
 document.addEventListener('DOMContentLoaded', function() {
+    // Handle row clicks
     document.querySelectorAll('.clickable-row').forEach(row => {
-        row.addEventListener('click', function(e) {
-            if (!e.target.closest('.btn')) {
-                window.location.href = this.dataset.href;
-            }
+        row.addEventListener('click', function() {
+            window.location.href = this.dataset.href;
         });
+    });
+
+    // Handle search
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    let searchTimeout;
+
+    function filterHarvests(searchQuery) {
+        const rows = document.querySelectorAll('.clickable-row');
+        const query = searchQuery.toLowerCase();
+
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(query) ? '' : 'none';
+        });
+    }
+
+    searchInput.addEventListener('input', function(e) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            filterHarvests(e.target.value);
+        }, 300);
+    });
+
+    searchButton.addEventListener('click', function() {
+        filterHarvests(searchInput.value);
+    });
+
+    // Handle form submission
+    document.getElementById('searchForm').addEventListener('submit', function(e) {
+        e.preventDefault();
+        filterHarvests(searchInput.value);
     });
 });
 </script>
