@@ -56,6 +56,19 @@ def vineyard_detail(request, vineyard_id):
         'active_tab': 'vineyards'
     })
 
+@login_required
+def delete_vineyard(request, vineyard_id):
+    vineyard = get_object_or_404(Vineyard, id=vineyard_id)
+    
+    if request.method == 'POST':
+        vineyard.delete()
+        return redirect('vineyards:list_vineyards')
+    
+    return render(request, 'vineyards/delete_vineyard.html', {
+        'vineyard': vineyard,
+        'active_tab': 'vineyards'
+    })
+
 # Supplier Views
 @login_required
 def list_suppliers(request):

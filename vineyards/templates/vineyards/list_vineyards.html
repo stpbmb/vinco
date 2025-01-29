@@ -24,6 +24,9 @@
                                 <th>Location</th>
                                 <th>Size (ha)</th>
                                 <th>Grape Variety</th>
+                                <th>Planting Year</th>
+                                <th>Cadastral Parcel</th>
+                                <th>Cadastral County</th>
                                 <th>ARKOD ID</th>
                             </tr>
                         </thead>
@@ -34,6 +37,9 @@
                                     <td>{{ vineyard.location }}</td>
                                     <td>{{ vineyard.size }}</td>
                                     <td>{{ vineyard.get_grape_variety_display }}</td>
+                                    <td>{{ vineyard.planting_year|default:"-" }}</td>
+                                    <td>{{ vineyard.cadastral_parcel|default:"-" }}</td>
+                                    <td>{{ vineyard.cadastral_county|default:"-" }}</td>
                                     <td>{{ vineyard.arkod_id|default:"-" }}</td>
                                 </tr>
                             {% endfor %}
@@ -57,6 +63,9 @@
                                 <th>Location</th>
                                 <th>Size (ha)</th>
                                 <th>Grape Variety</th>
+                                <th>Planting Year</th>
+                                <th>Cadastral Parcel</th>
+                                <th>Cadastral County</th>
                                 <th>Supplier</th>
                             </tr>
                         </thead>
@@ -67,6 +76,9 @@
                                     <td>{{ vineyard.location }}</td>
                                     <td>{{ vineyard.size }}</td>
                                     <td>{{ vineyard.get_grape_variety_display }}</td>
+                                    <td>{{ vineyard.planting_year|default:"-" }}</td>
+                                    <td>{{ vineyard.cadastral_parcel|default:"-" }}</td>
+                                    <td>{{ vineyard.cadastral_county|default:"-" }}</td>
                                     <td>{{ vineyard.supplier.name }}</td>
                                 </tr>
                             {% endfor %}

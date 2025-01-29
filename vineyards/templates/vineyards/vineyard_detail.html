@@ -5,8 +5,15 @@
     <div class="header">
         <h1>{{ vineyard.name }}</h1>
         <div class="actions">
-            <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn btn-edit">Edit Vineyard</a>
-            <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-secondary">Back to List</a>
+            <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn btn-primary">
+                <i class="fas fa-edit me-2"></i>Edit Vineyard
+            </a>
+            <a href="{% url 'vineyards:delete_vineyard' vineyard.id %}" class="btn btn-danger">
+                <i class="fas fa-trash me-2"></i>Delete Vineyard
+            </a>
+            <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
         </div>
     </div>
 
@@ -25,6 +32,18 @@
                 <tr>
                     <th>Grape Variety:</th>
                     <td>{{ vineyard.get_grape_variety_display }}</td>
+                </tr>
+                <tr>
+                    <th>Planting Year:</th>
+                    <td>{{ vineyard.planting_year|default:"-" }}</td>
+                </tr>
+                <tr>
+                    <th>Cadastral Parcel:</th>
+                    <td>{{ vineyard.cadastral_parcel|default:"-" }}</td>
+                </tr>
+                <tr>
+                    <th>Cadastral County:</th>
+                    <td>{{ vineyard.cadastral_county|default:"-" }}</td>
                 </tr>
                 <tr>
                     <th>ARKOD ID:</th>
@@ -149,11 +168,11 @@
         border-radius: 4px;
         transition: background-color 0.2s;
     }
-    .btn-edit {
+    .btn-primary {
         background-color: #3498db;
         color: white;
     }
-    .btn-edit:hover {
+    .btn-primary:hover {
         background-color: #2980b9;
         color: white;
     }
@@ -164,6 +183,13 @@
     .btn-secondary:hover {
         background-color: #5a6268;
         color: white;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+    }
+    .btn-danger:hover {
+        background-color: #c82333;
     }
     .btn-small {
         padding: 4px 8px;

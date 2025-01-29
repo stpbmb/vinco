@@ -9,6 +9,7 @@ urlpatterns = [
     path('add/', views.add_vineyard, name='add_vineyard'),
     path('edit/<int:vineyard_id>/', views.edit_vineyard, name='edit_vineyard'),
     path('<int:vineyard_id>/', views.vineyard_detail, name='vineyard_detail'),
+    path('vineyard/<int:vineyard_id>/delete/', views.delete_vineyard, name='delete_vineyard'),
     
     # Supplier URLs
     path('suppliers/', views.list_suppliers, name='list_suppliers'),

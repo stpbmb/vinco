@@ -2,116 +2,342 @@
 
 {% block content %}
 <div class="form-container">
-    <h1>Add Vineyard</h1>
+    <div class="form-header">
+        <h1>Add Vineyard</h1>
+        <p class="subtitle">Enter the vineyard details below</p>
+    </div>
+    
     <form method="post" class="vineyard-form">
         {% csrf_token %}
-        {% for field in form %}
-            <div class="form-group {% if field.name == 'supplier' %}supplier-group{% endif %}">
-                <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                {{ field }}
-                {% if field.errors %}
+        
+        <div class="form-grid">
+            <div class="form-section">
+                <h3>Basic Details</h3>
+                <div class="form-group">
+                    <label for="{{ form.name.id_for_label }}">{{ form.name.label }}</label>
+                    {{ form.name }}
+                    {% if form.name.errors %}
+                        <div class="field-errors">
+                            {% for error in form.name.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.location.id_for_label }}">{{ form.location.label }}</label>
+                    {{ form.location }}
+                    {% if form.location.errors %}
+                        <div class="field-errors">
+                            {% for error in form.location.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.size.id_for_label }}">{{ form.size.label }}</label>
+                    {{ form.size }}
+                    {% if form.size.errors %}
+                        <div class="field-errors">
+                            {% for error in form.size.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                    {% if form.size.help_text %}
+                        <small class="help-text">{{ form.size.help_text }}</small>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.grape_variety.id_for_label }}">{{ form.grape_variety.label }}</label>
+                    {{ form.grape_variety }}
+                    {% if form.grape_variety.errors %}
+                        <div class="field-errors">
+                            {% for error in form.grape_variety.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            <div class="form-section">
+                <h3>Additional Information</h3>
+                <div class="form-group">
+                    <label for="{{ form.planting_year.id_for_label }}">{{ form.planting_year.label }}</label>
+                    {{ form.planting_year }}
+                    {% if form.planting_year.errors %}
+                        <div class="field-errors">
+                            {% for error in form.planting_year.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.cadastral_parcel.id_for_label }}">{{ form.cadastral_parcel.label }}</label>
+                    {{ form.cadastral_parcel }}
+                    {% if form.cadastral_parcel.errors %}
+                        <div class="field-errors">
+                            {% for error in form.cadastral_parcel.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.cadastral_county.id_for_label }}">{{ form.cadastral_county.label }}</label>
+                    {{ form.cadastral_county }}
+                    {% if form.cadastral_county.errors %}
+                        <div class="field-errors">
+                            {% for error in form.cadastral_county.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+
+                <div class="form-group">
+                    <label for="{{ form.arkod_id.id_for_label }}">{{ form.arkod_id.label }}</label>
+                    {{ form.arkod_id }}
+                    {% if form.arkod_id.errors %}
+                        <div class="field-errors">
+                            {% for error in form.arkod_id.errors %}
+                                <span class="error">{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="form-section ownership-section">
+            <h3>Ownership Details</h3>
+            <div class="form-group">
+                <label for="{{ form.ownership_type.id_for_label }}">{{ form.ownership_type.label }}</label>
+                {{ form.ownership_type }}
+                {% if form.ownership_type.errors %}
                     <div class="field-errors">
-                        {% for error in field.errors %}
+                        {% for error in form.ownership_type.errors %}
                             <span class="error">{{ error }}</span>
                         {% endfor %}
                     </div>
                 {% endif %}
-                {% if field.help_text %}
-                    <small class="help-text">{{ field.help_text }}</small>
+            </div>
+
+            <div class="form-group supplier-group">
+                <label for="{{ form.supplier.id_for_label }}">{{ form.supplier.label }}</label>
+                {{ form.supplier }}
+                {% if form.supplier.errors %}
+                    <div class="field-errors">
+                        {% for error in form.supplier.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
                 {% endif %}
             </div>
-        {% endfor %}
+        </div>
+
+        <div class="form-section">
+            <h3>Notes</h3>
+            <div class="form-group">
+                <label for="{{ form.notes.id_for_label }}">{{ form.notes.label }}</label>
+                {{ form.notes }}
+                {% if form.notes.errors %}
+                    <div class="field-errors">
+                        {% for error in form.notes.errors %}
+                            <span class="error">{{ error }}</span>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+
         <div class="form-actions">
-            <button type="submit" class="btn btn-primary">Save</button>
-            <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-secondary">Back to List</a>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-save"></i> Save Vineyard
+            </button>
+            <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-secondary">
+                <i class="fas fa-times"></i> Cancel
+            </a>
         </div>
     </form>
 </div>
 
 <style>
     .form-container {
-        max-width: 800px;
-        margin: 20px auto;
-        padding: 20px;
+        max-width: 1200px;
+        margin: 30px auto;
+        padding: 30px;
         background-color: #fff;
-        border-radius: 5px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        border-radius: 8px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     }
-    .vineyard-form {
+
+    .form-header {
+        margin-bottom: 30px;
+        text-align: center;
+    }
+
+    .form-header h1 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        color: #6c757d;
+        font-size: 1.1em;
+    }
+
+    .form-grid {
         display: grid;
-        gap: 15px;
+        grid-template-columns: 1fr 1fr;
+        gap: 30px;
+        margin-bottom: 30px;
     }
+
+    .form-section {
+        background: #f8f9fa;
+        padding: 20px;
+        border-radius: 8px;
+        margin-bottom: 20px;
+    }
+
+    .form-section h3 {
+        color: #2c3e50;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 2px solid #e9ecef;
+    }
+
     .form-group {
-        display: grid;
-        gap: 5px;
+        margin-bottom: 20px;
     }
+
     .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        color: #495057;
         font-weight: 500;
     }
+
     .form-group input,
     .form-group select,
     .form-group textarea {
-        padding: 8px;
-        border: 1px solid #ddd;
-        border-radius: 4px;
-        font-size: 16px;
         width: 100%;
+        padding: 10px;
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        font-size: 16px;
+        transition: border-color 0.2s;
     }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        border-color: #80bdff;
+        outline: none;
+        box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    }
+
+    textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+
     .field-errors {
+        margin-top: 5px;
         color: #dc3545;
         font-size: 14px;
     }
+
     .help-text {
+        margin-top: 5px;
         color: #6c757d;
         font-size: 14px;
     }
+
     .form-actions {
         display: flex;
-        gap: 10px;
-        margin-top: 20px;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #e9ecef;
     }
+
     .btn {
-        padding: 8px 16px;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
         border: none;
-        border-radius: 4px;
+        border-radius: 6px;
         cursor: pointer;
         font-size: 16px;
+        font-weight: 500;
         text-decoration: none;
-        color: white;
+        transition: all 0.2s;
     }
+
     .btn-primary {
         background-color: #007bff;
+        color: white;
     }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
     .btn-secondary {
         background-color: #6c757d;
+        color: white;
     }
+
+    .btn-secondary:hover {
+        background-color: #545b62;
+    }
+
     .supplier-group {
         max-height: 0;
         opacity: 0;
         overflow: hidden;
         transition: all 0.3s ease-in-out;
     }
+
     .supplier-group.visible {
         max-height: 100px;
         opacity: 1;
         margin-top: 15px;
     }
+
+    @media (max-width: 768px) {
+        .form-grid {
+            grid-template-columns: 1fr;
+        }
+        
+        .form-container {
+            margin: 15px;
+            padding: 20px;
+        }
+    }
 </style>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    const ownershipSelect = document.querySelector('select[name="ownership_type"]');
-    const supplierGroup = document.querySelector('.supplier-group');
-    const supplierSelect = document.querySelector('select[name="supplier"]');
-
     function updateSupplierVisibility() {
-        if (ownershipSelect.value === 'supplied') {
+        const ownershipType = document.querySelector('#id_ownership_type');
+        const supplierGroup = document.querySelector('.supplier-group');
+        
+        if (ownershipType.value === 'supplied') {
             supplierGroup.classList.add('visible');
-            supplierSelect.required = true;
         } else {
             supplierGroup.classList.remove('visible');
-            supplierSelect.required = false;
-            supplierSelect.value = ''; // Clear selection when hidden
         }
     }
 
@@ -119,7 +345,6 @@ document.addEventListener('DOMContentLoaded', function() {
     updateSupplierVisibility();
 
     // Update visibility when ownership type changes
-    ownershipSelect.addEventListener('change', updateSupplierVisibility);
-});
+    document.querySelector('#id_ownership_type').addEventListener('change', updateSupplierVisibility);
 </script>
 {% endblock %}

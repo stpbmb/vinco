@@ -3,88 +3,184 @@
 
 {% block content %}
 <div class="vineyard-form-container">
-    <div class="header">
+    <div class="form-header">
         <h1>{{ title|default:"Add Vineyard" }}</h1>
-        <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to List
-        </a>
+        <p class="subtitle">Enter the vineyard details below</p>
     </div>
 
     <div class="form-section">
         <form method="post">
             {% csrf_token %}
             {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">
-                <i class="fas fa-save me-2"></i>Save Vineyard
-            </button>
+            <div class="form-actions">
+                <button type="submit" class="btn btn-primary">
+                    <i class="fas fa-save me-2"></i>Save Vineyard
+                </button>
+                <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-secondary">
+                    <i class="fas fa-times me-2"></i>Cancel
+                </a>
+            </div>
         </form>
     </div>
 </div>
 
 <style>
     .vineyard-form-container {
+        max-width: 800px;
+        margin: 30px auto;
         padding: 20px;
     }
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 2rem;
+
+    .form-header {
+        text-align: center;
+        margin-bottom: 30px;
     }
+
+    .form-header h1 {
+        color: #2c3e50;
+        margin-bottom: 10px;
+    }
+
+    .subtitle {
+        color: #6c757d;
+        font-size: 1.1em;
+    }
+
     .form-section {
         background: white;
         border-radius: 8px;
-        padding: 1.5rem;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-        max-width: 800px;
-        margin: 0 auto;
+        padding: 30px;
+        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
     }
+
+    /* Crispy form enhancements */
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+
+    .form-group label {
+        font-weight: 500;
+        color: #495057;
+        margin-bottom: 0.5rem;
+    }
+
+    .form-control {
+        border: 2px solid #e9ecef;
+        border-radius: 6px;
+        padding: 0.75rem;
+        font-size: 1rem;
+        transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .form-control:focus {
+        border-color: #80bdff;
+        box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
+    }
+
+    select.form-control {
+        height: calc(1.5em + 1.5rem + 4px);
+    }
+
+    textarea.form-control {
+        min-height: 100px;
+    }
+
+    .form-text {
+        color: #6c757d;
+        font-size: 0.875rem;
+        margin-top: 0.25rem;
+    }
+
+    /* Hide supplier field initially */
+    #div_id_supplier {
+        display: none;
+    }
+
+    /* Show supplier field when ownership type is 'supplied' */
+    .show-supplier #div_id_supplier {
+        display: block;
+        animation: fadeIn 0.3s ease-in-out;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(-10px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: flex-end;
+        margin-top: 30px;
+        padding-top: 20px;
+        border-top: 2px solid #e9ecef;
+    }
+
     .btn {
-        display: inline-block;
-        padding: 8px 16px;
-        text-decoration: none;
-        border-radius: 4px;
-        transition: background-color 0.2s;
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        font-weight: 500;
+        border: none;
+        border-radius: 6px;
+        transition: all 0.2s;
     }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-primary:hover {
+        background-color: #0056b3;
+    }
+
     .btn-secondary {
         background-color: #6c757d;
         color: white;
     }
+
     .btn-secondary:hover {
-        background-color: #5a6268;
-        color: white;
+        background-color: #545b62;
     }
-    .btn-primary {
-        background-color: #3498db;
-        color: white;
-        border: none;
-        cursor: pointer;
-    }
-    .btn-primary:hover {
-        background-color: #2980b9;
+
+    @media (max-width: 768px) {
+        .vineyard-form-container {
+            margin: 15px;
+            padding: 15px;
+        }
+        
+        .form-section {
+            padding: 20px;
+        }
     }
 </style>
 
-{% block extra_js %}
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const ownershipTypeField = document.querySelector('select[name="ownership_type"]');
-        const supplierField = document.querySelector('.supplier-field').closest('.form-group');
-
-        function toggleSupplierField() {
-            if (ownershipTypeField.value === 'supplied') {
-                supplierField.style.display = 'block';
-            } else {
-                supplierField.style.display = 'none';
-            }
+    function toggleSupplierField() {
+        const ownershipType = document.querySelector('#id_ownership_type');
+        const formSection = document.querySelector('.form-section');
+        
+        if (ownershipType.value === 'supplied') {
+            formSection.classList.add('show-supplier');
+        } else {
+            formSection.classList.remove('show-supplier');
         }
+    }
 
-        // Initial state
+    // Initial state
+    document.addEventListener('DOMContentLoaded', function() {
         toggleSupplierField();
-
+        
         // Listen for changes
-        ownershipTypeField.addEventListener('change', toggleSupplierField);
+        document.querySelector('#id_ownership_type').addEventListener('change', toggleSupplierField);
     });
 </script>
-{% endblock %}
 {% endblock %}
