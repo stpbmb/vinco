@@ -5,7 +5,9 @@
     <div class="header">
         <h1>Vineyards</h1>
         <div class="actions">
-            <a href="{% url 'vineyards:add_vineyard' %}" class="btn">Add New Vineyard</a>
+            <a href="{% url 'vineyards:add_vineyard' %}" class="btn btn-primary">
+                <i class="fas fa-plus"></i> Add New Vineyard
+            </a>
         </div>
     </div>
 
@@ -15,7 +17,7 @@
             <h2>Owned Vineyards</h2>
             {% if owned_vineyards %}
                 <div class="table-container">
-                    <table>
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -23,21 +25,16 @@
                                 <th>Size (ha)</th>
                                 <th>Grape Variety</th>
                                 <th>ARKOD ID</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for vineyard in owned_vineyards %}
-                                <tr>
+                                <tr class="clickable-row" data-href="{% url 'vineyards:vineyard_detail' vineyard.id %}">
                                     <td>{{ vineyard.name }}</td>
                                     <td>{{ vineyard.location }}</td>
                                     <td>{{ vineyard.size }}</td>
                                     <td>{{ vineyard.get_grape_variety_display }}</td>
                                     <td>{{ vineyard.arkod_id|default:"-" }}</td>
-                                    <td class="actions-cell">
-                                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn-small">Edit</a>
-                                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" class="btn-small btn-view">Details</a>
-                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -53,7 +50,7 @@
             <h2>Supplied Vineyards</h2>
             {% if supplied_vineyards %}
                 <div class="table-container">
-                    <table>
+                    <table class="table">
                         <thead>
                             <tr>
                                 <th>Name</th>
@@ -61,21 +58,16 @@
                                 <th>Size (ha)</th>
                                 <th>Grape Variety</th>
                                 <th>Supplier</th>
-                                <th>Actions</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for vineyard in supplied_vineyards %}
-                                <tr>
+                                <tr class="clickable-row" data-href="{% url 'vineyards:vineyard_detail' vineyard.id %}">
                                     <td>{{ vineyard.name }}</td>
                                     <td>{{ vineyard.location }}</td>
                                     <td>{{ vineyard.size }}</td>
                                     <td>{{ vineyard.get_grape_variety_display }}</td>
                                     <td>{{ vineyard.supplier.name }}</td>
-                                    <td class="actions-cell">
-                                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn-small">Edit</a>
-                                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" class="btn-small btn-view">Details</a>
-                                    </td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -89,110 +81,64 @@
 </div>
 
 <style>
-    .vineyards-container {
-        padding: 20px;
-    }
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-    .header h1 {
-        margin: 0;
-    }
-    .actions {
-        display: flex;
-        gap: 10px;
-    }
-    .btn {
-        display: inline-block;
-        padding: 10px 20px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 5px;
-        transition: background-color 0.2s;
-    }
-    .btn:hover {
-        background-color: #0056b3;
-    }
-    .vineyard-sections {
-        display: grid;
-        gap: 30px;
-    }
-    .vineyard-section {
-        background: white;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        padding: 20px;
-    }
-    .vineyard-section h2 {
-        margin: 0 0 20px 0;
-        color: #2c3e50;
-        font-size: 1.5em;
-    }
-    .table-container {
-        overflow-x: auto;
-    }
-    table {
-        width: 100%;
-        border-collapse: collapse;
-        margin-top: 10px;
-    }
-    th, td {
-        padding: 12px;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-    }
-    th {
-        background-color: #f8f9fa;
-        font-weight: 600;
-        color: #495057;
-    }
-    tr:hover {
-        background-color: #f8f9fa;
-    }
-    .actions-cell {
-        white-space: nowrap;
-        width: 1%;
-    }
-    .btn-small {
-        padding: 5px 10px;
-        font-size: 0.9em;
-        background-color: #6c757d;
-        color: white;
-        text-decoration: none;
-        border-radius: 3px;
-        transition: background-color 0.2s;
-        margin-right: 5px;
-    }
-    .btn-small:hover {
-        background-color: #545b62;
-    }
-    .btn-view {
-        background-color: #28a745;
-    }
-    .btn-view:hover {
-        background-color: #218838;
-    }
-    .no-data {
-        text-align: center;
-        padding: 20px;
-        background-color: #f8f9fa;
-        border-radius: 5px;
-        color: #6c757d;
-    }
-    @media (max-width: 768px) {
-        .table-container {
-            margin: 0 -20px;
-        }
-        table {
-            font-size: 0.9em;
-        }
-        th, td {
-            padding: 8px;
-        }
-    }
+.vineyards-container {
+    padding: 20px;
+}
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+.vineyard-section {
+    background: white;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    margin-bottom: 30px;
+    padding: 20px;
+}
+.vineyard-section h2 {
+    margin-bottom: 20px;
+    color: #2c3e50;
+}
+.table-container {
+    overflow-x: auto;
+}
+.table {
+    width: 100%;
+    margin-bottom: 0;
+}
+.table thead th {
+    background-color: #f8f9fa;
+    border-bottom: 2px solid #dee2e6;
+    color: #495057;
+}
+.clickable-row {
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+.clickable-row:hover {
+    background-color: #f8f9fa;
+}
+.no-data {
+    color: #6c757d;
+    text-align: center;
+    padding: 20px;
+    background: #f8f9fa;
+    border-radius: 4px;
+}
 </style>
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Make rows clickable
+    document.querySelectorAll('.clickable-row').forEach(row => {
+        row.addEventListener('click', function() {
+            window.location.href = this.dataset.href;
+        });
+    });
+});
+</script>
+{% endblock %}
 {% endblock %}
