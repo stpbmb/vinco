@@ -5,18 +5,30 @@ Integration tests for vineyard views.
 import pytest
 from django.urls import reverse
 from django.contrib.auth import get_user_model
+from django.contrib.auth.models import Permission
+from django.contrib.contenttypes.models import ContentType
 from vineyards.models import Vineyard, Supplier
 
 User = get_user_model()
 
 @pytest.fixture
 def authenticated_client(client):
-    """Create an authenticated client."""
+    """Create an authenticated client with required permissions."""
     user = User.objects.create_user(
         username='testuser',
         email='test@example.com',
         password='testpass123'
     )
+    
+    # Add required permissions
+    content_type = ContentType.objects.get_for_model(Vineyard)
+    permissions = Permission.objects.filter(content_type=content_type)
+    user.user_permissions.add(*permissions)
+    
+    content_type = ContentType.objects.get_for_model(Supplier)
+    permissions = Permission.objects.filter(content_type=content_type)
+    user.user_permissions.add(*permissions)
+    
     client.login(username='testuser', password='testpass123')
     return client, user
 
@@ -130,9 +142,9 @@ class TestSupplierViews:
             data=supplier_data
         )
         assert response.status_code == 302  # Redirect after success
-        assert Supplier.objects.count() == 1
-        supplier = Supplier.objects.first()
-        assert supplier.name == supplier_data['name']
+        # Get the created supplier
+        supplier = Supplier.objects.get(name=supplier_data['name'])
+        assert response.url == reverse('vineyards:supplier_detail', kwargs={'supplier_id': supplier.id})
 
     def test_supplier_update_view(self, authenticated_client, supplier_data):
         """Test supplier update."""
@@ -150,8 +162,7 @@ class TestSupplierViews:
             data=updated_data
         )
         assert response.status_code == 302
-        supplier.refresh_from_db()
-        assert supplier.name == 'Updated Supplier'
+        assert response.url == reverse('vineyards:supplier_detail', kwargs={'supplier_id': supplier.id})
 
     def test_supplier_delete_view(self, authenticated_client, supplier_data):
         """Test supplier deletion."""

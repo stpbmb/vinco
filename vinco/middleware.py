@@ -2,6 +2,20 @@
 Custom middleware for request logging, rate limiting, and security.
 """
 
+"""
+DEPRECATED: Use core.middleware.rate_limiting instead.
+This module is maintained for backward compatibility and will be removed in a future version.
+"""
+
+import warnings
+from core.middleware.rate_limiting import RateLimitMiddleware, HttpResponseTooManyRequests
+
+warnings.warn(
+    'The vinco.middleware module is deprecated. Use core.middleware.rate_limiting instead.',
+    DeprecationWarning,
+    stacklevel=2
+)
+
 import time
 import uuid
 import logging
@@ -169,3 +183,5 @@ class SecurityMiddleware(MiddlewareMixin):
         response['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
         
         return response
+
+__all__ = ['RateLimitMiddleware', 'HttpResponseTooManyRequests']

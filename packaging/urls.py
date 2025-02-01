@@ -30,7 +30,9 @@ urlpatterns = [
     
     # Bottling URLs
     path('bottling/new/', views.BottlingCreateView.as_view(), name='add_bottling'),
+    path('bottling/<int:pk>/', views.bottling_detail, name='bottling_detail'),
     path('bottling/<int:pk>/edit/', views.BottlingUpdateView.as_view(), name='edit_bottling'),
+    path('bottling/<int:pk>/delete/', views.delete_bottling, name='delete_bottling'),
     path('bottling/unfinished/', views.list_unfinished_bottlings, name='list_unfinished'),
     path('bottling/finished/', views.list_finished_bottlings, name='list_finished'),
 ]

@@ -35,7 +35,7 @@
         </div>
     </div>
 
-    {% if allocations %}
+    {% if tank.crushed_juice_allocations.all %}
     <div class="card mb-4">
         <div class="card-header">
             <h5 class="mb-0">Juice Allocations</h5>
@@ -53,7 +53,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% for allocation in allocations %}
+                        {% for allocation in tank.crushed_juice_allocations.all %}
                         <tr>
                             <td>{{ allocation.allocation_date }}</td>
                             <td>{{ allocation.harvest.vineyard.name }}</td>

@@ -7,11 +7,12 @@ throughout the production process.
 """
 
 from django.db import models
-from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.core.validators import MinValueValidator, MaxValueValidator
+from django.conf import settings
 from vineyards.models import Vineyard
-
-User = get_user_model()
+from decimal import Decimal
+from django.db.models import Sum
 
 class Harvest(models.Model):
     """
@@ -39,7 +40,7 @@ class Harvest(models.Model):
     # Basic harvest information
     vineyard = models.ForeignKey(
         Vineyard,
-        on_delete=models.CASCADE,
+        on_delete=models.PROTECT,
         related_name='harvests',
         help_text="Vineyard where grapes were harvested"
     )
@@ -48,7 +49,10 @@ class Harvest(models.Model):
     )
     
     # Quantity tracking
-    quantity = models.FloatField(
+    quantity = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
         help_text="Quantity of grapes harvested in kilograms"
     )
     
@@ -82,35 +86,84 @@ class Harvest(models.Model):
         null=True, 
         help_text="Date of crushing/pressing"
     )
-    juice_yield = models.FloatField(
-        blank=True, 
-        null=True, 
-        help_text="Juice yield in liters"
+    juice_yield = models.DecimalField(
+        max_digits=4,
+        decimal_places=2,
+        validators=[MinValueValidator(0), MaxValueValidator(1)],
+        help_text="Juice yield as a decimal (e.g., 0.75 for 75%)",
+        default=0.75  # Default to 75% juice yield
     )
     pressing_notes = models.TextField(
-        blank=True, 
-        null=True, 
+        blank=True,
+        null=True,
         help_text="Notes about the crushing/pressing process"
     )
     
     # Metadata
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name='harvest_created',
+        null=True,
+        blank=True,
+        default=None
+    )
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name='harvest_updated',
+        null=True,
+        blank=True,
+        default=None
+    )
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
         """Return a string representation of the harvest."""
-        return f"Harvest on {self.date} at {self.vineyard.name}"
+        return f'Harvest on {self.date} from {self.vineyard.name}'
+
+    def clean(self):
+        """
+        Validate harvest constraints.
+        
+        Raises:
+            ValidationError: If validation fails
+        """
+        super().clean()
+
+        if self.quantity is not None and self.juice_yield is not None:
+            if self.quantity <= 0:
+                raise ValidationError("Harvest quantity must be greater than 0")
+            if self.juice_yield <= 0:
+                raise ValidationError("Juice yield must be greater than 0")
+
+            # Calculate total juice volume
+            total_juice = Decimal(str(self.quantity)) * Decimal(str(self.juice_yield))
+
+            # For existing harvests, check if reducing quantity would go below allocated volume
+            if self.pk:
+                allocated_volume = self.allocations.aggregate(
+                    total=Sum('allocated_volume')
+                )['total'] or 0
+
+                if total_juice < allocated_volume:
+                    raise ValidationError(
+                        f"Cannot reduce juice volume below allocated amount ({allocated_volume}L)"
+                    )
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
-    def remaining_juice(self):
-        """Calculate the remaining unallocated juice from this harvest."""
-        if not self.juice_yield:
-            return 0
-        allocated = self.harvest_allocations.aggregate(
-            total=models.Sum('allocated_volume')
+    def available_juice(self):
+        """Calculate available juice volume that can still be allocated."""
+        total_juice = Decimal(str(self.quantity)) * Decimal(str(self.juice_yield))
+        allocated = self.allocations.aggregate(
+            total=Sum('allocated_volume')
         )['total'] or 0
-        return self.juice_yield - allocated
+        return total_juice - allocated
 
     class Meta:
         ordering = ['-date', '-created_at']
@@ -119,7 +172,7 @@ class Harvest(models.Model):
 
 class HarvestAllocation(models.Model):
     """
-    Represents the allocation of juice from a harvest to a specific tank.
+    Represents an allocation of juice from a harvest to a tank.
     
     This model tracks how juice from harvests is distributed among different tanks,
     enabling tracking of juice movement and tank contents. It ensures proper accounting
@@ -137,59 +190,78 @@ class HarvestAllocation(models.Model):
 
     # Allocation details
     harvest = models.ForeignKey(
-        Harvest, 
-        on_delete=models.CASCADE, 
-        related_name='harvest_allocations',
-        help_text="Harvest being allocated"
+        Harvest,
+        on_delete=models.CASCADE,
+        related_name='allocations'
     )
     tank = models.ForeignKey(
-        'cellars.Tank', 
-        on_delete=models.CASCADE, 
-        related_name='harvest_allocations',
-        help_text="Tank receiving the juice"
+        'cellars.Tank',
+        on_delete=models.CASCADE,
+        related_name='harvest_allocations'
     )
-    allocated_volume = models.FloatField(
-        help_text="Volume of juice allocated in liters"
+    allocated_volume = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(Decimal('0.01'))]
     )
-    
-    # Allocation timing
-    allocation_date = models.DateField(
-        help_text="When the allocation was made"
+    allocation_date = models.DateField()
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name='created_allocations'
     )
-    
-    # Additional information
-    notes = models.TextField(
-        blank=True,
-        null=True,
-        help_text="Additional notes about the allocation"
+    updated_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.PROTECT,
+        related_name='updated_allocations'
     )
-    
-    # Metadata
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
 
     def clean(self):
         """
-        Validate the allocation to ensure it doesn't exceed available juice.
+        Validate allocation constraints.
         
         Raises:
-            ValidationError: If allocation would exceed available juice
+            ValidationError: If validation fails
         """
-        if not self.pk:  # Only check on creation
-            current_remaining = self.harvest.remaining_juice
-            if self.allocated_volume > current_remaining:
-                raise ValidationError({
-                    'allocated_volume': f'Cannot allocate more than available juice. '
-                                      f'Available: {current_remaining}L'
-                })
+        super().clean()
+
+        if not self.allocated_volume:
+            raise ValidationError("Allocated volume is required")
+
+        if self.allocated_volume <= 0:
+            raise ValidationError("Allocated volume must be greater than 0")
+
+        # Check if allocation exceeds available juice
+        if self.harvest:
+            available = self.harvest.available_juice
+            if self.pk:  # For updates, add back this allocation's current volume
+                current = HarvestAllocation.objects.get(pk=self.pk)
+                available += current.allocated_volume
+
+            if self.allocated_volume > available:
+                raise ValidationError(
+                    f"Cannot allocate more than available juice ({available:.2f}L)"
+                )
+
+        # Check if allocation would exceed tank capacity
+        if self.tank:
+            current_volume = self.tank.current_volume
+            if self.pk:  # For updates, subtract this allocation's current volume
+                current = HarvestAllocation.objects.get(pk=self.pk)
+                current_volume -= current.allocated_volume
+
+            if current_volume + self.allocated_volume > self.tank.capacity:
+                raise ValidationError(
+                    "Allocation would exceed tank capacity"
+                )
 
     def save(self, *args, **kwargs):
-        """Save the allocation after running validations."""
         self.full_clean()
         super().save(*args, **kwargs)
 
     def __str__(self):
-        """Return a string representation of the allocation."""
         return f"{self.allocated_volume}L from {self.harvest} to {self.tank}"
 
     class Meta:

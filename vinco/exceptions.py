@@ -1,5 +1,8 @@
 """
 Custom exceptions and exception handling utilities for the Vinco application.
+
+DEPRECATED: Use core.utils.exceptions instead.
+This module is maintained for backward compatibility and will be removed in a future version.
 """
 
 import logging
@@ -8,8 +11,23 @@ from functools import wraps
 from django.core.exceptions import PermissionDenied
 from django.http import Http404
 from django.shortcuts import render
+import warnings
+from core.utils.exceptions import (
+    VincoError,
+    ValidationError,
+    ResourceNotFoundError,
+    InvalidOperationError,
+    log_error,
+    handle_view_exception
+)
 
 logger = logging.getLogger('vinco')
+
+warnings.warn(
+    'The vinco.exceptions module is deprecated. Use core.utils.exceptions instead.',
+    DeprecationWarning,
+    stacklevel=2
+)
 
 class VincoError(Exception):
     """Base exception class for Vinco application."""
@@ -83,3 +101,12 @@ def log_error(logger, error, **kwargs):
     }
     
     logger.error(f"{type(error).__name__}: {str(error)}", extra=extra)
+
+__all__ = [
+    'VincoError',
+    'ValidationError',
+    'ResourceNotFoundError',
+    'InvalidOperationError',
+    'log_error',
+    'handle_view_exception'
+]

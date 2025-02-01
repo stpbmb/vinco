@@ -1,11 +1,12 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from crispy_forms.helper import FormHelper
-from crispy_forms.layout import Layout, Row, Column, Field, Div, HTML, Submit, Button
+from crispy_forms.layout import Layout, Row, Column, Div, HTML, Submit, Button
 from .models import Harvest, HarvestAllocation
 from cellars.models import Tank
 from vineyards.models import Vineyard
 from django.utils import timezone
+from django.db import models
 
 class HarvestForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
@@ -23,40 +24,14 @@ class HarvestForm(forms.ModelForm):
                 ),
                 Row(
                     Column('quantity', css_class='form-group col-md-6'),
+                    Column('juice_yield', css_class='form-group col-md-6'),
                     css_class='form-row'
                 ),
                 css_class='form-section'
-            ),
-            Div(
-                HTML('<h3 class="form-section-title">Price Information</h3>'),
-                Row(
-                    Column('price_per_kg', css_class='form-group col-md-4'),
-                    Column('vat_per_kg', css_class='form-group col-md-4'),
-                    Column(
-                        Div(
-                            HTML('<label>Total Amount</label>'),
-                            HTML('<div id="total-amount" class="form-control-static">0.00 kn</div>'),
-                        ),
-                        css_class='form-group col-md-4'
-                    ),
-                    css_class='form-row'
-                ),
-                css_class='form-section price-section',
-                style='display: none;'
             ),
             Div(
                 HTML('<h3 class="form-section-title">Additional Information</h3>'),
                 'notes',
-                css_class='form-section'
-            ),
-            Div(
-                HTML('<h3 class="form-section-title">Crushing/Pressing Details</h3>'),
-                Row(
-                    Column('crushing_date', css_class='form-group col-md-6'),
-                    Column('juice_yield', css_class='form-group col-md-6'),
-                    css_class='form-row'
-                ),
-                'pressing_notes',
                 css_class='form-section'
             ),
             Div(
@@ -83,110 +58,89 @@ class HarvestForm(forms.ModelForm):
             'min': '0',
             'class': 'form-control'
         })
-        self.fields['price_per_kg'].widget.attrs.update({
-            'step': '0.01',
-            'min': '0',
-            'class': 'form-control calculate-total'
-        })
-        self.fields['vat_per_kg'].widget.attrs.update({
-            'step': '0.01',
-            'min': '0',
-            'max': '100',
-            'class': 'form-control calculate-total',
-            'placeholder': 'e.g., 25 for 25%'
-        })
         self.fields['juice_yield'].widget.attrs.update({
             'step': '0.01',
             'min': '0',
+            'max': '1',
             'class': 'form-control',
-            'placeholder': 'Juice yield in liters'
-        })
-        self.fields['crushing_date'].widget.attrs.update({'class': 'datepicker'})
-        self.fields['pressing_notes'].widget.attrs.update({
-            'class': 'form-control',
-            'rows': '3',
-            'placeholder': 'Notes about the crushing/pressing process'
+            'placeholder': 'Juice yield (e.g., 0.75 for 75%)'
         })
 
     class Meta:
         model = Harvest
-        fields = ['vineyard', 'date', 'quantity', 'price_per_kg', 'vat_per_kg', 'notes', 'crushing_date', 'juice_yield', 'pressing_notes']
+        fields = ['vineyard', 'date', 'quantity', 'juice_yield', 'notes']
         widgets = {
             'date': forms.DateInput(attrs={'type': 'date'}),
-            'crushing_date': forms.DateInput(attrs={'type': 'date'}),
             'notes': forms.Textarea(attrs={'rows': 3}),
-            'pressing_notes': forms.Textarea(attrs={'rows': 3}),
         }
 
     def clean(self):
         cleaned_data = super().clean()
-        vineyard = cleaned_data.get('vineyard')
-        price_per_kg = cleaned_data.get('price_per_kg')
-        vat_per_kg = cleaned_data.get('vat_per_kg')
-
-        if vineyard and vineyard.ownership_type == 'supplied':
-            if not price_per_kg:
-                self.add_error('price_per_kg', 'Price per kg is required for supplied vineyards')
-            if vat_per_kg is None:  # Only check if it's None, allow 0
-                self.add_error('vat_per_kg', 'VAT percentage is required for supplied vineyards')
-
+        if self.instance.pk:  # Only check if this is an existing harvest being updated
+            quantity = cleaned_data.get('quantity')
+            juice_yield = cleaned_data.get('juice_yield')
+            
+            if quantity and juice_yield:
+                allocated_volume = self.instance.allocations.aggregate(
+                    total=models.Sum('allocated_volume')
+                )['total'] or 0
+                
+                if float(quantity) * float(juice_yield) < float(allocated_volume):
+                    raise ValidationError(
+                        "Cannot reduce harvest quantity below already allocated volume"
+                    )
         return cleaned_data
 
 class HarvestAllocationForm(forms.ModelForm):
     class Meta:
         model = HarvestAllocation
-        fields = ['tank', 'allocated_volume', 'allocation_date', 'notes']
+        fields = ['harvest', 'tank', 'allocated_volume', 'allocation_date']
         widgets = {
-            'allocation_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
+            'harvest': forms.Select(attrs={'class': 'form-control'}),
             'tank': forms.Select(attrs={'class': 'form-control'}),
             'allocated_volume': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
+            'allocation_date': forms.DateInput(attrs={'type': 'date', 'class': 'form-control'}),
         }
 
     def __init__(self, *args, **kwargs):
         self.harvest = kwargs.pop('harvest', None)
         super().__init__(*args, **kwargs)
-        
         if self.harvest:
-            # Get all tanks and filter in Python for those with available space
-            all_tanks = Tank.objects.all()
-            available_tanks = [tank for tank in all_tanks if tank.available_space > 0]
-            self.fields['tank'].queryset = Tank.objects.filter(id__in=[tank.id for tank in available_tanks])
-            self.fields['allocated_volume'].help_text = f'Maximum available: {self.harvest.remaining_juice}L'
-            self.fields['tank'].help_text = 'Only tanks with available space are shown'
-            
-            # Set default allocation date to today
-            self.fields['allocation_date'].initial = timezone.now().date()
+            self.fields['harvest'].initial = self.harvest
+            self.fields['harvest'].widget = forms.HiddenInput()
 
     def clean_allocated_volume(self):
-        volume = self.cleaned_data.get('allocated_volume')
-        if not volume:
-            raise ValidationError("Please specify an allocation volume")
-            
-        if not self.harvest:
-            raise ValidationError("No harvest specified")
-        
-        if volume > self.harvest.remaining_juice:
-            raise ValidationError(f'Cannot allocate more than the remaining juice volume ({self.harvest.remaining_juice}L)')
-        
-        return volume
+        allocated_volume = self.cleaned_data.get('allocated_volume')
+        if allocated_volume is None:
+            raise ValidationError('Allocated volume is required')
+        if allocated_volume <= 0:
+            raise ValidationError('Allocated volume must be greater than 0')
+        return allocated_volume
 
     def clean(self):
         cleaned_data = super().clean()
+        allocated_volume = cleaned_data.get('allocated_volume')
         tank = cleaned_data.get('tank')
-        volume = cleaned_data.get('allocated_volume')
+        harvest = cleaned_data.get('harvest') or self.harvest
 
-        if tank and volume:
-            if volume > tank.available_space:
+        if allocated_volume and tank and harvest:
+            # Check tank capacity
+            available_tank_space = tank.capacity - tank.current_volume
+            if allocated_volume > available_tank_space:
                 raise ValidationError({
-                    'allocated_volume': f'Cannot allocate more than the available tank space ({tank.available_space}L)'
+                    'allocated_volume': 'Allocation would exceed tank capacity'
+                })
+
+            # Check harvest available juice
+            total_juice = harvest.quantity * harvest.juice_yield
+            allocated = harvest.allocations.exclude(pk=self.instance.pk if self.instance.pk else None).aggregate(
+                total=models.Sum('allocated_volume')
+            )['total'] or 0
+            available_juice = total_juice - allocated
+
+            if allocated_volume > available_juice:
+                raise ValidationError({
+                    'allocated_volume': 'Cannot allocate more than available juice'
                 })
 
         return cleaned_data
-
-    def save(self, commit=True):
-        instance = super().save(commit=False)
-        instance.harvest = self.harvest
-        if commit:
-            instance.save()
-        return instance

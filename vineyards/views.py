@@ -13,7 +13,7 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
-from vinco.exceptions import (
+from core.utils.exceptions import (
     handle_view_exception,
     InvalidOperationError,
     ResourceNotFoundError,

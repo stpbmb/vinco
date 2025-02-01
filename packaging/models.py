@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth import get_user_model
+from django.core.exceptions import ValidationError
 
 User = get_user_model()
 
@@ -32,8 +33,8 @@ class Bottle(models.Model):
     height = models.FloatField(help_text="Height in millimeters")
     diameter = models.FloatField(help_text="Diameter in millimeters")
     weight = models.FloatField(help_text="Weight in grams")
-    supplier = models.CharField(max_length=255, help_text="Supplier of the bottles")
-    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price per unit")
+    supplier = models.CharField(max_length=255, blank=True, null=True, help_text="Supplier of the bottles")
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text="Price per unit")
     stock = models.IntegerField(default=0, help_text="Current stock quantity")
     minimum_stock = models.IntegerField(default=0, help_text="Minimum stock level for reordering")
     notes = models.TextField(blank=True, null=True, help_text="Additional notes about the bottle")
@@ -41,9 +42,30 @@ class Bottle(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def clean(self):
+        """Validate model fields."""
+        super().clean()
+        if self.stock is not None and self.stock < 0:
+            raise ValidationError("Stock cannot be negative.")
+        if self.minimum_stock is not None and self.minimum_stock < 0:
+            raise ValidationError("Minimum stock cannot be negative.")
+        if self.volume is not None and self.volume <= 0:
+            raise ValidationError("Volume must be greater than zero.")
+        if self.height is not None and self.height <= 0:
+            raise ValidationError("Height must be greater than zero.")
+        if self.diameter is not None and self.diameter <= 0:
+            raise ValidationError("Diameter must be greater than zero.")
+        if self.weight is not None and self.weight <= 0:
+            raise ValidationError("Weight must be greater than zero.")
+
+    def save(self, *args, **kwargs):
+        """Save the model instance."""
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.name} ({self.volume}ml {self.get_bottle_type_display()})"
-    
+
     class Meta:
         ordering = ['name']
 
@@ -71,8 +93,8 @@ class Label(models.Model):
     material = models.CharField(max_length=50, choices=MATERIAL_TYPES, help_text="Material of the label")
     width = models.FloatField(help_text="Width in millimeters")
     height = models.FloatField(help_text="Height in millimeters")
-    supplier = models.CharField(max_length=255, help_text="Supplier of the labels")
-    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price per unit")
+    supplier = models.CharField(max_length=255, blank=True, null=True, help_text="Supplier of the labels")
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text="Price per unit")
     stock = models.IntegerField(default=0, help_text="Current stock quantity")
     minimum_stock = models.IntegerField(default=0, help_text="Minimum stock level for reordering")
     design_file = models.FileField(upload_to='label_designs/', blank=True, null=True, help_text="Design file for the label")
@@ -81,9 +103,26 @@ class Label(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def clean(self):
+        """Validate model fields."""
+        super().clean()
+        if self.stock is not None and self.stock < 0:
+            raise ValidationError("Stock cannot be negative.")
+        if self.minimum_stock is not None and self.minimum_stock < 0:
+            raise ValidationError("Minimum stock cannot be negative.")
+        if self.width is not None and self.width <= 0:
+            raise ValidationError("Width must be greater than zero.")
+        if self.height is not None and self.height <= 0:
+            raise ValidationError("Height must be greater than zero.")
+
+    def save(self, *args, **kwargs):
+        """Save the model instance."""
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.name} ({self.get_label_type_display()})"
-    
+
     class Meta:
         ordering = ['name']
 
@@ -117,8 +156,8 @@ class Closure(models.Model):
     color = models.CharField(max_length=50, help_text="Color of the closure")
     diameter = models.FloatField(help_text="Diameter in millimeters")
     height = models.FloatField(help_text="Height in millimeters")
-    supplier = models.CharField(max_length=255, help_text="Supplier of the closures")
-    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price per unit")
+    supplier = models.CharField(max_length=255, blank=True, null=True, help_text="Supplier of the closures")
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text="Price per unit")
     stock = models.IntegerField(default=0, help_text="Current stock quantity")
     minimum_stock = models.IntegerField(default=0, help_text="Minimum stock level for reordering")
     notes = models.TextField(blank=True, null=True, help_text="Additional notes about the closure")
@@ -126,9 +165,26 @@ class Closure(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def clean(self):
+        """Validate model fields."""
+        super().clean()
+        if self.stock is not None and self.stock < 0:
+            raise ValidationError("Stock cannot be negative.")
+        if self.minimum_stock is not None and self.minimum_stock < 0:
+            raise ValidationError("Minimum stock cannot be negative.")
+        if self.diameter is not None and self.diameter <= 0:
+            raise ValidationError("Diameter must be greater than zero.")
+        if self.height is not None and self.height <= 0:
+            raise ValidationError("Height must be greater than zero.")
+
+    def save(self, *args, **kwargs):
+        """Save the model instance."""
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.name} ({self.get_closure_type_display()})"
-    
+
     class Meta:
         ordering = ['name']
 
@@ -164,8 +220,8 @@ class Box(models.Model):
     width = models.FloatField(help_text="Width in millimeters")
     height = models.FloatField(help_text="Height in millimeters")
     weight = models.FloatField(help_text="Weight in grams")
-    supplier = models.CharField(max_length=255, help_text="Supplier of the boxes")
-    price = models.DecimalField(max_digits=10, decimal_places=2, help_text="Price per unit")
+    supplier = models.CharField(max_length=255, blank=True, null=True, help_text="Supplier of the boxes")
+    price = models.DecimalField(max_digits=10, decimal_places=2, blank=True, null=True, help_text="Price per unit")
     stock = models.IntegerField(default=0, help_text="Current stock quantity")
     minimum_stock = models.IntegerField(default=0, help_text="Minimum stock level for reordering")
     notes = models.TextField(blank=True, null=True, help_text="Additional notes about the box")
@@ -173,9 +229,32 @@ class Box(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
     
+    def clean(self):
+        """Validate model fields."""
+        super().clean()
+        if self.stock is not None and self.stock < 0:
+            raise ValidationError("Stock cannot be negative.")
+        if self.minimum_stock is not None and self.minimum_stock < 0:
+            raise ValidationError("Minimum stock cannot be negative.")
+        if self.bottle_capacity is not None and self.bottle_capacity <= 0:
+            raise ValidationError("Bottle capacity must be greater than zero.")
+        if self.length is not None and self.length <= 0:
+            raise ValidationError("Length must be greater than zero.")
+        if self.width is not None and self.width <= 0:
+            raise ValidationError("Width must be greater than zero.")
+        if self.height is not None and self.height <= 0:
+            raise ValidationError("Height must be greater than zero.")
+        if self.weight is not None and self.weight <= 0:
+            raise ValidationError("Weight must be greater than zero.")
+
+    def save(self, *args, **kwargs):
+        """Save the model instance."""
+        self.full_clean()
+        super().save(*args, **kwargs)
+
     def __str__(self):
         return f"{self.name} ({self.get_box_type_display()} - {self.bottle_capacity} bottles)"
-    
+
     class Meta:
         ordering = ['name']
         verbose_name_plural = "boxes"
@@ -218,11 +297,12 @@ class Bottling(models.Model):
         is_new = self.pk is None
         old_quantity = None if is_new else Bottling.objects.get(pk=self.pk).quantity
         
-        # Automatically set status based on packaging materials
-        if self.closure and self.label and self.box:
-            self.status = 'finished'
-        else:
-            self.status = 'unfinished'
+        # Only set status automatically if it wasn't explicitly set
+        if not self.status:
+            if self.closure and self.label and self.box:
+                self.status = 'finished'
+            else:
+                self.status = 'unfinished'
             
         # Calculate volume change in liters
         if is_new:

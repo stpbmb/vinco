@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}Harvest Allocations{% endblock %}
+
+{% block content %}
+<div class="container mt-4">
+    <h1 class="mb-4">Harvest Allocations</h1>
+    
+    <div class="mb-4">
+        <a href="{% url 'harvests:allocation_create' %}" class="btn btn-primary">
+            <i class="fas fa-plus"></i> New Allocation
+        </a>
+    </div>
+
+    <div class="table-responsive">
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Date</th>
+                    <th>Harvest</th>
+                    <th>Tank</th>
+                    <th>Volume (L)</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for allocation in allocations %}
+                <tr>
+                    <td>{{ allocation.allocation_date }}</td>
+                    <td>{{ allocation.harvest }}</td>
+                    <td>{{ allocation.tank }}</td>
+                    <td>{{ allocation.allocated_volume }}</td>
+                    <td>
+                        <a href="{% url 'harvests:allocation_detail' allocation.id %}" class="btn btn-sm btn-info">
+                            <i class="fas fa-eye"></i>
+                        </a>
+                        <a href="{% url 'harvests:allocation_update' allocation.id %}" class="btn btn-sm btn-warning">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'harvests:allocation_delete' allocation.id %}" class="btn btn-sm btn-danger">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr>
+                    <td colspan="5" class="text-center">No allocations found.</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

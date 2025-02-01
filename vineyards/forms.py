@@ -101,36 +101,29 @@ class SupplierForm(forms.ModelForm):
         ]
     )
     
-    contact_name = forms.CharField(
-        max_length=100,
+    address = forms.CharField(
+        max_length=200,
         validators=[
             RegexValidator(
-                regex=r'^[a-zA-Z\s\-\']+$',
-                message='Contact name can only contain letters, spaces, hyphens, and apostrophes'
+                regex=r'^[a-zA-Z0-9\s\-\',\.]+$',
+                message='Address can only contain letters, numbers, spaces, hyphens, commas, periods, and apostrophes'
             )
         ]
     )
     
-    email = forms.EmailField(
-        max_length=254,
-        error_messages={
-            'invalid': 'Please enter a valid email address'
-        }
-    )
-    
-    phone = forms.CharField(
-        max_length=20,
+    oib = forms.CharField(
+        max_length=11,
         validators=[
             RegexValidator(
-                regex=r'^\+?1?\d{9,15}$',
-                message='Phone number must be entered in the format: "+999999999". Up to 15 digits allowed.'
+                regex=r'^\d{11}$',
+                message='OIB must be exactly 11 digits'
             )
         ]
     )
     
     class Meta:
         model = Supplier
-        fields = ['name', 'contact_name', 'email', 'phone', 'oib', 'ibk', 'mibpg']
+        fields = ['name', 'address', 'oib']
 
 class CellarForm(forms.ModelForm):
     class Meta:

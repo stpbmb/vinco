@@ -1,7 +1,10 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from django.db.models import Sum
+from django.core.validators import MinValueValidator
 from harvests.models import Harvest
+from decimal import Decimal
 
 User = get_user_model()
 
@@ -23,7 +26,10 @@ class Cellar(models.Model):
         max_length=200,
         help_text="Location of the cellar"
     )
-    capacity = models.FloatField(
+    capacity = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
         help_text="Total capacity in liters"
     )
     notes = models.TextField(
@@ -51,6 +57,20 @@ class Cellar(models.Model):
 
     def __str__(self):
         return self.name
+
+    def clean(self):
+        """
+        Validate the cellar model.
+        """
+        super().clean()
+        
+        # Only validate total tank capacity if cellar has been saved
+        if self.pk:
+            total_tank_capacity = sum(tank.capacity for tank in self.tanks.all())
+            if total_tank_capacity > self.capacity:
+                raise ValidationError({
+                    'capacity': 'Cellar capacity cannot be less than total tank capacity.'
+                })
 
     class Meta:
         """
@@ -92,15 +112,22 @@ class Tank(models.Model):
         help_text="Name or identifier of the tank"
     )
     tank_type = models.CharField(
-        max_length=50,
+        max_length=20,
         choices=TANK_TYPES,
+        default='stainless_steel',
         help_text="Type of tank"
     )
-    capacity = models.FloatField(
+    capacity = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
         help_text="Capacity in liters"
     )
-    current_volume = models.FloatField(
+    current_volume = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
         default=0,
+        validators=[MinValueValidator(0)],
         help_text="Current volume in liters"
     )
     notes = models.TextField(
@@ -112,7 +139,8 @@ class Tank(models.Model):
     # Relationship with the user who created the tank
     created_by = models.ForeignKey(
         User,
-        on_delete=models.CASCADE,
+        on_delete=models.SET_NULL,
+        null=True,
         help_text="User who created the tank"
     )
 
@@ -127,7 +155,37 @@ class Tank(models.Model):
     )
 
     def __str__(self):
-        return f"{self.name} ({self.get_tank_type_display()}) in {self.cellar.name}"
+        tank_type_display = dict(self.TANK_TYPES)[self.tank_type]
+        return f"{self.name} ({tank_type_display}) in {self.cellar.name}"
+
+    def clean(self):
+        """
+        Validate tank capacity and volume constraints.
+        
+        Raises:
+            ValidationError: If validation fails
+        """
+        super().clean()
+
+        if self.current_volume and self.current_volume > self.capacity:
+            raise ValidationError("Current volume cannot exceed tank capacity")
+
+        if self.pk:  # Only check for existing tanks
+            old_instance = Tank.objects.get(pk=self.pk)
+            if self.capacity < old_instance.current_volume:
+                raise ValidationError("Tank capacity cannot be reduced below current volume")
+
+            # Check if reducing capacity would exceed cellar's total capacity
+            total_tank_capacity = self.cellar.tanks.aggregate(
+                total=Sum('capacity')
+            )['total'] or 0
+            capacity_diff = self.capacity - old_instance.capacity
+            if total_tank_capacity + capacity_diff > self.cellar.capacity:
+                raise ValidationError("Total tank capacity would exceed cellar capacity")
+
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super().save(*args, **kwargs)
 
     @property
     def available_space(self):
@@ -136,7 +194,7 @@ class Tank(models.Model):
 
         Returns the difference between the tank's capacity and its current volume.
         """
-        return self.capacity - self.current_volume
+        return float(self.capacity - self.current_volume)
 
     def update_volume(self, volume_change):
         """
@@ -148,6 +206,7 @@ class Tank(models.Model):
         Raises:
             ValidationError: If the new volume would be negative or exceed the tank's capacity.
         """
+        volume_change = Decimal(str(volume_change))
         new_volume = self.current_volume + volume_change
         if new_volume < 0:
             raise ValidationError("Tank volume cannot be negative")
@@ -190,7 +249,10 @@ class CrushedJuiceAllocation(models.Model):
         related_name='crushed_juice_allocations',
         help_text="Tank that the juice was allocated to"
     )
-    allocated_volume = models.FloatField(
+    allocated_volume = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
         help_text="Volume allocated to this tank in liters"
     )
     allocation_date = models.DateField(
@@ -306,7 +368,10 @@ class TankHistory(models.Model):
     date = models.DateField(
         help_text="Date of the operation"
     )
-    volume = models.FloatField(
+    volume = models.DecimalField(
+        max_digits=10,
+        decimal_places=2,
+        validators=[MinValueValidator(0)],
         help_text="Volume change in liters (positive for in, negative for out)"
     )
     source = models.ForeignKey(

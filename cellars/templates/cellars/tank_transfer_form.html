@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load crispy_forms_tags %}
+
+{% block content %}
+<div class="container">
+    <h2>Transfer Wine</h2>
+    <form method="post">
+        {% csrf_token %}
+        {{ form|crispy }}
+        <button type="submit" class="btn btn-primary">Transfer</button>
+        <a href="{% url 'cellars:list_tanks' %}" class="btn btn-secondary">Cancel</a>
+    </form>
+</div>
+{% endblock %}
