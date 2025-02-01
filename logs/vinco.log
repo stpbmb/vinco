@@ -6,3 +6,18 @@ Traceback (most recent call last):
     if not settings.RATELIMIT_ENABLE:
            ^^^^^^^^
 NameError: name 'settings' is not defined
+ERROR 2025-02-01 12:04:44,513 log 72871 6130036736 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''

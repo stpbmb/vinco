@@ -1,13 +1,20 @@
 """
-Custom middleware for request logging and performance monitoring.
+Custom middleware for request logging, rate limiting, and security.
 """
 
 import time
-import logging
 import uuid
+import logging
+from django.conf import settings
+from django.core.cache import cache
+from django.http import HttpResponse
+from django.contrib import messages
 from django.utils.deprecation import MiddlewareMixin
 
 logger = logging.getLogger('vinco')
+
+class HttpResponseTooManyRequests(HttpResponse):
+    status_code = 429
 
 class RequestLoggingMiddleware(MiddlewareMixin):
     """
@@ -54,13 +61,15 @@ class RequestLoggingMiddleware(MiddlewareMixin):
         
         return response
 
-class RateLimitMiddleware:
-    def __init__(self, get_response):
-        self.get_response = get_response
-
-    def __call__(self, request):
+class RateLimitMiddleware(MiddlewareMixin):
+    """
+    Middleware to implement rate limiting for views and login attempts.
+    """
+    
+    def process_request(self, request):
+        """Check rate limits before processing the request."""
         if not settings.RATELIMIT_ENABLE:
-            return self.get_response(request)
+            return None
 
         ip = self.get_client_ip(request)
         path = request.path
@@ -78,7 +87,10 @@ class RateLimitMiddleware:
             messages.error(request, "Too many requests. Please try again later.")
             return HttpResponseTooManyRequests("Too many requests")
 
-        return self.get_response(request)
+        return None
+
+    def process_response(self, request, response):
+        return response
 
     def get_client_ip(self, request):
         x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
@@ -138,17 +150,7 @@ class SecurityMiddleware(MiddlewareMixin):
         response['X-Content-Type-Options'] = 'nosniff'
         response['X-Frame-Options'] = 'DENY'
         response['X-XSS-Protection'] = '1; mode=block'
-        response['Referrer-Policy'] = 'strict-origin-when-cross-origin'
-        
-        # Add Content Security Policy header
-        csp_policies = [
-            "default-src 'self'",
-            "img-src 'self' data: https:",
-            "style-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-            "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net",
-            "font-src 'self' https://cdn.jsdelivr.net https://cdnjs.cloudflare.com",
-            "connect-src 'self'",
-        ]
-        response['Content-Security-Policy'] = '; '.join(csp_policies)
+        response['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains'
+        response['Content-Security-Policy'] = "default-src 'self'; script-src 'self' 'unsafe-inline' 'unsafe-eval'; style-src 'self' 'unsafe-inline';"
         
         return response
