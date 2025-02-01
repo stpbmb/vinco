@@ -128,7 +128,7 @@ class SupplierForm(forms.ModelForm):
 class CellarForm(forms.ModelForm):
     class Meta:
         model = Cellar
-        fields = ['name', 'location', 'capacity', 'notes']
+        fields = ['name', 'location', 'notes']
 
 class TankForm(forms.ModelForm):
     class Meta:

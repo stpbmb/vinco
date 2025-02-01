@@ -53,9 +53,9 @@
                         <td>{{ harvest.quantity }} kg</td>
                         <td>{{ harvest.juice_yield|default:"-" }} L</td>
                         <td>
-                            {% if harvest.remaining_juice > 0 %}
+                            {% if harvest.available_juice > 0 %}
                             <span class="badge bg-warning text-dark">
-                                {{ harvest.remaining_juice }} L available
+                                {{ harvest.available_juice }} L available
                             </span>
                             {% else %}
                             <span class="badge bg-success">

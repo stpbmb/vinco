@@ -20,16 +20,16 @@
                     <td>{{ cellar.location }}</td>
                 </tr>
                 <tr>
-                    <th>Capacity:</th>
-                    <td>{{ cellar.capacity }} L</td>
+                    <th>Total Capacity:</th>
+                    <td>{{ cellar.capacity|floatformat:2 }} L</td>
                 </tr>
                 <tr>
                     <th>Current Volume:</th>
-                    <td>{{ cellar.current_volume }} L</td>
+                    <td>{{ cellar.total_current_volume|floatformat:2 }} L</td>
                 </tr>
                 <tr>
                     <th>Available Space:</th>
-                    <td>{{ cellar.available_space }} L</td>
+                    <td>{{ cellar.available_capacity|floatformat:2 }} L</td>
                 </tr>
             </table>
         </div>

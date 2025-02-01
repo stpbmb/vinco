@@ -13,8 +13,7 @@ class Cellar(models.Model):
     Model for managing wine cellars.
 
     This model tracks information about the cellar, including its name, location,
-    capacity, and notes. It also maintains a relationship with the user who created
-    the cellar.
+    and notes. The capacity is automatically computed as the sum of all tank capacities.
     """
 
     # Basic cellar information
@@ -25,12 +24,6 @@ class Cellar(models.Model):
     location = models.CharField(
         max_length=200,
         help_text="Location of the cellar"
-    )
-    capacity = models.DecimalField(
-        max_digits=10,
-        decimal_places=2,
-        validators=[MinValueValidator(0)],
-        help_text="Total capacity in liters"
     )
     notes = models.TextField(
         blank=True,
@@ -58,19 +51,29 @@ class Cellar(models.Model):
     def __str__(self):
         return self.name
 
-    def clean(self):
+    @property
+    def capacity(self):
         """
-        Validate the cellar model.
+        Calculate total capacity of the cellar by summing all tank capacities.
+        Returns the total capacity in liters.
         """
-        super().clean()
-        
-        # Only validate total tank capacity if cellar has been saved
-        if self.pk:
-            total_tank_capacity = sum(tank.capacity for tank in self.tanks.all())
-            if total_tank_capacity > self.capacity:
-                raise ValidationError({
-                    'capacity': 'Cellar capacity cannot be less than total tank capacity.'
-                })
+        return self.tanks.aggregate(total=Sum('capacity'))['total'] or Decimal('0.00')
+
+    @property
+    def total_current_volume(self):
+        """
+        Calculate total current volume in the cellar by summing all tank volumes.
+        Returns the total volume in liters.
+        """
+        return self.tanks.aggregate(total=Sum('current_volume'))['total'] or Decimal('0.00')
+
+    @property
+    def available_capacity(self):
+        """
+        Calculate available capacity in the cellar.
+        Returns the available capacity in liters.
+        """
+        return self.capacity - self.total_current_volume
 
     class Meta:
         """
@@ -174,14 +177,6 @@ class Tank(models.Model):
             old_instance = Tank.objects.get(pk=self.pk)
             if self.capacity < old_instance.current_volume:
                 raise ValidationError("Tank capacity cannot be reduced below current volume")
-
-            # Check if reducing capacity would exceed cellar's total capacity
-            total_tank_capacity = self.cellar.tanks.aggregate(
-                total=Sum('capacity')
-            )['total'] or 0
-            capacity_diff = self.capacity - old_instance.capacity
-            if total_tank_capacity + capacity_diff > self.cellar.capacity:
-                raise ValidationError("Total tank capacity would exceed cellar capacity")
 
     def save(self, *args, **kwargs):
         self.full_clean()

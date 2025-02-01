@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView, DeleteView
 from django.urls import reverse_lazy
 from django.shortcuts import get_object_or_404
 from django.http import HttpResponseRedirect
@@ -16,6 +16,7 @@ from .models import Cellar, Tank, CrushedJuiceAllocation, TankHistory
 from .forms import TankForm
 import logging
 from django import forms
+from django.contrib import messages
 
 logger = logging.getLogger('vinco')
 
@@ -75,30 +76,23 @@ class CellarDetailView(LoginRequiredMixin, DetailView):
 class CellarCreateView(LoginRequiredMixin, CreateView):
     model = Cellar
     template_name = 'cellars/cellar_form.html'
-    fields = ['name', 'location', 'capacity', 'notes']
+    fields = ['name', 'location', 'notes']
     success_url = reverse_lazy('cellars:list_cellars')
 
     def get_context_data(self, **kwargs):
-        try:
-            context = super().get_context_data(**kwargs)
-            context['active_tab'] = 'cellars'
-            context['title'] = 'Add New Cellar'
-            return context
-        except Exception as e:
-            log_error(e, self.request)
-            raise
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Add New Cellar'
+        return context
 
     def form_valid(self, form):
         try:
             form.instance.created_by = self.request.user
-            form.instance.full_clean()  # Run model validation
             response = super().form_valid(form)
 
             logger.info("New cellar created", extra={
                 'user': self.request.user.username,
                 'cellar_id': form.instance.id,
-                'cellar_name': form.instance.name,
-                'capacity': form.instance.capacity
+                'cellar_name': form.instance.name
             })
 
             return response
@@ -117,43 +111,28 @@ class CellarCreateView(LoginRequiredMixin, CreateView):
 class CellarUpdateView(LoginRequiredMixin, UpdateView):
     model = Cellar
     template_name = 'cellars/cellar_form.html'
-    fields = ['name', 'location', 'capacity', 'notes']
+    fields = ['name', 'location', 'notes']
     success_url = reverse_lazy('cellars:list_cellars')
 
     def get_object(self, queryset=None):
-        try:
-            pk = self.kwargs.get(self.pk_url_kwarg)
-            obj = get_object_or_404(self.model, pk=pk)
-            return obj
-        except self.model.DoesNotExist:
-            logger.warning(f"Cellar not found: {pk}", extra={
-                'user': self.request.user.username
-            })
-            raise ResourceNotFoundError(f"Cellar with id {pk} not found")
-        except Exception as e:
-            log_error(e, self.request)
-            raise
+        obj = super().get_object(queryset)
+        if obj.created_by != self.request.user:
+            raise PermissionDenied("You don't have permission to edit this cellar")
+        return obj
 
     def get_context_data(self, **kwargs):
-        try:
-            context = super().get_context_data(**kwargs)
-            context['active_tab'] = 'cellars'
-            context['title'] = f'Edit Cellar: {self.object.name}'
-            return context
-        except Exception as e:
-            log_error(e, self.request)
-            raise
+        context = super().get_context_data(**kwargs)
+        context['title'] = f'Edit {self.object.name}'
+        return context
 
     def form_valid(self, form):
         try:
-            form.instance.full_clean()  # Run model validation
             response = super().form_valid(form)
 
             logger.info("Cellar updated", extra={
                 'user': self.request.user.username,
                 'cellar_id': form.instance.id,
-                'cellar_name': form.instance.name,
-                'capacity': form.instance.capacity
+                'cellar_name': form.instance.name
             })
 
             return response
@@ -223,30 +202,58 @@ class TankCreateView(LoginRequiredMixin, CreateView):
         kwargs['cellar'] = self.cellar
         return kwargs
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['cellar'] = self.cellar
+        context['title'] = f'Add Tank to {self.cellar.name}'
+        context['active_tab'] = 'tanks'
+        return context
+
     def form_valid(self, form):
         try:
-            form.instance.created_by = self.request.user
-            form.instance.updated_by = self.request.user
-            form.instance.cellar = self.cellar
-            response = super().form_valid(form)
+            logger.info("Form data:", extra={
+                'user': self.request.user.username,
+                'form_data': form.cleaned_data,
+                'cellar_id': self.cellar.id
+            })
+
+            tank = form.save(commit=False)
+            tank.created_by = self.request.user
+            tank.cellar = self.cellar
+            tank.save()
 
             logger.info("New tank created", extra={
                 'user': self.request.user.username,
-                'tank_id': form.instance.id,
-                'tank_name': form.instance.name,
-                'cellar_id': form.instance.cellar.id,
-                'capacity': form.instance.capacity
+                'tank_id': tank.id,
+                'tank_name': tank.name,
+                'cellar_id': tank.cellar.id,
+                'capacity': tank.capacity
             })
 
-            return response
+            return HttpResponseRedirect(self.get_success_url())
         except ValidationError as e:
+            logger.error("Validation error:", extra={
+                'user': self.request.user.username,
+                'error': str(e),
+                'form_data': form.cleaned_data
+            })
             form.add_error(None, e)
             return self.form_invalid(form)
         except Exception as e:
+            logger.error("Unexpected error:", extra={
+                'user': self.request.user.username,
+                'error': str(e),
+                'form_data': form.cleaned_data if hasattr(form, 'cleaned_data') else None
+            })
             log_error(e, self.request)
             raise
 
     def form_invalid(self, form):
+        logger.error("Form invalid:", extra={
+            'user': self.request.user.username,
+            'errors': form.errors,
+            'form_data': form.data
+        })
         response = super().form_invalid(form)
         response.status_code = 400
         return response
@@ -516,7 +523,7 @@ class CellarDeleteView(LoginRequiredMixin, UpdateView):
             log_error(e, request)
             raise
 
-class TankDeleteView(LoginRequiredMixin, UpdateView):
+class TankDeleteView(LoginRequiredMixin, DeleteView):
     model = Tank
     template_name = 'cellars/tank_confirm_delete.html'
     success_url = reverse_lazy('cellars:list_tanks')
@@ -555,11 +562,17 @@ class TankDeleteView(LoginRequiredMixin, UpdateView):
             tank_id = tank.id
             cellar_id = tank.cellar.id
             
+            # Check for current volume and allocations
             if tank.current_volume > 0:
-                raise InvalidOperationError(
-                    "Cannot delete tank that contains wine. Empty the tank first."
-                )
+                messages.error(request, "Cannot delete tank that contains wine. Empty the tank first.")
+                return HttpResponseRedirect(reverse_lazy('cellars:tank_detail', kwargs={'pk': tank.id}))
                 
+            # Check for any allocations
+            if tank.crushed_juice_allocations.exists():
+                messages.error(request, "Cannot delete tank that has juice allocations. Remove the allocations first.")
+                return HttpResponseRedirect(reverse_lazy('cellars:tank_detail', kwargs={'pk': tank.id}))
+            
+            # Delete the tank
             tank.delete()
             
             logger.info("Tank deleted", extra={
@@ -569,12 +582,13 @@ class TankDeleteView(LoginRequiredMixin, UpdateView):
                 'cellar_id': cellar_id
             })
             
+            messages.success(request, f"Tank {tank_name} has been deleted.")
             return HttpResponseRedirect(self.success_url)
-        except InvalidOperationError:
-            raise
+            
         except Exception as e:
             log_error(e, request)
-            raise
+            messages.error(request, "An error occurred while deleting the tank.")
+            return HttpResponseRedirect(reverse_lazy('cellars:tank_detail', kwargs={'pk': tank.id}))
 
 class AllocationListView(LoginRequiredMixin, ListView):
     model = CrushedJuiceAllocation

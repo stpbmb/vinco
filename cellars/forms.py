@@ -8,29 +8,21 @@ from django.db.models import Sum
 class CellarForm(forms.ModelForm):
     class Meta:
         model = Cellar
-        fields = ['name', 'location', 'capacity', 'notes']
+        fields = ['name', 'location', 'notes']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'location': forms.TextInput(attrs={'class': 'form-control'}),
-            'capacity': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
-
-    def clean_capacity(self):
-        capacity = self.cleaned_data['capacity']
-        if capacity <= 0:
-            raise ValidationError("Capacity must be greater than 0")
-        return capacity
 
 class TankForm(forms.ModelForm):
     class Meta:
         model = Tank
-        fields = ['name', 'tank_type', 'capacity', 'current_volume', 'notes']
+        fields = ['name', 'tank_type', 'capacity', 'notes']
         widgets = {
             'name': forms.TextInput(attrs={'class': 'form-control'}),
             'tank_type': forms.Select(attrs={'class': 'form-control'}),
             'capacity': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
-            'current_volume': forms.NumberInput(attrs={'class': 'form-control', 'step': '0.01'}),
             'notes': forms.Textarea(attrs={'class': 'form-control', 'rows': 3}),
         }
 
@@ -46,23 +38,9 @@ class TankForm(forms.ModelForm):
             raise ValidationError('Capacity must be greater than 0')
         return capacity
 
-    def clean_current_volume(self):
-        current_volume = self.cleaned_data.get('current_volume')
-        if current_volume is None:
-            return 0
-        if current_volume < 0:
-            raise ValidationError('Current volume cannot be negative')
-        return current_volume
-
     def clean(self):
         cleaned_data = super().clean()
         capacity = cleaned_data.get('capacity')
-        current_volume = cleaned_data.get('current_volume', 0)
-
-        if capacity and current_volume > capacity:
-            raise ValidationError({
-                'current_volume': 'Current volume cannot exceed tank capacity'
-            })
 
         if self.instance.pk:
             if capacity and capacity < self.instance.current_volume:
@@ -71,15 +49,6 @@ class TankForm(forms.ModelForm):
                 })
 
         if self.cellar:
-            total_tank_capacity = self.cellar.tanks.exclude(pk=self.instance.pk if self.instance.pk else None).aggregate(
-                total=Sum('capacity')
-            )['total'] or 0
-
-            if total_tank_capacity + capacity > self.cellar.capacity:
-                raise ValidationError({
-                    'capacity': 'Tank capacity would exceed cellar capacity'
-                })
-
             cleaned_data['cellar'] = self.cellar
 
         return cleaned_data

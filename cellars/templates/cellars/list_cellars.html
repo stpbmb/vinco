@@ -14,7 +14,7 @@
             <h2>
                 {{ cellar.name }}
                 <span class="cellar-meta">
-                    (Capacity: {{ cellar.capacity }} L)
+                    (Total Capacity: {{ cellar.capacity|floatformat:2 }} L | Current Volume: {{ cellar.total_current_volume|floatformat:2 }} L | Available: {{ cellar.available_capacity|floatformat:2 }} L)
                     <a href="{% url 'cellars:edit_cellar' cellar.id %}" class="btn-small">Edit Cellar</a>
                     <a href="{% url 'cellars:add_tank' cellar.id %}" class="btn-small">Add Tank</a>
                 </span>

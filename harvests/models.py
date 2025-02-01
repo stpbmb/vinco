@@ -30,7 +30,7 @@ class Harvest(models.Model):
         price_per_kg (decimal, optional): Price per kilogram for supplied grapes
         vat_per_kg (decimal, optional): VAT percentage for supplied grapes
         crushing_date (date, optional): Date when grapes were crushed/pressed
-        juice_yield (float, optional): Amount of juice obtained in liters
+        juice_yield (float, optional): Volume of juice obtained in liters
         pressing_notes (str, optional): Notes about the crushing/pressing process
         created_by (User): User who created the harvest record
         created_at (datetime): Timestamp of creation
@@ -87,11 +87,11 @@ class Harvest(models.Model):
         help_text="Date of crushing/pressing"
     )
     juice_yield = models.DecimalField(
-        max_digits=4,
+        max_digits=10,
         decimal_places=2,
-        validators=[MinValueValidator(0), MaxValueValidator(1)],
-        help_text="Juice yield as a decimal (e.g., 0.75 for 75%)",
-        default=0.75  # Default to 75% juice yield
+        validators=[MinValueValidator(0)],
+        help_text="Volume of juice obtained in liters",
+        default=0
     )
     pressing_notes = models.TextField(
         blank=True,
@@ -135,11 +135,8 @@ class Harvest(models.Model):
         if self.quantity is not None and self.juice_yield is not None:
             if self.quantity <= 0:
                 raise ValidationError("Harvest quantity must be greater than 0")
-            if self.juice_yield <= 0:
-                raise ValidationError("Juice yield must be greater than 0")
-
-            # Calculate total juice volume
-            total_juice = Decimal(str(self.quantity)) * Decimal(str(self.juice_yield))
+            if self.juice_yield < 0:
+                raise ValidationError("Juice yield must be greater than or equal to 0")
 
             # For existing harvests, check if reducing quantity would go below allocated volume
             if self.pk:
@@ -147,7 +144,7 @@ class Harvest(models.Model):
                     total=Sum('allocated_volume')
                 )['total'] or 0
 
-                if total_juice < allocated_volume:
+                if self.juice_yield < allocated_volume:
                     raise ValidationError(
                         f"Cannot reduce juice volume below allocated amount ({allocated_volume}L)"
                     )
@@ -159,11 +156,10 @@ class Harvest(models.Model):
     @property
     def available_juice(self):
         """Calculate available juice volume that can still be allocated."""
-        total_juice = Decimal(str(self.quantity)) * Decimal(str(self.juice_yield))
         allocated = self.allocations.aggregate(
             total=Sum('allocated_volume')
         )['total'] or 0
-        return total_juice - allocated
+        return self.juice_yield - allocated
 
     class Meta:
         ordering = ['-date', '-created_at']
