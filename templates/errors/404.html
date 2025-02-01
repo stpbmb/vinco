@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/error-pages.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="container text-center">
+        <h1 class="display-1">404</h1>
+        <h2>Page Not Found</h2>
+        <p class="lead">The page you're looking for doesn't exist or has been moved.</p>
+        <p>Request ID: {{ request.request_id }}</p>
+        <div class="mt-4">
+            <a href="{% url 'home' %}" class="btn btn-primary">Return Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

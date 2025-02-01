@@ -17,8 +17,13 @@ Including another URLconf
 from django.contrib import admin
 from django.contrib.auth import views as auth_views
 from django.urls import path, include
+from django.shortcuts import redirect
+
+def home(request):
+    return redirect('vineyards:list_vineyards')
 
 urlpatterns = [
+    path('', home, name='home'),
     path('admin/', admin.site.urls),
     path('vineyards/', include(('vineyards.urls', 'vineyards'), namespace='vineyards')),
     path('harvests/', include(('harvests.urls', 'harvests'), namespace='harvests')),

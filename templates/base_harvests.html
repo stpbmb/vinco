@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/harvests.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="harvests-container">
+    {% block harvests_content %}{% endblock %}
+</div>
+{% endblock %}

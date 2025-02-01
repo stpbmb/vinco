@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}500 - Server Error{% endblock %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'css/error-pages.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="error-page">
+    <div class="container text-center">
+        <h1 class="display-1">500</h1>
+        <h2>Internal Server Error</h2>
+        <p class="lead">Something went wrong on our end. We're working to fix it.</p>
+        <p>Request ID: {{ request.request_id }}</p>
+        <div class="mt-4">
+            <a href="{% url 'home' %}" class="btn btn-primary">Return Home</a>
+        </div>
+    </div>
+</div>
+{% endblock %}

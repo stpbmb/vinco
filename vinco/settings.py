@@ -53,6 +53,8 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'vinco.middleware.RequestLoggingMiddleware',
+    'vinco.middleware.SecurityMiddleware',
 ]
 
 ROOT_URLCONF = 'vinco.urls'
@@ -135,3 +137,67 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 # Crispy Forms Configuration
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
+
+# Authentication settings
+LOGIN_URL = '/login/'
+LOGIN_REDIRECT_URL = '/vineyards/'
+LOGOUT_REDIRECT_URL = '/'
+
+# Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+    },
+    'filters': {
+        'require_debug_true': {
+            '()': 'django.utils.log.RequireDebugTrue',
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'filters': ['require_debug_true'],
+            'class': 'logging.StreamHandler',
+            'formatter': 'simple',
+        },
+        'file': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': BASE_DIR / 'logs/vinco.log',
+            'formatter': 'verbose',
+        },
+        'mail_admins': {
+            'level': 'ERROR',
+            'class': 'django.utils.log.AdminEmailHandler',
+        },
+    },
+    'loggers': {
+        'django': {
+            'handlers': ['console'],
+            'propagate': True,
+        },
+        'django.request': {
+            'handlers': ['file', 'mail_admins'],
+            'level': 'ERROR',
+            'propagate': False,
+        },
+        'vinco': {
+            'handlers': ['console', 'file'],
+            'level': 'INFO',
+            'propagate': True,
+        },
+    },
+}
+
+# Create logs directory if it doesn't exist
+import os
+os.makedirs(BASE_DIR / 'logs', exist_ok=True)

@@ -1,3 +1,11 @@
+"""
+Views for managing wine packaging operations and inventory tracking.
+
+This module provides views for recording bottling operations, managing packaging
+materials inventory, and tracking finished product quantities. It includes
+functionality for monitoring packaging efficiency and material usage.
+"""
+
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
@@ -12,6 +20,21 @@ from cellars.models import Tank
 # Bottle Views
 @login_required
 def list_bottles(request):
+    """
+    Display a list of all bottles with search and filter functionality.
+    
+    Shows bottles with their key information including name, stock, and minimum stock.
+    Provides search functionality across multiple fields.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        Rendered template with context containing:
+        - bottles: QuerySet of filtered bottles
+        - low_stock: QuerySet of bottles with low stock
+        - title: Page title
+    """
     bottles = Bottle.objects.all()
     low_stock = bottles.filter(stock__lte=F('minimum_stock'))
     context = {
@@ -23,6 +46,18 @@ def list_bottles(request):
 
 @login_required
 def bottle_detail(request, pk):
+    """
+    Display detailed information about a specific bottle.
+    
+    Shows all bottle information including name, stock, and minimum stock.
+
+    Args:
+        request: The HTTP request object
+        pk: ID of the bottle to display
+
+    Returns:
+        Rendered template with detailed bottle information
+    """
     bottle = get_object_or_404(Bottle, pk=pk)
     context = {
         'bottle': bottle,
@@ -32,6 +67,20 @@ def bottle_detail(request, pk):
 
 @login_required
 def add_bottle(request):
+    """
+    Display and process the form for adding a new bottle.
+    
+    Handles both GET requests to display the form and POST requests to create
+    a new bottle record. Validates input.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to bottle list
+        On invalid POST: Rendered form template with errors
+    """
     if request.method == 'POST':
         form = BottleForm(request.POST)
         if form.is_valid():
@@ -51,6 +100,21 @@ def add_bottle(request):
 
 @login_required
 def edit_bottle(request, pk):
+    """
+    Display and process the form for editing a bottle.
+    
+    Handles both GET requests to display the form and POST requests to update
+    a bottle record. Validates input.
+
+    Args:
+        request: The HTTP request object
+        pk: ID of the bottle to edit
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to bottle detail
+        On invalid POST: Rendered form template with errors
+    """
     bottle = get_object_or_404(Bottle, pk=pk)
     if request.method == 'POST':
         form = BottleForm(request.POST, instance=bottle)
@@ -71,6 +135,21 @@ def edit_bottle(request, pk):
 # Label Views
 @login_required
 def list_labels(request):
+    """
+    Display a list of all labels with search and filter functionality.
+    
+    Shows labels with their key information including name, stock, and minimum stock.
+    Provides search functionality across multiple fields.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        Rendered template with context containing:
+        - labels: QuerySet of filtered labels
+        - low_stock: QuerySet of labels with low stock
+        - title: Page title
+    """
     labels = Label.objects.all()
     low_stock = labels.filter(stock__lte=F('minimum_stock'))
     context = {
@@ -82,6 +161,18 @@ def list_labels(request):
 
 @login_required
 def label_detail(request, pk):
+    """
+    Display detailed information about a specific label.
+    
+    Shows all label information including name, stock, and minimum stock.
+
+    Args:
+        request: The HTTP request object
+        pk: ID of the label to display
+
+    Returns:
+        Rendered template with detailed label information
+    """
     label = get_object_or_404(Label, pk=pk)
     context = {
         'label': label,
@@ -91,6 +182,20 @@ def label_detail(request, pk):
 
 @login_required
 def add_label(request):
+    """
+    Display and process the form for adding a new label.
+    
+    Handles both GET requests to display the form and POST requests to create
+    a new label record. Validates input.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to label list
+        On invalid POST: Rendered form template with errors
+    """
     if request.method == 'POST':
         form = LabelForm(request.POST, request.FILES)
         if form.is_valid():
@@ -110,6 +215,21 @@ def add_label(request):
 
 @login_required
 def edit_label(request, pk):
+    """
+    Display and process the form for editing a label.
+    
+    Handles both GET requests to display the form and POST requests to update
+    a label record. Validates input.
+
+    Args:
+        request: The HTTP request object
+        pk: ID of the label to edit
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to label detail
+        On invalid POST: Rendered form template with errors
+    """
     label = get_object_or_404(Label, pk=pk)
     if request.method == 'POST':
         form = LabelForm(request.POST, request.FILES, instance=label)
@@ -130,6 +250,21 @@ def edit_label(request, pk):
 # Closure Views
 @login_required
 def list_closures(request):
+    """
+    Display a list of all closures with search and filter functionality.
+    
+    Shows closures with their key information including name, stock, and minimum stock.
+    Provides search functionality across multiple fields.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        Rendered template with context containing:
+        - closures: QuerySet of filtered closures
+        - low_stock: QuerySet of closures with low stock
+        - title: Page title
+    """
     closures = Closure.objects.all()
     low_stock = closures.filter(stock__lte=F('minimum_stock'))
     context = {
@@ -141,6 +276,18 @@ def list_closures(request):
 
 @login_required
 def closure_detail(request, pk):
+    """
+    Display detailed information about a specific closure.
+    
+    Shows all closure information including name, stock, and minimum stock.
+
+    Args:
+        request: The HTTP request object
+        pk: ID of the closure to display
+
+    Returns:
+        Rendered template with detailed closure information
+    """
     closure = get_object_or_404(Closure, pk=pk)
     context = {
         'closure': closure,
@@ -150,6 +297,20 @@ def closure_detail(request, pk):
 
 @login_required
 def add_closure(request):
+    """
+    Display and process the form for adding a new closure.
+    
+    Handles both GET requests to display the form and POST requests to create
+    a new closure record. Validates input.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to closure list
+        On invalid POST: Rendered form template with errors
+    """
     if request.method == 'POST':
         form = ClosureForm(request.POST)
         if form.is_valid():
@@ -169,6 +330,21 @@ def add_closure(request):
 
 @login_required
 def edit_closure(request, pk):
+    """
+    Display and process the form for editing a closure.
+    
+    Handles both GET requests to display the form and POST requests to update
+    a closure record. Validates input.
+
+    Args:
+        request: The HTTP request object
+        pk: ID of the closure to edit
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to closure detail
+        On invalid POST: Rendered form template with errors
+    """
     closure = get_object_or_404(Closure, pk=pk)
     if request.method == 'POST':
         form = ClosureForm(request.POST, instance=closure)
@@ -189,6 +365,21 @@ def edit_closure(request, pk):
 # Box Views
 @login_required
 def list_boxes(request):
+    """
+    Display a list of all boxes with search and filter functionality.
+    
+    Shows boxes with their key information including name, stock, and minimum stock.
+    Provides search functionality across multiple fields.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        Rendered template with context containing:
+        - boxes: QuerySet of filtered boxes
+        - low_stock: QuerySet of boxes with low stock
+        - title: Page title
+    """
     boxes = Box.objects.all()
     low_stock = boxes.filter(stock__lte=F('minimum_stock'))
     context = {
@@ -200,6 +391,18 @@ def list_boxes(request):
 
 @login_required
 def box_detail(request, pk):
+    """
+    Display detailed information about a specific box.
+    
+    Shows all box information including name, stock, and minimum stock.
+
+    Args:
+        request: The HTTP request object
+        pk: ID of the box to display
+
+    Returns:
+        Rendered template with detailed box information
+    """
     box = get_object_or_404(Box, pk=pk)
     context = {
         'box': box,
@@ -209,6 +412,20 @@ def box_detail(request, pk):
 
 @login_required
 def add_box(request):
+    """
+    Display and process the form for adding a new box.
+    
+    Handles both GET requests to display the form and POST requests to create
+    a new box record. Validates input.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to box list
+        On invalid POST: Rendered form template with errors
+    """
     if request.method == 'POST':
         form = BoxForm(request.POST)
         if form.is_valid():
@@ -228,6 +445,21 @@ def add_box(request):
 
 @login_required
 def edit_box(request, pk):
+    """
+    Display and process the form for editing a box.
+    
+    Handles both GET requests to display the form and POST requests to update
+    a box record. Validates input.
+
+    Args:
+        request: The HTTP request object
+        pk: ID of the box to edit
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to box detail
+        On invalid POST: Rendered form template with errors
+    """
     box = get_object_or_404(Box, pk=pk)
     if request.method == 'POST':
         form = BoxForm(request.POST, instance=box)
@@ -248,6 +480,20 @@ def edit_box(request, pk):
 # Bottling Views
 @login_required
 def list_unfinished_bottlings(request):
+    """
+    Display a list of all unfinished bottlings.
+    
+    Shows bottlings with their key information including date, bottle, and quantity.
+    Provides search functionality across multiple fields.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        Rendered template with context containing:
+        - bottlings: QuerySet of filtered bottlings
+        - title: Page title
+    """
     bottlings = Bottling.objects.filter(status='unfinished')
     context = {
         'bottlings': bottlings,
@@ -257,6 +503,20 @@ def list_unfinished_bottlings(request):
 
 @login_required
 def list_finished_bottlings(request):
+    """
+    Display a list of all finished bottlings.
+    
+    Shows bottlings with their key information including date, bottle, and quantity.
+    Provides search functionality across multiple fields.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        Rendered template with context containing:
+        - bottlings: QuerySet of filtered bottlings
+        - title: Page title
+    """
     bottlings = Bottling.objects.exclude(
         Q(closure__isnull=True) | Q(label__isnull=True) | Q(box__isnull=True)
     ).order_by('-bottling_date')
@@ -267,12 +527,35 @@ def list_finished_bottlings(request):
     return render(request, 'packaging/list_finished.html', context)
 
 class BottlingCreateView(LoginRequiredMixin, CreateView):
+    """
+    View for creating a new bottling.
+    
+    Handles both GET requests to display the form and POST requests to create
+    a new bottling record. Validates input and updates inventory.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to bottling list
+        On invalid POST: Rendered form template with errors
+    """
     model = Bottling
     form_class = BottlingForm
     template_name = 'packaging/bottling_form.html'
     success_url = reverse_lazy('packaging:list_unfinished')
 
     def form_valid(self, form):
+        """
+        Validate the form and update inventory.
+        
+        Args:
+            form: The form instance
+
+        Returns:
+            The response object
+        """
         form.instance.created_by = self.request.user
         response = super().form_valid(form)
 
@@ -300,12 +583,35 @@ class BottlingCreateView(LoginRequiredMixin, CreateView):
         return response
 
 class BottlingUpdateView(LoginRequiredMixin, UpdateView):
+    """
+    View for updating a bottling.
+    
+    Handles both GET requests to display the form and POST requests to update
+    a bottling record. Validates input and updates inventory.
+
+    Args:
+        request: The HTTP request object
+
+    Returns:
+        On GET: Rendered form template
+        On successful POST: Redirect to bottling list
+        On invalid POST: Rendered form template with errors
+    """
     model = Bottling
     form_class = BottlingForm
     template_name = 'packaging/bottling_form.html'
     success_url = reverse_lazy('packaging:list_unfinished')
 
     def form_valid(self, form):
+        """
+        Validate the form and update inventory.
+        
+        Args:
+            form: The form instance
+
+        Returns:
+            The response object
+        """
         # Get the old instance before it's updated
         old_instance = Bottling.objects.get(pk=self.object.pk)
         

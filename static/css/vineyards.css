@@ -1,0 +1,46 @@
+/* Vineyard-specific styles */
+.vineyards-container {
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.info-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.info-section h2 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.5rem;
+}
+
+.details-table {
+    width: 100%;
+    margin-bottom: 0;
+}
+
+.details-table th {
+    width: 200px;
+    color: #666;
+    font-weight: 600;
+}
+
+.details-table td {
+    color: #333;
+}
+
+.badge {
+    padding: 5px 10px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+}

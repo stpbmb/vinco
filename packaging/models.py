@@ -5,6 +5,8 @@ User = get_user_model()
 
 class Bottle(models.Model):
     """Model for wine bottles."""
+    
+    # Define choices for bottle types
     BOTTLE_TYPES = [
         ('bordeaux', 'Bordeaux'),
         ('burgundy', 'Burgundy'),
@@ -12,7 +14,8 @@ class Bottle(models.Model):
         ('rhine', 'Rhine'),
         ('other', 'Other'),
     ]
-
+    
+    # Define choices for glass colors
     GLASS_COLORS = [
         ('clear', 'Clear'),
         ('green', 'Green'),
@@ -20,7 +23,8 @@ class Bottle(models.Model):
         ('amber', 'Amber'),
         ('blue', 'Blue'),
     ]
-
+    
+    # Basic bottle information
     name = models.CharField(max_length=255, help_text="Name or identifier of the bottle")
     bottle_type = models.CharField(max_length=50, choices=BOTTLE_TYPES, help_text="Type/style of the bottle")
     volume = models.FloatField(help_text="Volume in milliliters")
@@ -36,28 +40,32 @@ class Bottle(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return f"{self.name} ({self.volume}ml {self.get_bottle_type_display()})"
-
+    
     class Meta:
         ordering = ['name']
 
 class Label(models.Model):
     """Model for wine labels."""
+    
+    # Define choices for label types
     LABEL_TYPES = [
         ('front', 'Front Label'),
         ('back', 'Back Label'),
         ('neck', 'Neck Label'),
     ]
-
+    
+    # Define choices for material types
     MATERIAL_TYPES = [
         ('paper', 'Paper'),
         ('synthetic', 'Synthetic'),
         ('metallic', 'Metallic'),
         ('other', 'Other'),
     ]
-
+    
+    # Basic label information
     name = models.CharField(max_length=255, help_text="Name or identifier of the label")
     label_type = models.CharField(max_length=50, choices=LABEL_TYPES, help_text="Type of label")
     material = models.CharField(max_length=50, choices=MATERIAL_TYPES, help_text="Material of the label")
@@ -72,15 +80,17 @@ class Label(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return f"{self.name} ({self.get_label_type_display()})"
-
+    
     class Meta:
         ordering = ['name']
 
 class Closure(models.Model):
     """Model for bottle closures (caps, corks, etc.)."""
+    
+    # Define choices for closure types
     CLOSURE_TYPES = [
         ('cork_natural', 'Natural Cork'),
         ('cork_synthetic', 'Synthetic Cork'),
@@ -89,7 +99,8 @@ class Closure(models.Model):
         ('glass_stopper', 'Glass Stopper'),
         ('other', 'Other'),
     ]
-
+    
+    # Define choices for material types
     MATERIAL_TYPES = [
         ('cork', 'Cork'),
         ('synthetic', 'Synthetic'),
@@ -98,7 +109,8 @@ class Closure(models.Model):
         ('glass', 'Glass'),
         ('other', 'Other'),
     ]
-
+    
+    # Basic closure information
     name = models.CharField(max_length=255, help_text="Name or identifier of the closure")
     closure_type = models.CharField(max_length=50, choices=CLOSURE_TYPES, help_text="Type of closure")
     material = models.CharField(max_length=50, choices=MATERIAL_TYPES, help_text="Material of the closure")
@@ -113,15 +125,17 @@ class Closure(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return f"{self.name} ({self.get_closure_type_display()})"
-
+    
     class Meta:
         ordering = ['name']
 
 class Box(models.Model):
     """Model for packaging boxes."""
+    
+    # Define choices for box types
     BOX_TYPES = [
         ('single', 'Single Bottle'),
         ('double', 'Double Bottle'),
@@ -132,14 +146,16 @@ class Box(models.Model):
         ('gift', 'Gift Box'),
         ('other', 'Other'),
     ]
-
+    
+    # Define choices for material types
     MATERIAL_TYPES = [
         ('cardboard', 'Cardboard'),
         ('wood', 'Wood'),
         ('plastic', 'Plastic'),
         ('other', 'Other'),
     ]
-
+    
+    # Basic box information
     name = models.CharField(max_length=255, help_text="Name or identifier of the box")
     box_type = models.CharField(max_length=50, choices=BOX_TYPES, help_text="Type of box")
     material = models.CharField(max_length=50, choices=MATERIAL_TYPES, help_text="Material of the box")
@@ -156,20 +172,24 @@ class Box(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    
     def __str__(self):
         return f"{self.name} ({self.get_box_type_display()} - {self.bottle_capacity} bottles)"
-
+    
     class Meta:
         ordering = ['name']
         verbose_name_plural = "boxes"
 
 class Bottling(models.Model):
+    """Model for tracking bottling operations."""
+    
+    # Define choices for bottling status
     BOTTLING_STATUS = [
         ('unfinished', 'Unfinished'),
         ('finished', 'Finished'),
     ]
-
+    
+    # Basic bottling information
     tank = models.ForeignKey('cellars.Tank', on_delete=models.PROTECT, related_name='bottlings')
     bottle = models.ForeignKey('packaging.Bottle', on_delete=models.PROTECT, related_name='bottlings')
     closure = models.ForeignKey('packaging.Closure', on_delete=models.PROTECT, related_name='bottlings', null=True, blank=True)
@@ -186,13 +206,13 @@ class Bottling(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
     created_by = models.ForeignKey('auth.User', on_delete=models.PROTECT, related_name='bottlings_created')
 
+    def __str__(self):
+        return f"{self.tank.wine_type} - {self.quantity} bottles ({self.get_status_display()})"
+
     class Meta:
         ordering = ['-bottling_date']
         verbose_name = 'Bottling'
         verbose_name_plural = 'Bottlings'
-
-    def __str__(self):
-        return f"{self.tank.wine_type} - {self.quantity} bottles ({self.get_status_display()})"
 
     def save(self, *args, **kwargs):
         is_new = self.pk is None

@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block styles %}
+{{ block.super }}
+<link rel="stylesheet" href="{% static 'css/vineyards.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="vineyards-container">
+    {% block vineyards_content %}{% endblock %}
+</div>
+{% endblock %}

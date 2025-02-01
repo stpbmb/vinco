@@ -1,0 +1,47 @@
+/* Packaging-specific styles */
+.packaging-container {
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.packaging-form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+.form-section {
+    background: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+}
+
+.form-section h3 {
+    margin-bottom: 20px;
+    color: #333;
+    font-size: 1.25rem;
+}
+
+.form-row {
+    display: flex;
+    gap: 20px;
+    margin-bottom: 15px;
+}
+
+.form-group {
+    flex: 1;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 5px;
+    color: #666;
+    font-weight: 500;
+}

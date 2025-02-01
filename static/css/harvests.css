@@ -1,0 +1,58 @@
+/* Harvest-specific styles */
+.harvests-container {
+    padding: 20px;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+}
+
+.search-container {
+    margin-bottom: 20px;
+}
+
+.search-form {
+    display: flex;
+    gap: 10px;
+    max-width: 500px;
+}
+
+.search-form input {
+    flex: 1;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.sortable {
+    cursor: pointer;
+}
+
+.sortable i {
+    margin-left: 5px;
+    opacity: 0.3;
+}
+
+.sortable.asc i {
+    opacity: 1;
+    transform: rotate(180deg);
+}
+
+.sortable.desc i {
+    opacity: 1;
+}
+
+.clickable-row {
+    cursor: pointer;
+}
+
+.clickable-row:hover {
+    background-color: #f8f9fa;
+}
