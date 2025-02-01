@@ -48,44 +48,43 @@ def list_vineyards(request):
     try:
         search_query = request.GET.get('search', '').strip()
         
-        owned_vineyards = Vineyard.objects.filter(ownership_type='owned')
-        supplied_vineyards = Vineyard.objects.filter(ownership_type='supplied')
+        # Base queryset with optimized joins
+        base_qs = Vineyard.objects.select_related('supplier', 'created_by')
+        
+        # Filter owned vineyards
+        owned_vineyards = base_qs.filter(ownership_type='owned')
+        
+        # Filter supplier vineyards
+        supplied_vineyards = base_qs.filter(ownership_type='supplied')
         
         if search_query:
-            # Filter both querysets based on search criteria
-            owned_vineyards = owned_vineyards.filter(
+            # Apply search filter to both querysets
+            search_filter = (
                 Q(name__icontains=search_query) |
                 Q(location__icontains=search_query) |
                 Q(grape_variety__icontains=search_query) |
-                Q(cadastral_county__icontains=search_query) |
-                Q(arkod_id__icontains=search_query)
-            )
-            supplied_vineyards = supplied_vineyards.filter(
-                Q(name__icontains=search_query) |
-                Q(location__icontains=search_query) |
-                Q(grape_variety__icontains=search_query) |
-                Q(cadastral_county__icontains=search_query) |
-                Q(arkod_id__icontains=search_query) |
                 Q(supplier__name__icontains=search_query)
             )
+            owned_vineyards = owned_vineyards.filter(search_filter)
+            supplied_vineyards = supplied_vineyards.filter(search_filter)
         
+        # Order the results
         owned_vineyards = owned_vineyards.order_by('name')
-        supplied_vineyards = supplied_vineyards.order_by('name')
+        supplied_vineyards = supplied_vineyards.order_by('supplier__name', 'name')
         
-        logger.info("Vineyards list accessed", extra={
-            'user': request.user.username,
-            'search_query': search_query
-        })
-        
-        return render(request, 'vineyards/list_vineyards.html', {
+        context = {
             'owned_vineyards': owned_vineyards,
             'supplied_vineyards': supplied_vineyards,
             'search_query': search_query,
             'active_tab': 'vineyards'
-        })
+        }
+        
+        return render(request, 'vineyards/list_vineyards.html', context)
+        
     except Exception as e:
-        log_error(e, request)
-        raise
+        log_error(logger, e)
+        messages.error(request, str(e))
+        return redirect('home')
 
 @login_required
 @handle_view_exception
@@ -203,7 +202,7 @@ def vineyard_detail(request, vineyard_id):
     Display detailed information about a specific vineyard.
     
     Shows all vineyard information including harvest history and related data.
-    Uses prefetch_related to optimize database queries for harvests.
+    Uses select_related and prefetch_related to optimize database queries.
 
     Args:
         request: The HTTP request object
@@ -213,26 +212,30 @@ def vineyard_detail(request, vineyard_id):
         Rendered template with detailed vineyard information
     """
     try:
-        vineyard = get_object_or_404(Vineyard.objects.prefetch_related('harvests'), id=vineyard_id)
+        # Optimize queries by selecting related fields and prefetching related data
+        vineyard = get_object_or_404(
+            Vineyard.objects.select_related(
+                'supplier',
+                'created_by'
+            ).prefetch_related(
+                'harvests__created_by',
+                'harvests__allocations__tank__cellar',
+                'harvests__allocations__created_by'
+            ),
+            id=vineyard_id
+        )
         
-        logger.info("Vineyard details accessed", extra={
-            'user': request.user.username,
-            'vineyard_id': vineyard.id,
-            'vineyard_name': vineyard.name
-        })
-        
-        return render(request, 'vineyards/vineyard_detail.html', {
+        context = {
             'vineyard': vineyard,
             'active_tab': 'vineyards'
-        })
-    except Vineyard.DoesNotExist:
-        logger.warning(f"Vineyard not found: {vineyard_id}", extra={
-            'user': request.user.username
-        })
-        raise ResourceNotFoundError(f"Vineyard with id {vineyard_id} not found")
+        }
+        
+        return render(request, 'vineyards/vineyard_detail.html', context)
+        
     except Exception as e:
-        log_error(e, request)
-        raise
+        log_error(logger, e)
+        messages.error(request, str(e))
+        return redirect('home')
 
 @login_required
 @handle_view_exception
@@ -476,6 +479,7 @@ def supplier_detail(request, supplier_id):
     Display detailed information about a specific supplier.
     
     Shows all supplier information including associated vineyards.
+    Uses select_related and prefetch_related to optimize database queries.
 
     Args:
         request: The HTTP request object
@@ -485,29 +489,27 @@ def supplier_detail(request, supplier_id):
         Rendered template with detailed supplier information
     """
     try:
+        # Optimize queries by selecting related fields and prefetching related data
         supplier = get_object_or_404(
-            Supplier.objects.prefetch_related('vineyards'),
+            Supplier.objects.prefetch_related(
+                'vineyards__created_by',
+                'vineyards__harvests__created_by',
+                'vineyards__harvests__allocations__tank__cellar'
+            ),
             id=supplier_id
         )
         
-        logger.info("Supplier details accessed", extra={
-            'user': request.user.username,
-            'supplier_id': supplier.id,
-            'supplier_name': supplier.name
-        })
-        
-        return render(request, 'vineyards/supplier_detail.html', {
+        context = {
             'supplier': supplier,
-            'active_tab': 'vineyards'
-        })
-    except Supplier.DoesNotExist:
-        logger.warning(f"Supplier not found: {supplier_id}", extra={
-            'user': request.user.username
-        })
-        raise ResourceNotFoundError(f"Supplier with id {supplier_id} not found")
+            'active_tab': 'suppliers'
+        }
+        
+        return render(request, 'vineyards/supplier_detail.html', context)
+        
     except Exception as e:
-        log_error(e, request)
-        raise
+        log_error(logger, e)
+        messages.error(request, str(e))
+        return redirect('home')
 
 @login_required
 @handle_view_exception

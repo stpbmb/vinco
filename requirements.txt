@@ -2,3 +2,4 @@ Django>=4.2.0
 django-crispy-forms>=2.0
 crispy-bootstrap4>=2022.1
 psycopg2-binary>=2.9.9
+django-debug-toolbar>=4.2.0

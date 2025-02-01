@@ -43,9 +43,11 @@ INSTALLED_APPS = [
     'packaging',
     'harvests',
     'cellars',
+    'debug_toolbar',
 ]
 
 MIDDLEWARE = [
+    'django.middleware.cache.UpdateCacheMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
@@ -55,6 +57,8 @@ MIDDLEWARE = [
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'vinco.middleware.RequestLoggingMiddleware',
     'vinco.middleware.SecurityMiddleware',
+    'debug_toolbar.middleware.DebugToolbarMiddleware',
+    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'vinco.urls'
@@ -128,6 +132,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -142,6 +148,23 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/vineyards/'
 LOGOUT_REDIRECT_URL = '/'
+
+# Debug Toolbar Configuration
+INTERNAL_IPS = [
+    '127.0.0.1',
+]
+
+# Cache settings
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-vinco',
+    }
+}
+
+# Cache timeouts
+CACHE_MIDDLEWARE_SECONDS = 300  # 5 minutes
+CACHE_MIDDLEWARE_KEY_PREFIX = 'vinco'
 
 # Logging Configuration
 LOGGING = {
