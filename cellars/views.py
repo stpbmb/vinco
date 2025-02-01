@@ -1,8 +1,8 @@
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, FormView, DeleteView
+from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView, View, FormView
 from django.urls import reverse_lazy
-from django.shortcuts import get_object_or_404
-from django.http import HttpResponseRedirect
+from django.shortcuts import get_object_or_404, render
+from django.http import JsonResponse, HttpResponseRedirect
 from django.db.models import F, ExpressionWrapper, DecimalField, Q, Sum, Value, FloatField
 from django.db.models.functions import Coalesce
 from core.utils.exceptions import (
@@ -17,6 +17,7 @@ from .forms import TankForm
 import logging
 from django import forms
 from django.contrib import messages
+from django.contrib.auth.decorators import login_required
 
 logger = logging.getLogger('vinco')
 
@@ -165,11 +166,7 @@ class TankDetailView(LoginRequiredMixin, DetailView):
         try:
             pk = self.kwargs.get(self.pk_url_kwarg)
             obj = get_object_or_404(
-                self.model.objects.select_related('cellar').prefetch_related(
-                    'crushed_juice_allocations',
-                    'crushed_juice_allocations__harvest',
-                    'crushed_juice_allocations__created_by'
-                ),
+                self.model.objects.prefetch_related('history'),
                 pk=pk
             )
             return obj
@@ -185,7 +182,8 @@ class TankDetailView(LoginRequiredMixin, DetailView):
     def get_context_data(self, **kwargs):
         try:
             context = super().get_context_data(**kwargs)
-            context['active_tab'] = 'tanks'
+            context['active_tab'] = 'cellars'
+            context['history'] = self.object.history.all().order_by('-date', '-created_at')
             return context
         except Exception as e:
             log_error(e, self.request)
@@ -338,7 +336,9 @@ class TankHistoryView(LoginRequiredMixin, DetailView):
                 self.model.objects.select_related('cellar').prefetch_related(
                     'crushed_juice_allocations',
                     'crushed_juice_allocations__harvest',
-                    'crushed_juice_allocations__created_by'
+                    'crushed_juice_allocations__created_by',
+                    'history',
+                    'history__harvest',
                 ),
                 pk=pk
             )
@@ -357,6 +357,7 @@ class TankHistoryView(LoginRequiredMixin, DetailView):
             context = super().get_context_data(**kwargs)
             context['active_tab'] = 'tanks'
             context['title'] = f'Tank History: {self.object.name}'
+            context['history'] = self.object.history.all().order_by('-date', '-created_at')
             return context
         except Exception as e:
             log_error(e, self.request)
@@ -467,6 +468,16 @@ class TankTransferView(LoginRequiredMixin, FormView):
         response = super().form_invalid(form)
         response.status_code = 400
         return response
+
+class TankAPIView(LoginRequiredMixin, View):
+    """API endpoint for getting tank information."""
+    
+    def get(self, request, pk):
+        tank = get_object_or_404(Tank, pk=pk)
+        return JsonResponse({
+            'capacity': float(tank.capacity),
+            'available_volume': float(tank.available_space),
+        })
 
 class CellarDeleteView(LoginRequiredMixin, UpdateView):
     model = Cellar

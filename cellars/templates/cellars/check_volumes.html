@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="container">
+    <h1>Tank Volume Check</h1>
+    
+    {% for tank in tank_data %}
+    <div class="card mb-4">
+        <div class="card-header">
+            <h3>{{ tank.name }}</h3>
+        </div>
+        <div class="card-body">
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <strong>Current Volume:</strong> {{ tank.current_volume }}L
+                </div>
+                <div class="col-md-4">
+                    <strong>Allocated Volume:</strong> {{ tank.allocated_volume }}L
+                </div>
+                <div class="col-md-4">
+                    <strong>Difference:</strong> 
+                    <span class="{% if tank.difference != 0 %}text-danger{% else %}text-success{% endif %}">
+                        {{ tank.difference }}L
+                    </span>
+                </div>
+            </div>
+            
+            {% if tank.allocations %}
+            <h4>Allocations:</h4>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>Date</th>
+                        <th>Harvest</th>
+                        <th>Volume</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for alloc in tank.allocations %}
+                    <tr>
+                        <td>{{ alloc.date }}</td>
+                        <td>{{ alloc.harvest }}</td>
+                        <td>{{ alloc.volume }}L</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+            {% else %}
+            <p>No allocations for this tank.</p>
+            {% endif %}
+        </div>
+    </div>
+    {% endfor %}
+</div>
+{% endblock %}

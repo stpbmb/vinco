@@ -6,26 +6,23 @@ and managing juice allocations to tanks. It includes functionality for monitorin
 harvest status and managing the flow of juice through the production process.
 """
 
-import logging
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.views.generic import ListView, DetailView, CreateView, UpdateView, DeleteView
-from django.urls import reverse_lazy
-from django.http import JsonResponse, HttpResponseRedirect
 from django.core.exceptions import ValidationError
+from django.http import JsonResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404
+from django.urls import reverse, reverse_lazy
+from django.views.generic import (
+    ListView, DetailView, CreateView, UpdateView, DeleteView
+)
 from django.db.models import F, ExpressionWrapper, DecimalField, Q, Sum, Value, FloatField
 from django.db.models.functions import Coalesce
-from core.utils.exceptions import (
-    handle_view_exception,
-    InvalidOperationError,
-    ResourceNotFoundError,
-    ValidationError,
-    log_error
-)
+from core.utils.exceptions import log_error
 from .models import Harvest, HarvestAllocation
 from .forms import HarvestForm, HarvestAllocationForm
+from django.contrib import messages
+import logging
 
-logger = logging.getLogger('vinco')
+logger = logging.getLogger(__name__)
 
 class HarvestListView(LoginRequiredMixin, ListView):
     """
@@ -336,7 +333,7 @@ class HarvestAllocationCreateView(LoginRequiredMixin, CreateView):
     template_name = 'harvests/allocation_form.html'
 
     def get_success_url(self):
-        return reverse_lazy('harvests:harvest_detail', kwargs={'pk': self.object.harvest.pk})
+        return reverse_lazy('harvests:harvest_detail', kwargs={'pk': self.harvest.pk})
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
@@ -349,6 +346,7 @@ class HarvestAllocationCreateView(LoginRequiredMixin, CreateView):
             context = super().get_context_data(**kwargs)
             context['active_tab'] = 'harvests'
             context['title'] = f'Add Allocation from {self.harvest}'
+            context['harvest'] = self.harvest
             return context
         except Exception as e:
             log_error(e, self.request)
@@ -370,7 +368,7 @@ class HarvestAllocationCreateView(LoginRequiredMixin, CreateView):
                 'volume': form.instance.allocated_volume
             })
 
-            return response
+            return HttpResponseRedirect(self.get_success_url())
         except ValidationError as e:
             form.add_error(None, str(e))
             if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -442,36 +440,49 @@ class HarvestAllocationUpdateView(LoginRequiredMixin, UpdateView):
     template_name = 'harvests/allocation_form.html'
 
     def get_success_url(self):
-        return reverse_lazy('harvests:allocation_detail', kwargs={'pk': self.object.pk})
+        return reverse_lazy('harvests:harvest_detail', kwargs={'pk': self.object.harvest.pk})
 
     def get_form_kwargs(self):
         kwargs = super().get_form_kwargs()
         kwargs['harvest'] = self.object.harvest
         return kwargs
 
-    def form_valid(self, form):
+    def get_context_data(self, **kwargs):
         try:
-            form.instance.updated_by = self.request.user
-            form.instance.full_clean()
-            response = super().form_valid(form)
-
-            logger.info("Harvest allocation updated", extra={
-                'user': self.request.user.username,
-                'allocation_id': form.instance.id,
-                'harvest_id': form.instance.harvest.id,
-                'tank_id': form.instance.tank.id,
-                'volume': form.instance.allocated_volume
-            })
-
-            return response
-        except ValidationError as e:
-            form.add_error(None, str(e))
-            if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
-                return JsonResponse({'errors': form.errors}, status=400)
-            return self.form_invalid(form)
+            context = super().get_context_data(**kwargs)
+            context['harvest'] = self.object.harvest
+            context['active_tab'] = 'harvests'
+            return context
         except Exception as e:
             log_error(e, self.request)
             raise
+
+    def form_valid(self, form):
+        """Handle valid form submission."""
+        try:
+            form.instance.updated_by = self.request.user
+            # Save the form to update the allocation
+            response = super().form_valid(form)
+            
+            # Log the update
+            logger.info("Harvest allocation updated", extra={
+                'user': self.request.user.username,
+                'allocation_id': self.object.id,
+                'harvest_id': self.object.harvest.id,
+                'tank_id': self.object.tank.id,
+                'volume': self.object.allocated_volume
+            })
+            
+            messages.success(self.request, 'Allocation updated successfully.')
+            return response
+            
+        except ValidationError as e:
+            form.add_error(None, str(e))
+            return self.form_invalid(form)
+        except Exception as e:
+            log_error(e, self.request)
+            messages.error(self.request, 'An error occurred while updating the allocation.')
+            return self.form_invalid(form)
 
     def form_invalid(self, form):
         if self.request.headers.get('X-Requested-With') == 'XMLHttpRequest':
@@ -506,7 +517,41 @@ class HarvestAllocationDeleteView(LoginRequiredMixin, DeleteView):
     template_name = 'harvests/allocation_confirm_delete.html'
 
     def get_success_url(self):
+        """Return to the harvest detail page after deletion."""
         return reverse_lazy('harvests:harvest_detail', kwargs={'pk': self.object.harvest.pk})
+
+    def delete(self, request, *args, **kwargs):
+        """Delete the allocation and update the tank volume."""
+        from cellars.models import TankHistory
+        
+        self.object = self.get_object()
+        harvest_id = self.object.harvest.pk
+        
+        try:
+            # Remove the allocated volume from the tank
+            self.object.tank.update_volume(-float(self.object.allocated_volume))
+            
+            # Create history record for volume removal
+            TankHistory.objects.create(
+                tank=self.object.tank,
+                operation_type='allocation',
+                date=self.object.allocation_date,
+                volume=-float(self.object.allocated_volume),
+                harvest=self.object.harvest,
+                created_by=request.user,
+                notes=f"Deleted allocation of {self.object.allocated_volume}L"
+            )
+            
+            # Delete the allocation
+            self.object.delete()
+            
+            messages.success(request, 'Allocation deleted successfully.')
+            return HttpResponseRedirect(self.get_success_url())
+            
+        except Exception as e:
+            log_error(e, request)
+            messages.error(request, 'An error occurred while deleting the allocation.')
+            return HttpResponseRedirect(reverse('harvests:harvest_detail', kwargs={'pk': harvest_id}))
 
 
 class HarvestAllocationListView(LoginRequiredMixin, ListView):

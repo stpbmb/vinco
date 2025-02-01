@@ -23,4 +23,7 @@ urlpatterns = [
     # Allocation URLs
     path('allocations/', views.AllocationListView.as_view(), name='list_allocations'),
     path('allocations/add/', views.AllocationCreateView.as_view(), name='add_allocation'),
+
+    # API URLs
+    path('api/tanks/<int:pk>/', views.TankAPIView.as_view(), name='tank_api'),
 ]

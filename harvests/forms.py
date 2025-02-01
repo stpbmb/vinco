@@ -108,6 +108,10 @@ class HarvestAllocationForm(forms.ModelForm):
         if self.harvest:
             self.fields['harvest'].initial = self.harvest
             self.fields['harvest'].widget = forms.HiddenInput()
+        
+        # Set default allocation date to today if not set
+        if not self.instance.allocation_date:
+            self.fields['allocation_date'].initial = timezone.localdate()
 
     def clean_allocated_volume(self):
         allocated_volume = self.cleaned_data.get('allocated_volume')
@@ -124,23 +128,26 @@ class HarvestAllocationForm(forms.ModelForm):
         harvest = cleaned_data.get('harvest') or self.harvest
 
         if allocated_volume and tank and harvest:
+            # For updates, add back the current allocation's volume
+            current_volume = tank.current_volume
+            if self.instance.pk and self.instance.tank == tank:
+                current_volume -= self.instance.allocated_volume
+            
             # Check tank capacity
-            available_tank_space = tank.capacity - tank.current_volume
+            available_tank_space = tank.capacity - current_volume
             if allocated_volume > available_tank_space:
                 raise ValidationError({
-                    'allocated_volume': 'Allocation would exceed tank capacity'
+                    'allocated_volume': f'Allocation would exceed tank capacity. Available space: {available_tank_space:.2f}L'
                 })
 
             # Check harvest available juice
-            total_juice = harvest.quantity * harvest.juice_yield
-            allocated = harvest.allocations.exclude(pk=self.instance.pk if self.instance.pk else None).aggregate(
-                total=models.Sum('allocated_volume')
-            )['total'] or 0
-            available_juice = total_juice - allocated
+            available_juice = harvest.available_juice
+            if self.instance.pk:  # For updates, add back this allocation's current volume
+                available_juice += float(self.instance.allocated_volume)
 
             if allocated_volume > available_juice:
                 raise ValidationError({
-                    'allocated_volume': 'Cannot allocate more than available juice'
+                    'allocated_volume': f'Cannot allocate more than available juice. Available: {available_juice:.2f}L'
                 })
 
         return cleaned_data

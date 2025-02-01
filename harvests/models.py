@@ -13,6 +13,8 @@ from django.conf import settings
 from vineyards.models import Vineyard
 from decimal import Decimal
 from django.db.models import Sum
+from django.db.models.signals import pre_delete
+from django.dispatch import receiver
 
 class Harvest(models.Model):
     """
@@ -121,7 +123,19 @@ class Harvest(models.Model):
 
     def __str__(self):
         """Return a string representation of the harvest."""
-        return f'Harvest on {self.date} from {self.vineyard.name}'
+        return f"{self.vineyard.name} - {self.date}"
+
+    @property
+    def available_juice(self):
+        """Calculate available juice volume that can still be allocated."""
+        if not self.juice_yield:
+            return 0
+            
+        allocated = self.allocations.aggregate(
+            total=Sum('allocated_volume')
+        )['total'] or 0
+        
+        return float(self.juice_yield) - float(allocated)
 
     def clean(self):
         """
@@ -153,14 +167,6 @@ class Harvest(models.Model):
         self.full_clean()
         super().save(*args, **kwargs)
 
-    @property
-    def available_juice(self):
-        """Calculate available juice volume that can still be allocated."""
-        allocated = self.allocations.aggregate(
-            total=Sum('allocated_volume')
-        )['total'] or 0
-        return self.juice_yield - allocated
-
     class Meta:
         ordering = ['-date', '-created_at']
         verbose_name = 'Harvest'
@@ -187,12 +193,12 @@ class HarvestAllocation(models.Model):
     # Allocation details
     harvest = models.ForeignKey(
         Harvest,
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE,  # Delete allocations when harvest is deleted
         related_name='allocations'
     )
     tank = models.ForeignKey(
         'cellars.Tank',
-        on_delete=models.CASCADE,
+        on_delete=models.CASCADE,  # Delete allocations when tank is deleted
         related_name='harvest_allocations'
     )
     allocated_volume = models.DecimalField(
@@ -254,8 +260,61 @@ class HarvestAllocation(models.Model):
                 )
 
     def save(self, *args, **kwargs):
+        """Save the allocation and update the tank's volume."""
+        from cellars.models import TankHistory
+        
+        is_new = self.pk is None
+        
+        if not is_new:
+            # Get the old allocation volume for updates
+            old_allocation = HarvestAllocation.objects.get(pk=self.pk)
+            # Only update tank volumes if the volume or tank has changed
+            if (old_allocation.allocated_volume != self.allocated_volume or 
+                old_allocation.tank != self.tank):
+                # Remove volume from old tank
+                old_allocation.tank.update_volume(-float(old_allocation.allocated_volume))
+                # Create history record for volume removal
+                TankHistory.objects.create(
+                    tank=old_allocation.tank,
+                    operation_type='allocation',
+                    date=self.allocation_date,
+                    volume=-float(old_allocation.allocated_volume),
+                    harvest=self.harvest,
+                    created_by=self.updated_by or self.created_by,
+                    notes=f"Removed allocation of {old_allocation.allocated_volume}L"
+                )
+                
+                if old_allocation.tank != self.tank:
+                    # Add volume to new tank if tank changed
+                    self.tank.update_volume(float(self.allocated_volume))
+                    # Create history record for new tank
+                    TankHistory.objects.create(
+                        tank=self.tank,
+                        operation_type='allocation',
+                        date=self.allocation_date,
+                        volume=float(self.allocated_volume),
+                        harvest=self.harvest,
+                        created_by=self.updated_by or self.created_by,
+                        notes=f"Added allocation of {self.allocated_volume}L"
+                    )
+        
+        # Save the allocation
         self.full_clean()
         super().save(*args, **kwargs)
+        
+        # Add volume to tank for new allocations or when only volume changed
+        if is_new or (not is_new and old_allocation.tank == self.tank):
+            self.tank.update_volume(float(self.allocated_volume))
+            # Create history record for volume addition
+            TankHistory.objects.create(
+                tank=self.tank,
+                operation_type='allocation',
+                date=self.allocation_date,
+                volume=float(self.allocated_volume),
+                harvest=self.harvest,
+                created_by=self.updated_by or self.created_by,
+                notes=f"{'Added' if is_new else 'Updated'} allocation of {self.allocated_volume}L"
+            )
 
     def __str__(self):
         return f"{self.allocated_volume}L from {self.harvest} to {self.tank}"
@@ -264,3 +323,22 @@ class HarvestAllocation(models.Model):
         ordering = ['-allocation_date', '-created_at']
         verbose_name = 'Harvest Allocation'
         verbose_name_plural = 'Harvest Allocations'
+
+@receiver(pre_delete, sender=HarvestAllocation)
+def remove_allocation_from_tank(sender, instance, **kwargs):
+    """Remove the allocated volume from the tank when an allocation is deleted."""
+    from cellars.models import TankHistory
+    
+    # Remove volume from tank
+    instance.tank.update_volume(-float(instance.allocated_volume))
+    
+    # Create history record
+    TankHistory.objects.create(
+        tank=instance.tank,
+        operation_type='allocation',
+        date=instance.allocation_date,
+        volume=-float(instance.allocated_volume),
+        harvest=instance.harvest,
+        created_by=instance.updated_by or instance.created_by,
+        notes=f"Removed allocation of {instance.allocated_volume}L (allocation deleted)"
+    )

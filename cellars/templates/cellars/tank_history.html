@@ -99,18 +99,15 @@
                                         From harvest: {{ entry.harvest.vineyard.name }}
                                         ({{ entry.harvest.vineyard.get_grape_variety_display }})
                                     {% else %}
-                                        Initial tank volume
+                                        Manual allocation
                                     {% endif %}
                                 {% elif entry.operation_type == 'transfer_in' %}
                                     From tank: {{ entry.source.name }}
                                 {% elif entry.operation_type == 'transfer_out' %}
                                     To tank: {{ entry.destination.name }}
-                                {% elif entry.operation_type == 'bottling' %}
-                                    Bottling operation
                                 {% endif %}
                                 {% if entry.notes %}
-                                    <br>
-                                    <small class="text-muted">{{ entry.notes }}</small>
+                                    <br><small class="text-muted">{{ entry.notes }}</small>
                                 {% endif %}
                             </td>
                         </tr>
@@ -119,16 +116,16 @@
                 </table>
             </div>
             {% else %}
-            <div class="alert alert-info m-3">
-                <i class="fas fa-info-circle"></i> No history records found for this tank.
+            <div class="p-4 text-center text-muted">
+                <p>No volume changes recorded yet.</p>
             </div>
             {% endif %}
         </div>
     </div>
 
-    <div class="mt-4">
-        <a href="{% url 'cellars:list_cellars' %}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left"></i> Back to Cellars
+    <div class="mt-3">
+        <a href="{% url 'cellars:tank_detail' tank.pk %}" class="btn btn-secondary">
+            <i class="fas fa-arrow-left me-2"></i>Back to Tank Details
         </a>
     </div>
 </div>

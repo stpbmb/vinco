@@ -1,183 +1,286 @@
 {% extends 'base.html' %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="card mb-4">
-        <div class="card-header d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">{{ harvest.vineyard.name }} - Harvest Details</h4>
-            <div class="btn-group">
-                <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-primary">
-                    <i class="fas fa-edit me-2"></i> Edit Harvest
-                </a>
-                <a href="{% url 'harvests:list_harvests' %}" class="btn btn-secondary">
-                    <i class="fas fa-arrow-left me-2"></i> Back to List
-                </a>
-            </div>
+<div class="harvest-detail-container">
+    <div class="header">
+        <h1>{{ harvest.vineyard.name }} - Harvest Details</h1>
+        <div class="actions">
+            {% if harvest.juice_yield and harvest.available_juice > 0 %}
+            <a href="{% url 'harvests:allocation_create' harvest.id %}" class="btn btn-primary">
+                <i class="fas fa-wine-bottle me-2"></i>Allocate Juice
+            </a>
+            {% endif %}
+            <a href="{% url 'harvests:edit_harvest' harvest.id %}" class="btn btn-primary">
+                <i class="fas fa-edit me-2"></i>Edit Harvest
+            </a>
+            <a href="{% url 'harvests:list_harvests' %}" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-2"></i>Back to List
+            </a>
         </div>
-        <div class="card-body">
-            <!-- Main Information -->
-            <div class="row mb-4">
-                <div class="col-md-6">
-                    <h5 class="card-title">Harvest Information</h5>
-                    <table class="table">
-                        <tr>
-                            <th style="width: 35%">Vineyard:</th>
-                            <td>{{ harvest.vineyard.name }}</td>
-                        </tr>
-                        <tr>
-                            <th>Grape Variety:</th>
-                            <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
-                        </tr>
-                        <tr>
-                            <th>Harvest Date:</th>
-                            <td>{{ harvest.date }}</td>
-                        </tr>
-                        <tr>
-                            <th>Quantity:</th>
-                            <td>{{ harvest.quantity }} kg</td>
-                        </tr>
-                        {% if harvest.vineyard.ownership_type == 'supplied' %}
-                        <tr>
-                            <th>Price per kg:</th>
-                            <td>{{ harvest.price_per_kg|default:"-" }} kn</td>
-                        </tr>
-                        <tr>
-                            <th>VAT:</th>
-                            <td>{{ harvest.vat_per_kg|default:"0" }}%</td>
-                        </tr>
+    </div>
+
+    <div class="harvest-info">
+        <div class="info-section">
+            <h2>Harvest Information</h2>
+            <table class="details-table">
+                <tr>
+                    <th>Vineyard:</th>
+                    <td>{{ harvest.vineyard.name }}</td>
+                </tr>
+                <tr>
+                    <th>Grape Variety:</th>
+                    <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
+                </tr>
+                <tr>
+                    <th>Harvest Date:</th>
+                    <td>{{ harvest.date }}</td>
+                </tr>
+                <tr>
+                    <th>Quantity:</th>
+                    <td>{{ harvest.quantity }} kg</td>
+                </tr>
+                {% if harvest.vineyard.ownership_type == 'supplied' %}
+                <tr>
+                    <th>Price per kg:</th>
+                    <td>{{ harvest.price_per_kg|default:"-" }} kn</td>
+                </tr>
+                <tr>
+                    <th>VAT:</th>
+                    <td>{{ harvest.vat_per_kg|default:"0" }}%</td>
+                </tr>
+                {% endif %}
+                {% if harvest.notes %}
+                <tr>
+                    <th>Notes:</th>
+                    <td>{{ harvest.notes|linebreaks }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+
+        <div class="info-section">
+            <h2>Crushing/Pressing Details</h2>
+            <table class="details-table">
+                <tr>
+                    <th>Crushing Date:</th>
+                    <td>{{ harvest.crushing_date|default:"-" }}</td>
+                </tr>
+                <tr>
+                    <th>Juice Yield:</th>
+                    <td>{{ harvest.juice_yield|default:"-" }} L</td>
+                </tr>
+                {% if harvest.juice_yield %}
+                <tr>
+                    <th>Available Juice:</th>
+                    <td>
+                        {% if harvest.available_juice > 0 %}
+                        <span class="badge bg-warning text-dark">{{ harvest.available_juice }} L available</span>
+                        {% else %}
+                        <span class="badge bg-success">Fully Allocated</span>
                         {% endif %}
-                        {% if harvest.notes %}
+                    </td>
+                </tr>
+                {% endif %}
+                {% if harvest.pressing_notes %}
+                <tr>
+                    <th>Pressing Notes:</th>
+                    <td>{{ harvest.pressing_notes|linebreaks }}</td>
+                </tr>
+                {% endif %}
+            </table>
+        </div>
+
+        {% if harvest.juice_yield %}
+        <div class="info-section">
+            <div class="section-header">
+                <h2>Juice Allocations</h2>
+                {% if harvest.available_juice > 0 %}
+                <a href="{% url 'harvests:allocation_create' harvest.id %}" class="btn btn-sm btn-primary">
+                    <i class="fas fa-plus me-2"></i>Add Allocation
+                </a>
+                {% endif %}
+            </div>
+            
+            {% if harvest.allocations.exists %}
+            <div class="table-container">
+                <table class="details-table">
+                    <thead>
                         <tr>
-                            <th>Notes:</th>
-                            <td>{{ harvest.notes|linebreaks }}</td>
+                            <th>Date</th>
+                            <th>Tank</th>
+                            <th>Volume</th>
+                            <th>Notes</th>
+                            <th>Actions</th>
                         </tr>
-                        {% endif %}
-                    </table>
-                </div>
-                <div class="col-md-6">
-                    <h5 class="card-title">Crushing/Pressing Details</h5>
-                    <table class="table">
+                    </thead>
+                    <tbody>
+                        {% for allocation in harvest.allocations.all %}
                         <tr>
-                            <th style="width: 35%">Crushing Date:</th>
-                            <td>{{ harvest.crushing_date|default:"-" }}</td>
-                        </tr>
-                        <tr>
-                            <th>Juice Yield:</th>
-                            <td>{{ harvest.juice_yield|default:"-" }} L</td>
-                        </tr>
-                        {% if harvest.juice_yield %}
-                        <tr>
-                            <th>Available Juice:</th>
-                            <td>
-                                {% if harvest.remaining_juice > 0 %}
-                                <span class="badge bg-warning text-dark">{{ harvest.remaining_juice }} L</span>
-                                {% else %}
-                                <span class="badge bg-success">Fully Allocated</span>
-                                {% endif %}
+                            <td>{{ allocation.allocation_date }}</td>
+                            <td>{{ allocation.tank.name }}</td>
+                            <td>{{ allocation.allocated_volume }} L</td>
+                            <td>{{ allocation.notes|default:"-" }}</td>
+                            <td class="actions-cell">
+                                <a href="{% url 'harvests:edit_allocation' allocation.id %}" class="btn btn-sm btn-primary">
+                                    <i class="fas fa-edit"></i>
+                                </a>
                             </td>
                         </tr>
-                        {% endif %}
-                        {% if harvest.pressing_notes %}
-                        <tr>
-                            <th>Pressing Notes:</th>
-                            <td>{{ harvest.pressing_notes|linebreaks }}</td>
-                        </tr>
-                        {% endif %}
-                    </table>
-                </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-
-            <!-- Juice Allocations -->
-            {% if harvest.juice_yield %}
-            <div class="row">
-                <div class="col-12">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h5 class="card-title mb-0">Juice Allocations</h5>
-                        {% if harvest.remaining_juice > 0 %}
-                        <a href="{% url 'harvests:add_allocation' harvest.id %}" class="btn btn-success">
-                            <i class="fas fa-plus me-2"></i> Add Allocation
-                        </a>
-                        {% endif %}
-                    </div>
-                    {% if harvest.harvestallocation_set.exists %}
-                    <div class="table-responsive">
-                        <table class="table">
-                            <thead>
-                                <tr>
-                                    <th>Tank</th>
-                                    <th>Volume</th>
-                                    <th>Date</th>
-                                    <th>Notes</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for allocation in harvest.harvestallocation_set.all %}
-                                <tr>
-                                    <td>{{ allocation.tank.name }}</td>
-                                    <td>{{ allocation.volume }} L</td>
-                                    <td>{{ allocation.date }}</td>
-                                    <td>{{ allocation.notes|default:"-" }}</td>
-                                    <td>
-                                        <a href="{% url 'harvests:edit_allocation' allocation.id %}" class="btn btn-sm btn-primary">
-                                            <i class="fas fa-edit"></i>
-                                        </a>
-                                    </td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                    {% else %}
-                    <div class="alert alert-info">
-                        No allocations recorded yet.
-                    </div>
-                    {% endif %}
-                </div>
-            </div>
+            {% else %}
+            <p class="text-muted">No juice allocations yet.</p>
             {% endif %}
         </div>
+        {% endif %}
     </div>
 </div>
 
 <style>
-.btn-group {
+.harvest-detail-container {
+    padding: 20px;
+}
+
+.header {
     display: flex;
-    gap: 10px;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    margin: 0;
+    color: #2c3e50;
+    font-size: 2rem;
+}
+
+.actions {
+    display: flex;
+    gap: 1rem;
+}
+
+.harvest-info {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.info-section {
+    background: white;
+    border-radius: 8px;
+    padding: 1.5rem;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.info-section h2 {
+    color: #2c3e50;
+    font-size: 1.5rem;
+    margin-bottom: 1rem;
+}
+
+.section-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.section-header h2 {
+    margin: 0;
+}
+
+.details-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.details-table th,
+.details-table td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+.details-table th {
+    width: 200px;
+    color: #4a5568;
+    font-weight: 600;
+}
+
+.table-container {
+    overflow-x: auto;
+}
+
+.actions-cell {
+    white-space: nowrap;
+}
+
+.badge {
+    padding: 0.5em 0.75em;
+    border-radius: 4px;
+    font-weight: 500;
 }
 
 .btn {
     display: inline-flex;
     align-items: center;
-}
-
-.badge {
-    font-size: 0.875rem;
-    padding: 0.4em 0.8em;
-}
-
-.table th {
-    background-color: #f8f9fa;
+    padding: 8px 16px;
+    text-decoration: none;
+    border-radius: 4px;
+    transition: all 0.2s;
+    border: none;
 }
 
 .btn-sm {
-    padding: 0.25rem 0.5rem;
+    padding: 4px 8px;
     font-size: 0.875rem;
 }
 
+.btn-primary {
+    background-color: #3498db;
+    color: white;
+}
+
+.btn-primary:hover {
+    background-color: #2980b9;
+    color: white;
+}
+
+.btn-secondary {
+    background-color: #6c757d;
+    color: white;
+}
+
+.btn-secondary:hover {
+    background-color: #5a6268;
+    color: white;
+}
+
+.text-muted {
+    color: #6c757d;
+}
+
 @media (max-width: 768px) {
-    .btn-group {
+    .header {
         flex-direction: column;
+        gap: 1rem;
+        align-items: flex-start;
     }
     
-    .card-header {
+    .actions {
         flex-direction: column;
-        gap: 10px;
+        width: 100%;
     }
     
     .btn {
         width: 100%;
         justify-content: center;
+    }
+    
+    .details-table th {
+        width: 120px;
     }
 }
 </style>

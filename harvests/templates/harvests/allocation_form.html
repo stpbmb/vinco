@@ -29,20 +29,45 @@
                     <td>{{ harvest.juice_yield }}L</td>
                 </tr>
                 <tr>
-                    <th>Already Allocated:</th>
-                    <td>{{ harvest.total_allocated_volume }}L</td>
-                </tr>
-                <tr>
                     <th>Available for Allocation:</th>
-                    <td>{{ harvest.remaining_juice }}L</td>
+                    <td>{{ harvest.available_juice }}L</td>
                 </tr>
             </table>
         </div>
 
         <form method="post">
             {% csrf_token %}
-            {{ form|crispy }}
-            <button type="submit" class="btn btn-primary">Save Allocation</button>
+            <div class="form-group">
+                {{ form.harvest|as_crispy_field }}
+            </div>
+            <div class="form-group">
+                {{ form.tank|as_crispy_field }}
+                <div id="tank-info" class="tank-info alert alert-info" style="display: none;">
+                    <table class="details-table">
+                        <tr>
+                            <th>Tank Capacity:</th>
+                            <td id="tank-capacity">-</td>
+                        </tr>
+                        <tr>
+                            <th>Available Space:</th>
+                            <td id="tank-available">-</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="form-group">
+                {{ form.allocated_volume|as_crispy_field }}
+            </div>
+            <div class="form-group">
+                {{ form.allocation_date|as_crispy_field }}
+            </div>
+            <div class="form-actions mt-4">
+                <button type="submit" class="btn btn-primary">Save Allocation</button>
+                {% if object.pk %}
+                <a href="{% url 'harvests:delete_allocation' object.pk %}" class="btn btn-danger" onclick="return confirm('Are you sure you want to delete this allocation?')">Delete Allocation</a>
+                {% endif %}
+                <a href="{% url 'harvests:harvest_detail' harvest.id %}" class="btn btn-secondary">Cancel</a>
+            </div>
         </form>
     </div>
 </div>
@@ -78,6 +103,7 @@
     .details-table {
         width: 100%;
         border-collapse: collapse;
+        margin-bottom: 20px;
     }
     .details-table th,
     .details-table td {
@@ -100,14 +126,66 @@
         background-color: #6c757d;
         color: white;
     }
-    .btn-primary {
-        background-color: #007bff;
+    .btn-secondary:hover {
+        background-color: #5a6268;
         color: white;
-        border: none;
-        cursor: pointer;
     }
-    .btn-primary:hover {
-        background-color: #0056b3;
+    .tank-info {
+        margin: 10px 0;
+        padding: 15px;
+        border-radius: 4px;
+    }
+    .tank-info .details-table {
+        margin-bottom: 0;
+    }
+    .tank-info .details-table th,
+    .tank-info .details-table td {
+        border-bottom: 1px solid rgba(0,0,0,0.1);
+    }
+    .tank-info .details-table tr:last-child th,
+    .tank-info .details-table tr:last-child td {
+        border-bottom: none;
+    }
+    .form-group {
+        margin-bottom: 1.5rem;
+    }
+    .form-actions {
+        display: flex;
+        gap: 10px;
+    }
+
+    .form-actions .btn {
+        min-width: 120px;
     }
 </style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const tankSelect = document.querySelector('#id_tank');
+    const tankInfo = document.querySelector('#tank-info');
+    const tankCapacity = document.querySelector('#tank-capacity');
+    const tankAvailable = document.querySelector('#tank-available');
+
+    if (tankSelect) {
+        tankSelect.addEventListener('change', function() {
+            const tankId = this.value;
+            if (tankId) {
+                fetch(`/cellars/api/tanks/${tankId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        tankInfo.style.display = 'block';
+                        tankCapacity.textContent = `${data.capacity}L`;
+                        tankAvailable.textContent = `${data.available_volume}L`;
+                    })
+                    .catch(error => {
+                        console.error('Error fetching tank info:', error);
+                        tankInfo.style.display = 'none';
+                    });
+            } else {
+                tankInfo.style.display = 'none';
+            }
+        });
+    }
+});
+</script>
 {% endblock %}

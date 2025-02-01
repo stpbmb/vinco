@@ -42,7 +42,7 @@
                                     <td>{{ tank.get_tank_type_display }}</td>
                                     <td>{{ tank.capacity }} L</td>
                                     <td>{{ tank.current_volume }} L</td>
-                                    <td>{{ tank.capacity|subtract:tank.current_volume }} L</td>
+                                    <td>{{ tank.capacity|sub:tank.current_volume }} L</td>
                                     <td class="actions-cell">
                                         <a href="{% url 'cellars:edit_tank' tank.id %}" class="btn-small">Edit</a>
                                         <a href="{% url 'cellars:transfer_wine' %}?source={{ tank.id }}" class="btn-small btn-transfer">Transfer From</a>
