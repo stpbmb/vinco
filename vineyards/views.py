@@ -229,18 +229,20 @@ def vineyard_detail(request, vineyard_id):
         Rendered template with detailed vineyard information
     """
     try:
-        # Optimize queries by selecting related fields and prefetching related data
+        # Optimize queries by selecting related fields
         vineyard = get_object_or_404(
             Vineyard.objects.select_related(
                 'supplier',
                 'created_by'
             ).prefetch_related(
-                'harvests__created_by',
-                'harvests__allocations__tank__cellar',
-                'harvests__allocations__created_by'
+                'harvests__created_by'
             ),
             id=vineyard_id
         )
+        
+        # Check if user has permission to view this vineyard
+        if not request.user.has_perm('vineyards.view_all_vineyards') and vineyard.created_by != request.user:
+            raise PermissionDenied("You don't have permission to view this vineyard.")
         
         context = {
             'vineyard': vineyard,
@@ -250,9 +252,12 @@ def vineyard_detail(request, vineyard_id):
         return render(request, 'vineyards/vineyard_detail.html', context)
         
     except Exception as e:
-        log_error(logger, e)
-        messages.error(request, str(e))
-        return redirect('home')
+        logger.error(f"Error viewing vineyard {vineyard_id}: {str(e)}", extra={
+            'user': request.user.username,
+            'vineyard_id': vineyard_id
+        })
+        messages.error(request, "An error occurred while viewing the vineyard.")
+        return redirect('vineyards:list_vineyards')
 
 @login_required
 @permission_required(['vineyards.delete_vineyard', 'vineyards.manage_vineyards'], raise_exception=True)

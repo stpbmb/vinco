@@ -132,6 +132,9 @@ USE_TZ = True
 
 STATIC_URL = 'static/'
 STATIC_ROOT = BASE_DIR / 'staticfiles'
+STATICFILES_DIRS = [
+    BASE_DIR / 'static',
+]
 STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
 
 # Default primary key field type
@@ -167,9 +170,8 @@ CACHE_MIDDLEWARE_KEY_PREFIX = 'vinco'
 
 # Rate limiting settings
 RATELIMIT_ENABLE = True
-RATELIMIT_USE_CACHE = 'default'
-RATELIMIT_VIEW_LIMIT = '100/h'  # 100 requests per hour per view
-RATELIMIT_LOGIN_LIMIT = '5/m'   # 5 login attempts per minute
+RATELIMIT_VIEW_LIMIT = "100/h"  # 100 requests per hour per IP per view
+RATELIMIT_LOGIN_LIMIT = "5/h"   # 5 login attempts per hour per IP
 
 # Logging Configuration
 LOGGING = {

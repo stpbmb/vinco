@@ -60,53 +60,26 @@ def handle_view_exception(view_func):
             }, status=403)
         except VincoError as e:
             request_id = str(uuid.uuid4())
-            logger.error(f"Application error: {str(e)}", extra={
-                'request_id': request_id,
-                'error_code': e.code,
-                'request_path': request.path,
-                'user': request.user.username
-            })
+            log_error(logger, e, request_id=request_id, request_path=request.path, user=request.user.username)
             return render(request, 'errors/500.html', {
                 'error_code': e.code or '500',
                 'request_id': request_id
             }, status=500)
         except Exception as e:
             request_id = str(uuid.uuid4())
-            logger.exception(f"Unhandled error: {str(e)}", extra={
-                'request_id': request_id,
-                'request_path': request.path,
-                'user': request.user.username
-            })
+            log_error(logger, e, request_id=request_id, request_path=request.path, user=request.user.username)
             return render(request, 'errors/500.html', {
                 'error_code': '500',
                 'request_id': request_id
             }, status=500)
     return wrapper
 
-def log_error(error, request=None, extra=None):
-    """
-    Utility function to log errors with consistent formatting.
-    
-    Args:
-        error: The error object or message
-        request: Optional Django request object
-        extra: Optional dict of extra information to log
-    """
-    extra_data = {
-        'request_id': str(uuid.uuid4()),
+def log_error(logger, error, **kwargs):
+    """Log an error with additional context information."""
+    extra = {
+        'error_type': type(error).__name__,
+        'error_message': str(error),
+        **kwargs
     }
     
-    if request:
-        extra_data.update({
-            'request_path': request.path,
-            'user': request.user.username if request.user.is_authenticated else 'anonymous',
-            'method': request.method,
-        })
-    
-    if extra:
-        extra_data.update(extra)
-    
-    if isinstance(error, Exception):
-        logger.exception(str(error), extra=extra_data)
-    else:
-        logger.error(str(error), extra=extra_data)
+    logger.error(f"{type(error).__name__}: {str(error)}", extra=extra)

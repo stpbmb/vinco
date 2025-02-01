@@ -1,0 +1,44 @@
+.error-page {
+    padding-top: 60px;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+}
+
+.error-page .display-1 {
+    font-size: 8rem;
+    font-weight: 700;
+    color: #dc3545;
+    margin-bottom: 1rem;
+}
+
+.error-page h2 {
+    color: #343a40;
+    margin-bottom: 2rem;
+}
+
+.error-page .lead {
+    color: #6c757d;
+    margin-bottom: 2rem;
+}
+
+.error-page p {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+}
+
+.error-page .btn-primary {
+    padding: 0.75rem 2rem;
+    font-size: 1.1rem;
+}
+
+/* Animation for the error code */
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.05); }
+    100% { transform: scale(1); }
+}
+
+.error-page .display-1 {
+    animation: pulse 2s infinite;
+}

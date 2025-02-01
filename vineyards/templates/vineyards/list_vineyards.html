@@ -1,5 +1,6 @@
 {% extends 'base.html' %}
 {% load cache %}
+{% load vineyard_filters %}
 
 {% block content %}
 <div class="vineyards-container">
@@ -58,10 +59,10 @@
                                     <td>{{ vineyard.location }}</td>
                                     <td>{{ vineyard.size }}</td>
                                     <td>{{ vineyard.get_grape_variety_display }}</td>
-                                    <td>{{ vineyard.planting_year|default:"-" }}</td>
-                                    <td>{{ vineyard.cadastral_parcel|default:"-" }}</td>
-                                    <td>{{ vineyard.cadastral_county|default:"-" }}</td>
-                                    <td>{{ vineyard.arkod_id|default:"-" }}</td>
+                                    <td>{{ vineyard.planting_year|default_if_none_or_empty:"-" }}</td>
+                                    <td>{{ vineyard.cadastral_parcel|default_if_none_or_empty:"-" }}</td>
+                                    <td>{{ vineyard.cadastral_county|default_if_none_or_empty:"-" }}</td>
+                                    <td>{{ vineyard.arkod_id|default_if_none_or_empty:"-" }}</td>
                                 </tr>
                             {% endfor %}
                         </tbody>
@@ -104,9 +105,9 @@
                                     <td>{{ vineyard.location }}</td>
                                     <td>{{ vineyard.size }}</td>
                                     <td>{{ vineyard.get_grape_variety_display }}</td>
-                                    <td>{{ vineyard.planting_year|default:"-" }}</td>
-                                    <td>{{ vineyard.cadastral_parcel|default:"-" }}</td>
-                                    <td>{{ vineyard.cadastral_county|default:"-" }}</td>
+                                    <td>{{ vineyard.planting_year|default_if_none_or_empty:"-" }}</td>
+                                    <td>{{ vineyard.cadastral_parcel|default_if_none_or_empty:"-" }}</td>
+                                    <td>{{ vineyard.cadastral_county|default_if_none_or_empty:"-" }}</td>
                                     <td>{{ vineyard.supplier.name }}</td>
                                 </tr>
                             {% endfor %}

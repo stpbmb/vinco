@@ -21,3 +21,261 @@ Traceback (most recent call last):
     period_seconds = int(period[:-1]) * 3600
                      ~~~^^^^^^^^^^^^^
 ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:06:39,309 log 73069 6159085568 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:07:04,204 log 73069 6159085568 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:07:06,666 log 73069 6159085568 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:07:25,071 log 73069 6159085568 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:08:36,814 log 73484 6171570176 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:08:50,045 log 73484 6171570176 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:08:53,626 log 73484 6171570176 Internal Server Error: /harvests/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:15:02,358 log 73781 6171963392 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:15:15,567 log 73781 6171963392 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/utils/deprecation.py", line 128, in __call__
+    response = self.process_request(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 85, in process_request
+    if not self.check_view_rate_limit(ip, path):
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 108, in check_view_rate_limit
+    limit = self.parse_limit(settings.RATELIMIT_VIEW_LIMIT)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 117, in parse_limit
+    period_seconds = int(period[:-1]) * 3600
+                     ~~~^^^^^^^^^^^^^
+ValueError: invalid literal for int() with base 10: ''
+ERROR 2025-02-01 12:24:54,712 exceptions 74369 6197833728 Unhandled error: 'AttributeError' object has no attribute 'path'
+Traceback (most recent call last):
+  File "/Users/stpbmb/vinco/vineyards/views.py", line 233, in vineyard_detail
+    vineyard = get_object_or_404(
+        Vineyard.objects.select_related(
+    ...<7 lines>...
+        id=vineyard_id
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/shortcuts.py", line 86, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 645, in get
+    num = len(clone)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 2355, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'allocations' on Harvest object, 'harvests__allocations__tank__cellar' is an invalid parameter to prefetch_related()
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/stpbmb/vinco/vinco/exceptions.py", line 42, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/stpbmb/vinco/vineyards/views.py", line 253, in vineyard_detail
+    log_error(logger, e)
+    ~~~~~~~~~^^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/exceptions.py", line 101, in log_error
+    'request_path': request.path,
+                    ^^^^^^^^^^^^
+AttributeError: 'AttributeError' object has no attribute 'path'
+ERROR 2025-02-01 12:24:54,748 log 74369 6197833728 Internal Server Error: /vineyards/23/
+ERROR 2025-02-01 12:25:28,924 exceptions 74369 6197833728 Unhandled error: 'AttributeError' object has no attribute 'path'
+Traceback (most recent call last):
+  File "/Users/stpbmb/vinco/vineyards/views.py", line 233, in vineyard_detail
+    vineyard = get_object_or_404(
+        Vineyard.objects.select_related(
+    ...<7 lines>...
+        id=vineyard_id
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/shortcuts.py", line 86, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 645, in get
+    num = len(clone)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 2355, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'allocations' on Harvest object, 'harvests__allocations__tank__cellar' is an invalid parameter to prefetch_related()
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/stpbmb/vinco/vinco/exceptions.py", line 42, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/stpbmb/vinco/vineyards/views.py", line 253, in vineyard_detail
+    log_error(logger, e)
+    ~~~~~~~~~^^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/exceptions.py", line 101, in log_error
+    'request_path': request.path,
+                    ^^^^^^^^^^^^
+AttributeError: 'AttributeError' object has no attribute 'path'
+ERROR 2025-02-01 12:25:28,944 log 74369 6197833728 Internal Server Error: /vineyards/23/
+ERROR 2025-02-01 12:25:34,081 exceptions 74369 6197833728 Unhandled error: 'AttributeError' object has no attribute 'path'
+Traceback (most recent call last):
+  File "/Users/stpbmb/vinco/vineyards/views.py", line 233, in vineyard_detail
+    vineyard = get_object_or_404(
+        Vineyard.objects.select_related(
+    ...<7 lines>...
+        id=vineyard_id
+    )
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/shortcuts.py", line 86, in get_object_or_404
+    return queryset.get(*args, **kwargs)
+           ~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 645, in get
+    num = len(clone)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 382, in __len__
+    self._fetch_all()
+    ~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 1930, in _fetch_all
+    self._prefetch_related_objects()
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 1320, in _prefetch_related_objects
+    prefetch_related_objects(self._result_cache, *self._prefetch_related_lookups)
+    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/db/models/query.py", line 2355, in prefetch_related_objects
+    raise AttributeError(
+    ...<7 lines>...
+    )
+AttributeError: Cannot find 'allocations' on Harvest object, 'harvests__allocations__tank__cellar' is an invalid parameter to prefetch_related()
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/Users/stpbmb/vinco/vinco/exceptions.py", line 42, in wrapper
+    return view_func(request, *args, **kwargs)
+  File "/Users/stpbmb/vinco/vineyards/views.py", line 253, in vineyard_detail
+    log_error(logger, e)
+    ~~~~~~~~~^^^^^^^^^^^
+  File "/Users/stpbmb/vinco/vinco/exceptions.py", line 101, in log_error
+    'request_path': request.path,
+                    ^^^^^^^^^^^^
+AttributeError: 'AttributeError' object has no attribute 'path'
+ERROR 2025-02-01 12:25:34,101 log 74369 6197833728 Internal Server Error: /vineyards/23/

@@ -5,124 +5,267 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Vinco - Wine Management System</title>
-    <link rel="stylesheet" href="{% static 'css/common.css' %}">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/common.css' %}">
     {% block extra_css %}{% endblock %}
     {% block styles %}{% endblock %}
 </head>
 <body>
-    <!-- Vertical Navbar -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark fixed-top">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/">Vinco</a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-        </div>
-    </nav>
+    <div class="wrapper">
+        <!-- Sidebar -->
+        <nav id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <h3>Vinco</h3>
+            </div>
 
-    <div class="container-fluid">
-        <div class="row">
-            <!-- Sidebar -->
-            <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-                <div class="position-sticky pt-5">
-                    <ul class="nav flex-column">
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.namespace == 'vineyards' %}active{% endif %}" href="{% url 'vineyards:list_vineyards' %}">
-                                <i class="fas fa-mountain me-2"></i> Vineyards
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.namespace == 'harvests' %}active{% endif %}" href="{% url 'harvests:list_harvests' %}">
-                                <i class="fas fa-apple-alt me-2"></i> Harvests
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.namespace == 'cellars' %}active{% endif %}" href="{% url 'cellars:list_cellars' %}">
-                                <i class="fas fa-warehouse me-2"></i> Cellars
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link {% if request.resolver_match.namespace == 'packaging' %}active{% endif %}" href="{% url 'packaging:list_bottles' %}">
-                                <i class="fas fa-wine-bottle me-2"></i> Packaging
-                            </a>
-                        </li>
-                    </ul>
+            <ul class="list-unstyled components">
+                <li class="{% if request.resolver_match.namespace == 'vineyards' %}active{% endif %}">
+                    <a href="{% url 'vineyards:list_vineyards' %}">
+                        <i class="fas fa-mountain me-2"></i>
+                        <span>Vineyards</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.namespace == 'harvests' %}active{% endif %}">
+                    <a href="{% url 'harvests:list_harvests' %}">
+                        <i class="fas fa-apple-alt me-2"></i>
+                        <span>Harvests</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.namespace == 'cellars' %}active{% endif %}">
+                    <a href="{% url 'cellars:list_cellars' %}">
+                        <i class="fas fa-warehouse me-2"></i>
+                        <span>Cellars</span>
+                    </a>
+                </li>
+                <li class="{% if request.resolver_match.namespace == 'packaging' %}active{% endif %}">
+                    <a href="{% url 'packaging:list_bottles' %}">
+                        <i class="fas fa-wine-bottle me-2"></i>
+                        <span>Packaging</span>
+                    </a>
+                </li>
+            </ul>
 
-                    {% if request.user.is_authenticated %}
-                    <hr>
-                    <div class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
-                            <i class="fas fa-user-circle me-2"></i> {{ request.user.username }}
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
-                        </ul>
-                    </div>
-                    {% endif %}
+            {% if request.user.is_authenticated %}
+            <div class="user-section">
+                <div class="user-info">
+                    <i class="fas fa-user-circle"></i>
+                    <span>{{ request.user.username }}</span>
+                </div>
+                <a href="{% url 'logout' %}" class="logout-link">
+                    <i class="fas fa-sign-out-alt"></i>
+                    <span>Logout</span>
+                </a>
+            </div>
+            {% endif %}
+        </nav>
+
+        <!-- Page Content -->
+        <div id="content">
+            <!-- Top Navbar -->
+            <nav class="navbar navbar-expand-lg navbar-light">
+                <div class="container-fluid">
+                    <button type="button" id="sidebarCollapse" class="btn btn-light">
+                        <i class="fas fa-bars"></i>
+                    </button>
                 </div>
             </nav>
 
-            <!-- Main content -->
-            <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-                <div class="pt-5">
-                    {% if messages %}
-                    <div class="messages">
-                        {% for message in messages %}
-                        <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
-                            {{ message }}
-                            <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                        </div>
-                        {% endfor %}
+            <!-- Main Content -->
+            <div class="container-fluid">
+                {% if messages %}
+                <div class="messages">
+                    {% for message in messages %}
+                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
                     </div>
-                    {% endif %}
-
-                    {% block content %}{% endblock %}
+                    {% endfor %}
                 </div>
-            </main>
+                {% endif %}
+
+                {% block content %}{% endblock %}
+            </div>
         </div>
     </div>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        document.getElementById('sidebarCollapse').addEventListener('click', function() {
+            document.getElementById('sidebar').classList.toggle('active');
+            document.getElementById('content').classList.toggle('active');
+        });
+    </script>
     {% block extra_js %}{% endblock %}
 
     <style>
+    :root {
+        --sidebar-width: 250px;
+        --sidebar-collapsed-width: 80px;
+        --primary-color: #2c3e50;
+        --secondary-color: #34495e;
+        --text-color: #ecf0f1;
+        --hover-color: #3498db;
+    }
+
     body {
-        padding-top: 56px;
+        font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+        background: #f8f9fa;
+        margin: 0;
+        padding: 0;
     }
+
+    .wrapper {
+        display: flex;
+        width: 100%;
+        align-items: stretch;
+    }
+
     .sidebar {
+        min-width: var(--sidebar-width);
+        max-width: var(--sidebar-width);
+        background: var(--primary-color);
+        color: var(--text-color);
+        transition: all 0.3s;
+        height: 100vh;
         position: fixed;
-        top: 0;
-        bottom: 0;
-        left: 0;
-        z-index: 100;
-        padding: 48px 0 0;
-        box-shadow: inset -1px 0 0 rgba(0, 0, 0, .1);
+        z-index: 1000;
     }
-    .sidebar .nav-link {
-        font-weight: 500;
-        color: #333;
+
+    .sidebar.active {
+        min-width: var(--sidebar-collapsed-width);
+        max-width: var(--sidebar-collapsed-width);
     }
-    .sidebar .nav-link.active {
-        color: #2470dc;
+
+    .sidebar.active .sidebar-header h3 {
+        display: none;
     }
-    .sidebar .nav-link:hover {
-        color: #2470dc;
+
+    .sidebar.active span {
+        display: none;
     }
-    .sidebar-heading {
-        font-size: .75rem;
-        text-transform: uppercase;
+
+    .sidebar-header {
+        padding: 20px;
+        background: var(--secondary-color);
     }
-    .navbar-brand {
-        padding-top: .75rem;
-        padding-bottom: .75rem;
+
+    .sidebar-header h3 {
+        margin: 0;
+        font-size: 1.5em;
     }
+
+    .sidebar ul.components {
+        padding: 20px 0;
+        border-bottom: 1px solid var(--secondary-color);
+    }
+
+    .sidebar ul li {
+        padding: 0;
+    }
+
+    .sidebar ul li a {
+        padding: 15px 20px;
+        display: flex;
+        align-items: center;
+        color: var(--text-color);
+        text-decoration: none;
+        transition: all 0.3s;
+    }
+
+    .sidebar ul li a:hover,
+    .sidebar ul li.active a {
+        background: var(--secondary-color);
+        color: var(--hover-color);
+    }
+
+    .sidebar ul li a i {
+        min-width: 25px;
+    }
+
+    .user-section {
+        padding: 20px;
+        border-top: 1px solid var(--secondary-color);
+        margin-top: auto;
+    }
+
+    .user-info {
+        display: flex;
+        align-items: center;
+        margin-bottom: 10px;
+    }
+
+    .user-info i {
+        margin-right: 10px;
+    }
+
+    .logout-link {
+        color: var(--text-color);
+        text-decoration: none;
+        display: flex;
+        align-items: center;
+    }
+
+    .logout-link:hover {
+        color: var(--hover-color);
+    }
+
+    .logout-link i {
+        margin-right: 10px;
+    }
+
+    #content {
+        width: calc(100% - var(--sidebar-width));
+        min-height: 100vh;
+        margin-left: var(--sidebar-width);
+        transition: all 0.3s;
+        padding: 20px;
+    }
+
+    #content.active {
+        width: calc(100% - var(--sidebar-collapsed-width));
+        margin-left: var(--sidebar-collapsed-width);
+    }
+
     .navbar {
-        z-index: 1030;
+        padding: 15px 10px;
+        background: #fff;
+        border: none;
+        border-radius: 0;
+        margin-bottom: 20px;
+        box-shadow: 1px 1px 3px rgba(0, 0, 0, 0.1);
     }
-    .dropdown-menu {
-        position: absolute;
+
+    #sidebarCollapse {
+        background: transparent;
+        border: none;
+    }
+
+    #sidebarCollapse:focus {
+        box-shadow: none;
+    }
+
+    .table-container {
+        background: white;
+        padding: 20px;
+        border-radius: 8px;
+        box-shadow: 0 2px 4px rgba(0,0,0,.05);
+    }
+
+    @media (max-width: 768px) {
+        .sidebar {
+            min-width: var(--sidebar-collapsed-width);
+            max-width: var(--sidebar-collapsed-width);
+        }
+        
+        .sidebar span {
+            display: none;
+        }
+        
+        #content {
+            width: calc(100% - var(--sidebar-collapsed-width));
+            margin-left: var(--sidebar-collapsed-width);
+        }
     }
     </style>
 </body>

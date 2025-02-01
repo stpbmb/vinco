@@ -109,15 +109,30 @@ class RateLimitMiddleware(MiddlewareMixin):
         return self.check_limit(key, limit)
 
     def parse_limit(self, limit_str):
-        count, period = limit_str.split('/')
-        count = int(count)
-        if period.endswith('m'):
-            period_seconds = int(period[:-1]) * 60
-        elif period.endswith('h'):
-            period_seconds = int(period[:-1]) * 3600
-        else:
-            period_seconds = int(period)
-        return count, period_seconds
+        """Parse rate limit string in format 'number/period' where period is in seconds, minutes (m), or hours (h)."""
+        if not limit_str:
+            # Default to 100 requests per hour if no limit is specified
+            return 100, 3600
+            
+        try:
+            count, period = limit_str.split('/')
+            count = int(count)
+            
+            if not period:
+                # Default to seconds if no period specified
+                period_seconds = 3600
+            elif period.endswith('m'):
+                period_seconds = int(period[:-1]) * 60
+            elif period.endswith('h'):
+                period_seconds = int(period[:-1]) * 3600
+            else:
+                period_seconds = int(period)
+                
+            return count, period_seconds
+        except (ValueError, AttributeError):
+            # If there's any error parsing, use default values
+            logger.warning(f"Invalid rate limit format: {limit_str}. Using default: 100/h")
+            return 100, 3600
 
     def check_limit(self, key, limit):
         count, period = limit

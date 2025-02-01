@@ -52,6 +52,13 @@ class VineyardForm(forms.ModelForm):
             if self.instance.ownership_type != 'supplied':
                 self.fields['supplier'].widget = forms.HiddenInput()
 
+    def clean_planting_year(self):
+        """Clean the planting_year field to handle empty values."""
+        planting_year = self.cleaned_data.get('planting_year')
+        if planting_year == '':
+            return None
+        return planting_year
+
     def clean(self):
         cleaned_data = super().clean()
         
