@@ -40,6 +40,15 @@ class Supplier(models.Model):
         """Return a string representation of the supplier."""
         return self.name
 
+    class Meta:
+        ordering = ['name']
+        permissions = [
+            ("view_all_suppliers", "Can view all suppliers"),
+            ("manage_suppliers", "Can manage suppliers"),
+            ("export_supplier_data", "Can export supplier data"),
+            ("view_supplier_analytics", "Can view supplier analytics"),
+        ]
+
 class Vineyard(models.Model):
     """
     Represents a vineyard in the wine production system.
@@ -196,5 +205,11 @@ class Vineyard(models.Model):
     
     class Meta:
         ordering = ['name']
+        permissions = [
+            ("view_all_vineyards", "Can view all vineyards"),
+            ("manage_vineyards", "Can manage vineyards"),
+            ("export_vineyard_data", "Can export vineyard data"),
+            ("view_vineyard_analytics", "Can view vineyard analytics"),
+        ]
         verbose_name = 'Vineyard'
         verbose_name_plural = 'Vineyards'

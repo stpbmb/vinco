@@ -1,0 +1,8 @@
+ERROR 2025-02-01 11:42:26,388 log 69585 6202945536 Internal Server Error: /vineyards/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Users/stpbmb/vinco/vinco/middleware.py", line 62, in __call__
+    if not settings.RATELIMIT_ENABLE:
+           ^^^^^^^^
+NameError: name 'settings' is not defined

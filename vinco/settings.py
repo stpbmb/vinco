@@ -59,6 +59,7 @@ MIDDLEWARE = [
     'vinco.middleware.SecurityMiddleware',
     'debug_toolbar.middleware.DebugToolbarMiddleware',
     'django.middleware.cache.FetchFromCacheMiddleware',
+    'vinco.middleware.RateLimitMiddleware',
 ]
 
 ROOT_URLCONF = 'vinco.urls'
@@ -165,6 +166,12 @@ CACHES = {
 # Cache timeouts
 CACHE_MIDDLEWARE_SECONDS = 300  # 5 minutes
 CACHE_MIDDLEWARE_KEY_PREFIX = 'vinco'
+
+# Rate limiting settings
+RATELIMIT_ENABLE = True
+RATELIMIT_USE_CACHE = 'default'
+RATELIMIT_VIEW_LIMIT = '100/h'  # 100 requests per hour per view
+RATELIMIT_LOGIN_LIMIT = '5/m'   # 5 login attempts per minute
 
 # Logging Configuration
 LOGGING = {

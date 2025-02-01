@@ -8,7 +8,8 @@ various criteria.
 
 import logging
 from django.shortcuts import render, get_object_or_404, redirect
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
+from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
@@ -21,11 +22,13 @@ from vinco.exceptions import (
 )
 from .models import Vineyard, Supplier
 from .forms import VineyardForm, SupplierForm
+from django.db.models import Q
 
 logger = logging.getLogger('vinco')
 
 # Vineyard Views
 @login_required
+@permission_required('vineyards.view_vineyard', raise_exception=True)
 @handle_view_exception
 def list_vineyards(request):
     """
@@ -50,6 +53,10 @@ def list_vineyards(request):
         
         # Base queryset with optimized joins
         base_qs = Vineyard.objects.select_related('supplier', 'created_by')
+        
+        # If user doesn't have view_all_vineyards permission, only show their vineyards
+        if not request.user.has_perm('vineyards.view_all_vineyards'):
+            base_qs = base_qs.filter(created_by=request.user)
         
         # Filter owned vineyards
         owned_vineyards = base_qs.filter(ownership_type='owned')
@@ -76,7 +83,10 @@ def list_vineyards(request):
             'owned_vineyards': owned_vineyards,
             'supplied_vineyards': supplied_vineyards,
             'search_query': search_query,
-            'active_tab': 'vineyards'
+            'active_tab': 'vineyards',
+            'can_manage': request.user.has_perm('vineyards.manage_vineyards'),
+            'can_export': request.user.has_perm('vineyards.export_vineyard_data'),
+            'can_view_analytics': request.user.has_perm('vineyards.view_vineyard_analytics'),
         }
         
         return render(request, 'vineyards/list_vineyards.html', context)
@@ -87,6 +97,7 @@ def list_vineyards(request):
         return redirect('home')
 
 @login_required
+@permission_required(['vineyards.add_vineyard', 'vineyards.manage_vineyards'], raise_exception=True)
 @handle_view_exception
 def add_vineyard(request):
     """
@@ -138,6 +149,7 @@ def add_vineyard(request):
         raise
 
 @login_required
+@permission_required(['vineyards.change_vineyard', 'vineyards.manage_vineyards'], raise_exception=True)
 @handle_view_exception
 def edit_vineyard(request, vineyard_id):
     """
@@ -157,6 +169,10 @@ def edit_vineyard(request, vineyard_id):
     """
     try:
         vineyard = get_object_or_404(Vineyard, id=vineyard_id)
+        
+        # Check if user has permission to edit this specific vineyard
+        if not request.user.has_perm('vineyards.manage_vineyards') and vineyard.created_by != request.user:
+            raise PermissionDenied("You don't have permission to edit this vineyard.")
         
         if request.method == 'POST':
             form = VineyardForm(request.POST, instance=vineyard)
@@ -192,8 +208,9 @@ def edit_vineyard(request, vineyard_id):
         })
         raise ResourceNotFoundError(f"Vineyard with id {vineyard_id} not found")
     except Exception as e:
-        log_error(e, request)
-        raise
+        log_error(logger, e)
+        messages.error(request, str(e))
+        return redirect('home')
 
 @login_required
 @handle_view_exception
@@ -238,6 +255,7 @@ def vineyard_detail(request, vineyard_id):
         return redirect('home')
 
 @login_required
+@permission_required(['vineyards.delete_vineyard', 'vineyards.manage_vineyards'], raise_exception=True)
 @handle_view_exception
 def delete_vineyard(request, vineyard_id):
     """
@@ -257,14 +275,18 @@ def delete_vineyard(request, vineyard_id):
     try:
         vineyard = get_object_or_404(Vineyard, id=vineyard_id)
         
-        if request.method == 'POST':
-            # Check if vineyard has any related harvests
-            if vineyard.harvests.exists():
-                raise InvalidOperationError(
-                    "Cannot delete vineyard with existing harvests",
-                    code='vineyard_has_harvests'
-                )
+        # Check if user has permission to delete this specific vineyard
+        if not request.user.has_perm('vineyards.manage_vineyards') and vineyard.created_by != request.user:
+            raise PermissionDenied("You don't have permission to delete this vineyard.")
+        
+        # Check if vineyard has any related harvests
+        if vineyard.harvests.exists():
+            raise InvalidOperationError(
+                "Cannot delete vineyard with existing harvests",
+                code='vineyard_has_harvests'
+            )
                 
+        if request.method == 'POST':
             vineyard_name = vineyard.name
             vineyard.delete()
             
