@@ -1,50 +1,61 @@
 {% extends "packaging/base_packaging.html" %}
 
 {% block packaging_content %}
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">{{ title }}</h4>
-        <a href="{% block add_url %}{% endblock %}" class="btn btn-primary">
-            <i class="fas fa-plus"></i> Add New
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow rounded-lg px-4 py-5 sm:px-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-4 sm:mb-0">{{ title }}</h1>
+        <a href="{% block add_url %}{% endblock %}" 
+           class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wine-600 hover:bg-wine-700">
+            <i class="fas fa-plus mr-2"></i>
+            Add New
         </a>
     </div>
-    <div class="card-body">
-        {% if low_stock %}
-        <div class="alert alert-warning mb-4">
-            <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Low Stock Alert</h5>
-            <ul class="mb-0">
-                {% for item in low_stock %}
-                <li>
-                    <strong>{{ item.name }}</strong> - 
-                    <span class="stock-indicator">
-                        <span class="badge {% if item.stock <= item.minimum_stock %}bg-danger{% else %}bg-success{% endif %}">
-                            {{ item.stock }}
-                        </span>
-                        <div class="progress">
-                            <div class="progress-bar {% if item.stock <= item.minimum_stock %}bg-danger{% else %}bg-success{% endif %}" 
-                                 role="progressbar" 
-                                 style="width: {{ item.stock|default:0|floatformat:0 }}%"
-                                 aria-valuenow="{{ item.stock }}" 
-                                 aria-valuemin="0" 
-                                 aria-valuemax="{{ item.minimum_stock|add:10 }}">
-                            </div>
-                        </div>
-                        (Minimum: {{ item.minimum_stock }})
-                    </span>
-                </li>
-                {% endfor %}
-            </ul>
-        </div>
-        {% endif %}
 
-        <div class="table-responsive">
-            <table class="table table-hover" id="itemsTable">
-                <thead>
+    {% if low_stock %}
+    <!-- Low Stock Alert -->
+    <div class="rounded-md bg-yellow-50 p-4">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-yellow-800">Low Stock Alert</h3>
+                <div class="mt-2">
+                    <ul class="list-disc pl-5 space-y-2">
+                        {% for item in low_stock %}
+                        <li class="text-sm text-yellow-700">
+                            <span class="font-medium">{{ item.name }}</span>
+                            <div class="mt-1 flex items-center space-x-2">
+                                <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium {% if item.stock <= item.minimum_stock %}bg-red-100 text-red-800{% else %}bg-green-100 text-green-800{% endif %}">
+                                    {{ item.stock }}
+                                </span>
+                                <div class="flex-1 bg-gray-200 rounded-full h-2 max-w-xs">
+                                    <div class="{% if item.stock <= item.minimum_stock %}bg-red-500{% else %}bg-green-500{% endif %} h-2 rounded-full" 
+                                         style="width: {{ item.stock|default:0|floatformat:0 }}%">
+                                    </div>
+                                </div>
+                                <span class="text-xs text-gray-500">Min: {{ item.minimum_stock }}</span>
+                            </div>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Table -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200" id="itemsTable">
+                <thead class="bg-gray-50">
                     <tr>
                         {% block table_headers %}{% endblock %}
                     </tr>
                 </thead>
-                <tbody>
+                <tbody class="bg-white divide-y divide-gray-200">
                     {% block table_rows %}{% endblock %}
                 </tbody>
             </table>
@@ -52,94 +63,56 @@
     </div>
 </div>
 
-<style>
-    .clickable-row {
-        cursor: pointer;
-    }
-    .clickable-row:hover {
-        background-color: rgba(0,0,0,.075);
-    }
-    .clickable-row td:last-child {
-        width: 100px;
-    }
-    .clickable-row td:last-child .btn {
-        opacity: 0.7;
-    }
-    .clickable-row:hover td:last-child .btn {
-        opacity: 1;
-    }
-    .stock-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .stock-indicator .progress {
-        width: 100px;
-        height: 8px;
-        margin: 0 8px;
-    }
-    .sortable {
-        cursor: pointer;
-        position: relative;
-        padding-right: 20px;
-    }
-    .sortable:after {
-        content: '↕';
-        position: absolute;
-        right: 5px;
-        color: #999;
-    }
-    .sortable.asc:after {
-        content: '↑';
-        color: #333;
-    }
-    .sortable.desc:after {
-        content: '↓';
-        color: #333;
-    }
-    .badge {
-        font-size: 0.9rem;
-        padding: 6px 12px;
-    }
-</style>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Add click handlers for clickable rows
-    document.querySelectorAll('.clickable-row').forEach(row => {
-        row.addEventListener('click', function(e) {
-            // Don't navigate if clicking on action buttons
-            if (e.target.closest('.btn')) {
-                return;
-            }
-            window.location.href = this.dataset.href;
-        });
-    });
+// Sorting functionality
+function getCellValue(tr, idx) {
+    return tr.children[idx].innerText || tr.children[idx].textContent;
+}
 
-    // Add sorting functionality
-    const getCellValue = (tr, idx) => tr.children[idx].innerText || tr.children[idx].textContent;
-    
-    const comparer = (idx, asc) => (a, b) => ((v1, v2) => 
-        v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) ? v1 - v2 : v1.toString().localeCompare(v2)
-    )(getCellValue(asc ? a : b, idx), getCellValue(asc ? b : a, idx));
+function comparer(idx, asc) {
+    return (a, b) => {
+        const v1 = getCellValue(asc ? a : b, idx);
+        const v2 = getCellValue(asc ? b : a, idx);
+        return v1 !== '' && v2 !== '' && !isNaN(v1) && !isNaN(v2) 
+            ? v1 - v2 
+            : v1.toString().localeCompare(v2);
+    };
+}
 
-    document.querySelectorAll('th').forEach(th => {
-        th.classList.add('sortable');
-        th.addEventListener('click', (() => {
-            const table = th.closest('table');
-            const tbody = table.querySelector('tbody');
-            Array.from(tbody.querySelectorAll('tr'))
-                .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
-                .forEach(tr => tbody.appendChild(tr));
-            
-            // Update sort indicators
-            th.closest('tr').querySelectorAll('th').forEach(header => {
-                header.classList.remove('asc', 'desc');
-            });
-            th.classList.toggle('asc', this.asc);
-            th.classList.toggle('desc', !this.asc);
-        }));
+document.querySelectorAll('th').forEach(th => {
+    th.classList.add('cursor-pointer', 'hover:bg-gray-100', 'transition-colors', 'duration-150');
+    th.addEventListener('click', (() => {
+        const table = th.closest('table');
+        const tbody = table.querySelector('tbody');
+        Array.from(tbody.querySelectorAll('tr'))
+            .sort(comparer(Array.from(th.parentNode.children).indexOf(th), this.asc = !this.asc))
+            .forEach(tr => tbody.appendChild(tr));
+    }));
+});
+
+// Clickable rows
+document.querySelectorAll('.clickable-row').forEach(row => {
+    row.addEventListener('click', e => {
+        const href = row.dataset.href;
+        if (href && !e.target.closest('a')) {
+            window.location.href = href;
+        }
     });
 });
 </script>
+
+<style>
+.clickable-row {
+    @apply hover:bg-gray-50 cursor-pointer;
+}
+.clickable-row:hover td {
+    @apply text-wine-600;
+}
+th {
+    @apply px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider;
+}
+td {
+    @apply px-6 py-4 whitespace-nowrap text-sm text-gray-900;
+}
+</style>
 {% endblock %}

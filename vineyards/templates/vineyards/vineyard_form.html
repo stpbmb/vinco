@@ -1,177 +1,45 @@
-{% extends 'base.html' %}
+{% extends 'vineyards/base_vineyards.html' %}
 {% load crispy_forms_tags %}
 
-{% block content %}
-<div class="vineyard-form-container">
-    <div class="form-header">
-        <h1>{{ title|default:"Add Vineyard" }}</h1>
-        <p class="subtitle">Enter the vineyard details below</p>
+{% block vineyard_content %}
+<div class="max-w-3xl mx-auto">
+    <!-- Header -->
+    <div class="text-center mb-8">
+        <h1 class="text-2xl font-semibold text-gray-900">{{ title|default:"Add Vineyard" }}</h1>
+        <p class="mt-2 text-sm text-gray-600">Enter the vineyard details below</p>
     </div>
 
-    <div class="form-section">
-        <form method="post">
-            {% csrf_token %}
-            {{ form|crispy }}
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary">
-                    <i class="fas fa-save me-2"></i>Save Vineyard
-                </button>
-                <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-secondary">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </a>
-            </div>
-        </form>
+    <!-- Form -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="px-4 py-5 sm:p-6">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                {{ form|crispy }}
+                <div class="flex justify-end space-x-3 pt-5 border-t border-gray-200">
+                    <a href="{% url 'vineyards:list_vineyards' %}" 
+                       class="btn-secondary inline-flex items-center">
+                        <i class="fas fa-times mr-2"></i>Cancel
+                    </a>
+                    <button type="submit" class="btn-primary inline-flex items-center">
+                        <i class="fas fa-save mr-2"></i>Save Vineyard
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 </div>
 
-<style>
-    .vineyard-form-container {
-        max-width: 800px;
-        margin: 30px auto;
-        padding: 20px;
-    }
-
-    .form-header {
-        text-align: center;
-        margin-bottom: 30px;
-    }
-
-    .form-header h1 {
-        color: #2c3e50;
-        margin-bottom: 10px;
-    }
-
-    .subtitle {
-        color: #6c757d;
-        font-size: 1.1em;
-    }
-
-    .form-section {
-        background: white;
-        border-radius: 8px;
-        padding: 30px;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-    }
-
-    /* Crispy form enhancements */
-    .form-group {
-        margin-bottom: 1.5rem;
-    }
-
-    .form-group label {
-        font-weight: 500;
-        color: #495057;
-        margin-bottom: 0.5rem;
-    }
-
-    .form-control {
-        border: 2px solid #e9ecef;
-        border-radius: 6px;
-        padding: 0.75rem;
-        font-size: 1rem;
-        transition: border-color 0.2s, box-shadow 0.2s;
-    }
-
-    .form-control:focus {
-        border-color: #80bdff;
-        box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-    }
-
-    select.form-control {
-        height: calc(1.5em + 1.5rem + 4px);
-    }
-
-    textarea.form-control {
-        min-height: 100px;
-    }
-
-    .form-text {
-        color: #6c757d;
-        font-size: 0.875rem;
-        margin-top: 0.25rem;
-    }
-
-    /* Hide supplier field initially */
-    #div_id_supplier {
-        display: none;
-    }
-
-    /* Show supplier field when ownership type is 'supplied' */
-    .show-supplier #div_id_supplier {
-        display: block;
-        animation: fadeIn 0.3s ease-in-out;
-    }
-
-    @keyframes fadeIn {
-        from {
-            opacity: 0;
-            transform: translateY(-10px);
-        }
-        to {
-            opacity: 1;
-            transform: translateY(0);
-        }
-    }
-
-    .form-actions {
-        display: flex;
-        gap: 15px;
-        justify-content: flex-end;
-        margin-top: 30px;
-        padding-top: 20px;
-        border-top: 2px solid #e9ecef;
-    }
-
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 24px;
-        font-weight: 500;
-        border: none;
-        border-radius: 6px;
-        transition: all 0.2s;
-    }
-
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-
-    .btn-primary:hover {
-        background-color: #0056b3;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    .btn-secondary:hover {
-        background-color: #545b62;
-    }
-
-    @media (max-width: 768px) {
-        .vineyard-form-container {
-            margin: 15px;
-            padding: 15px;
-        }
-        
-        .form-section {
-            padding: 20px;
-        }
-    }
-</style>
-
 <script>
     function toggleSupplierField() {
-        const ownershipType = document.querySelector('#id_ownership_type');
-        const formSection = document.querySelector('.form-section');
+        const vineyardType = document.getElementById('id_vineyard_type');
+        const supplierField = document.getElementById('div_id_supplier');
         
-        if (ownershipType.value === 'supplied') {
-            formSection.classList.add('show-supplier');
-        } else {
-            formSection.classList.remove('show-supplier');
+        if (vineyardType && supplierField) {
+            if (vineyardType.value === 'supplied') {
+                supplierField.style.display = 'block';
+            } else {
+                supplierField.style.display = 'none';
+            }
         }
     }
 
@@ -179,8 +47,11 @@
     document.addEventListener('DOMContentLoaded', function() {
         toggleSupplierField();
         
-        // Listen for changes
-        document.querySelector('#id_ownership_type').addEventListener('change', toggleSupplierField);
+        // Add change event listener
+        const vineyardType = document.getElementById('id_vineyard_type');
+        if (vineyardType) {
+            vineyardType.addEventListener('change', toggleSupplierField);
+        }
     });
 </script>
 {% endblock %}

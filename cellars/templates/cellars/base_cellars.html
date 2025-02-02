@@ -1,15 +1,57 @@
 {% extends "base.html" %}
 
 {% block sidebar %}
-<div class="list-group">
-    <a href="{% url 'cellars:list_cellars' %}" class="list-group-item list-group-item-action {% if active_tab == 'cellars' %}active{% endif %}">
-        <i class="fas fa-warehouse me-2"></i>Cellars
+<div class="space-y-1">
+    <a href="{% url 'cellars:list_cellars' %}" 
+       class="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 {% if active_tab == 'cellars' %}bg-wine-50 text-wine-600{% else %}text-gray-700{% endif %}">
+        <i class="fas fa-warehouse w-6 h-6 mr-3 {% if active_tab == 'cellars' %}text-wine-600{% else %}text-gray-400 group-hover:text-gray-500{% endif %}"></i>
+        <span class="truncate">Cellars</span>
     </a>
-    <a href="{% url 'cellars:list_tanks' %}" class="list-group-item list-group-item-action {% if active_tab == 'tanks' %}active{% endif %}">
-        <i class="fas fa-wine-bottle me-2"></i>Tanks
+    <a href="{% url 'cellars:list_tanks' %}" 
+       class="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 {% if active_tab == 'tanks' %}bg-wine-50 text-wine-600{% else %}text-gray-700{% endif %}">
+        <i class="fas fa-wine-bottle w-6 h-6 mr-3 {% if active_tab == 'tanks' %}text-wine-600{% else %}text-gray-400 group-hover:text-gray-500{% endif %}"></i>
+        <span class="truncate">Tanks</span>
     </a>
-    <a href="{% url 'cellars:list_allocations' %}" class="list-group-item list-group-item-action {% if active_tab == 'allocations' %}active{% endif %}">
-        <i class="fas fa-exchange-alt me-2"></i>Allocations
+    <a href="{% url 'cellars:list_allocations' %}" 
+       class="group flex items-center px-3 py-2 text-sm font-medium rounded-md hover:bg-gray-50 {% if active_tab == 'allocations' %}bg-wine-50 text-wine-600{% else %}text-gray-700{% endif %}">
+        <i class="fas fa-exchange-alt w-6 h-6 mr-3 {% if active_tab == 'allocations' %}text-wine-600{% else %}text-gray-400 group-hover:text-gray-500{% endif %}"></i>
+        <span class="truncate">Allocations</span>
     </a>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="flex flex-col md:flex-row gap-6 p-6">
+    <!-- Sidebar -->
+    <div class="w-full md:w-64 flex-shrink-0 space-y-6">
+        <!-- Main Navigation -->
+        <div class="bg-white rounded-lg shadow overflow-hidden">
+            <div class="px-4 py-5 border-b border-gray-200">
+                <h3 class="text-lg font-medium text-gray-900">Cellar Management</h3>
+            </div>
+            <div class="divide-y divide-gray-200">
+                <a href="{% url 'cellars:list_cellars' %}" 
+                   class="flex items-center px-4 py-3 hover:bg-gray-50 {% if request.resolver_match.url_name == 'list_cellars' %}bg-wine-50 text-wine-600{% else %}text-gray-700{% endif %}">
+                    <i class="fas fa-warehouse w-5 h-5 mr-3"></i>
+                    <span>All Cellars</span>
+                </a>
+                <a href="{% url 'cellars:list_tanks' %}" 
+                   class="flex items-center px-4 py-3 hover:bg-gray-50 {% if request.resolver_match.url_name == 'list_tanks' %}bg-wine-50 text-wine-600{% else %}text-gray-700{% endif %}">
+                    <i class="fas fa-wine-bottle w-5 h-5 mr-3"></i>
+                    <span>All Tanks</span>
+                </a>
+                <a href="{% url 'cellars:list_allocations' %}" 
+                   class="flex items-center px-4 py-3 hover:bg-gray-50 {% if request.resolver_match.url_name == 'list_allocations' %}bg-wine-50 text-wine-600{% else %}text-gray-700{% endif %}">
+                    <i class="fas fa-exchange-alt w-5 h-5 mr-3"></i>
+                    <span>All Allocations</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="flex-1">
+        {% block cellar_content %}{% endblock %}
+    </div>
 </div>
 {% endblock %}

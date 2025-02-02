@@ -1,121 +1,30 @@
-{% extends 'base.html' %}
+{% extends 'vineyards/base_vineyards.html' %}
 
-{% block content %}
-<div class="delete-confirmation">
-    <div class="confirmation-box">
-        <div class="warning-icon">
-            <i class="fas fa-exclamation-triangle"></i>
+{% block vineyard_content %}
+<div class="flex justify-center items-center min-h-[calc(100vh-300px)]">
+    <div class="bg-white rounded-lg shadow-lg p-8 max-w-lg w-full text-center">
+        <!-- Warning Icon -->
+        <div class="text-red-500 mb-6">
+            <i class="fas fa-exclamation-triangle text-5xl"></i>
         </div>
-        <h1>Delete Vineyard</h1>
-        <p class="warning-text">Are you sure you want to delete the vineyard "{{ vineyard.name }}"?</p>
-        <p class="details">This action cannot be undone.</p>
+
+        <!-- Content -->
+        <h1 class="text-2xl font-semibold text-gray-900 mb-4">Delete Vineyard</h1>
+        <p class="text-gray-600 mb-2">Are you sure you want to delete the vineyard "{{ vineyard.name }}"?</p>
+        <p class="text-sm text-red-600 mb-8">This action cannot be undone.</p>
         
-        <div class="actions">
-            <form method="post">
-                {% csrf_token %}
-                <button type="submit" class="btn btn-danger">
-                    <i class="fas fa-trash me-2"></i>Delete Vineyard
-                </button>
-                <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" class="btn btn-secondary">
-                    <i class="fas fa-times me-2"></i>Cancel
-                </a>
-            </form>
-        </div>
+        <!-- Actions -->
+        <form method="post" class="flex flex-col sm:flex-row justify-center gap-4">
+            {% csrf_token %}
+            <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" 
+               class="btn-secondary inline-flex items-center justify-center">
+                <i class="fas fa-times mr-2"></i>Cancel
+            </a>
+            <button type="submit" 
+                    class="btn-danger inline-flex items-center justify-center">
+                <i class="fas fa-trash mr-2"></i>Delete Vineyard
+            </button>
+        </form>
     </div>
 </div>
-
-<style>
-    .delete-confirmation {
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: calc(100vh - 200px);
-        padding: 20px;
-    }
-
-    .confirmation-box {
-        background: white;
-        border-radius: 8px;
-        padding: 30px;
-        text-align: center;
-        box-shadow: 0 2px 15px rgba(0,0,0,0.1);
-        max-width: 500px;
-        width: 100%;
-    }
-
-    .warning-icon {
-        font-size: 3em;
-        color: #dc3545;
-        margin-bottom: 20px;
-    }
-
-    .warning-text {
-        font-size: 1.2em;
-        color: #2c3e50;
-        margin: 20px 0;
-    }
-
-    .details {
-        color: #6c757d;
-        margin-bottom: 30px;
-    }
-
-    .actions {
-        display: flex;
-        justify-content: center;
-        gap: 15px;
-    }
-
-    .actions form {
-        display: flex;
-        gap: 15px;
-    }
-
-    .btn {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-        padding: 12px 24px;
-        border: none;
-        border-radius: 6px;
-        font-size: 16px;
-        font-weight: 500;
-        cursor: pointer;
-        text-decoration: none;
-        transition: all 0.2s;
-    }
-
-    .btn-danger {
-        background-color: #dc3545;
-        color: white;
-    }
-
-    .btn-danger:hover {
-        background-color: #c82333;
-    }
-
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-    }
-
-    .btn-secondary:hover {
-        background-color: #545b62;
-    }
-
-    @media (max-width: 576px) {
-        .confirmation-box {
-            padding: 20px;
-        }
-
-        .actions form {
-            flex-direction: column;
-        }
-
-        .btn {
-            width: 100%;
-            justify-content: center;
-        }
-    }
-</style>
 {% endblock %}

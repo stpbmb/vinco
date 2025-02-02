@@ -1,14 +1,33 @@
-{% extends "base.html" %}
+{% extends "cellars/base_cellars.html" %}
 {% load crispy_forms_tags %}
 
-{% block content %}
-<div class="container">
-    <h2>Transfer Wine</h2>
-    <form method="post">
-        {% csrf_token %}
-        {{ form|crispy }}
-        <button type="submit" class="btn btn-primary">Transfer</button>
-        <a href="{% url 'cellars:list_tanks' %}" class="btn btn-secondary">Cancel</a>
-    </form>
+{% block cellar_content %}
+<div class="max-w-2xl mx-auto">
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <!-- Header -->
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <h2 class="text-xl font-semibold text-gray-900">Transfer Wine</h2>
+        </div>
+
+        <!-- Form -->
+        <div class="px-4 py-5 sm:p-6">
+            <form method="post" class="space-y-6">
+                {% csrf_token %}
+                {{ form|crispy }}
+                
+                <div class="flex justify-end space-x-3">
+                    <a href="{% url 'cellars:list_tanks' %}" 
+                       class="inline-flex items-center px-4 py-2 border border-gray-300 shadow-sm text-sm font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                        Cancel
+                    </a>
+                    <button type="submit" 
+                            class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wine-600 hover:bg-wine-700">
+                        <i class="fas fa-exchange-alt mr-2"></i>
+                        Transfer
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
 </div>
 {% endblock %}

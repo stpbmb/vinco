@@ -1,60 +1,82 @@
 {% extends "packaging/base_packaging.html" %}
 
 {% block packaging_content %}
-<div class="card">
-    <div class="card-header d-flex justify-content-between align-items-center">
-        <h4 class="mb-0">{{ title }}</h4>
-        <div>
-            <a href="{% block edit_url %}{% endblock %}" class="btn btn-primary">
-                <i class="fas fa-edit"></i> Edit
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center bg-white shadow rounded-lg px-4 py-5 sm:px-6">
+        <h1 class="text-2xl font-bold text-gray-900 mb-4 sm:mb-0">{{ title }}</h1>
+        <div class="flex space-x-3">
+            <a href="{% block edit_url %}{% endblock %}" 
+               class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wine-600 hover:bg-wine-700">
+                <i class="fas fa-edit mr-2"></i>
+                Edit
             </a>
-            <a href="{% block list_url %}{% endblock %}" class="btn btn-secondary">
-                <i class="fas fa-arrow-left"></i> Back to List
+            <a href="{% block list_url %}{% endblock %}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                <i class="fas fa-arrow-left mr-2"></i>
+                Back to List
             </a>
         </div>
     </div>
-    <div class="card-body">
-        {% if object.stock <= object.minimum_stock %}
-        <div class="alert alert-warning mb-4">
-            <h5 class="alert-heading"><i class="fas fa-exclamation-triangle"></i> Low Stock Warning</h5>
-            <p class="mb-0">Current stock ({{ object.stock }}) is at or below minimum level ({{ object.minimum_stock }}).</p>
-        </div>
-        {% endif %}
 
-        <div class="row">
-            {% block detail_content %}{% endblock %}
+    <!-- Low Stock Warning -->
+    {% if object.stock <= object.minimum_stock %}
+    <div class="rounded-md bg-yellow-50 p-4">
+        <div class="flex">
+            <div class="flex-shrink-0">
+                <i class="fas fa-exclamation-triangle text-yellow-400"></i>
+            </div>
+            <div class="ml-3">
+                <h3 class="text-sm font-medium text-yellow-800">Low Stock Warning</h3>
+                <p class="text-sm text-yellow-700">
+                    Current stock ({{ object.stock }}) is at or below minimum level ({{ object.minimum_stock }}).
+                </p>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+
+    <!-- Main Content -->
+    <div class="bg-white shadow rounded-lg">
+        <div class="p-6">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                {% block detail_content %}{% endblock %}
+            </div>
         </div>
     </div>
 </div>
 
 <style>
-    .card-header .btn {
-        margin-left: 8px;
-    }
-    .table th {
-        width: 30%;
-        background-color: #f8f9fa;
-    }
-    .badge {
-        font-size: 0.9rem;
-        padding: 6px 12px;
-    }
-    .notes-card {
-        background-color: #f8f9fa;
-    }
-    .file-preview img {
-        max-height: 200px;
-        max-width: 100%;
-        object-fit: contain;
-    }
-    .stock-indicator {
-        display: inline-flex;
-        align-items: center;
-        gap: 8px;
-    }
-    .stock-indicator .progress {
-        width: 100px;
-        height: 8px;
-    }
+.detail-section {
+    @apply space-y-4;
+}
+
+.detail-section h2 {
+    @apply text-lg font-medium text-gray-900;
+}
+
+.detail-table {
+    @apply min-w-full divide-y divide-gray-200;
+}
+
+.detail-table th {
+    @apply px-4 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider bg-gray-50 w-1/3;
+}
+
+.detail-table td {
+    @apply px-4 py-3 text-sm text-gray-900;
+}
+
+.detail-table tr {
+    @apply divide-x divide-gray-200;
+}
+
+.file-preview img {
+    @apply max-h-48 w-full object-contain;
+}
+
+.notes-card {
+    @apply bg-gray-50 p-4 rounded-lg;
+}
 </style>
 {% endblock %}

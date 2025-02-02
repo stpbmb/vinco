@@ -1,68 +1,64 @@
 {% extends "base.html" %}
 
 {% block sidebar %}
-<div class="list-group">
-    <a href="{% url 'harvests:list_harvests' %}" class="list-group-item list-group-item-action {% if active_tab == 'harvests' %}active{% endif %}">
-        <i class="fas fa-tractor me-2"></i>Harvests
-    </a>
+<div class="w-full md:w-64 flex-shrink-0 space-y-6">
+    <!-- Main Navigation -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-4 py-5 border-b border-gray-200">
+            <h3 class="text-lg font-medium text-gray-900">Harvest Management</h3>
+        </div>
+        <div class="divide-y divide-gray-200">
+            <a href="{% url 'harvests:list_harvests' %}" 
+               class="flex items-center px-4 py-3 hover:bg-gray-50 {% if request.resolver_match.url_name == 'list_harvests' %}bg-wine-50 text-wine-600{% else %}text-gray-700{% endif %}">
+                <i class="fas fa-list w-5 h-5 mr-3"></i>
+                <span>All Harvests</span>
+            </a>
+            <a href="{% url 'harvests:add_harvest' %}" 
+               class="flex items-center px-4 py-3 hover:bg-gray-50 {% if request.resolver_match.url_name == 'add_harvest' %}bg-wine-50 text-wine-600{% else %}text-gray-700{% endif %}">
+                <i class="fas fa-plus w-5 h-5 mr-3"></i>
+                <span>Add Harvest</span>
+            </a>
+        </div>
+    </div>
+
+    <!-- Unallocated Harvests -->
+    {% if unallocated_harvests %}
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-4 py-5 border-b border-yellow-200 bg-yellow-50">
+            <h3 class="text-lg font-medium text-yellow-800 flex items-center">
+                <i class="fas fa-exclamation-triangle mr-2"></i>
+                Unallocated Juice
+            </h3>
+        </div>
+        <div class="divide-y divide-gray-200">
+            {% for harvest in unallocated_harvests %}
+            <a href="{% url 'harvests:harvest_detail' harvest.id %}" 
+               class="block px-4 py-4 hover:bg-gray-50">
+                <div class="flex justify-between items-start">
+                    <div class="min-w-0 flex-1">
+                        <p class="text-sm font-medium text-gray-900 truncate">
+                            {{ harvest.vineyard.name }}
+                        </p>
+                        <p class="text-sm text-gray-500">
+                            {{ harvest.date }}
+                        </p>
+                    </div>
+                    <div class="ml-4 flex-shrink-0">
+                        <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                            {{ harvest.remaining_juice }} L
+                        </span>
+                    </div>
+                </div>
+            </a>
+            {% endfor %}
+        </div>
+    </div>
+    {% endif %}
 </div>
 {% endblock %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Harvest Management</h5>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="{% url 'harvests:list_harvests' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'list_harvests' %}active{% endif %}">
-                        <i class="fas fa-list me-2"></i> All Harvests
-                    </a>
-                    <a href="{% url 'harvests:add_harvest' %}" class="list-group-item list-group-item-action {% if request.resolver_match.url_name == 'add_harvest' %}active{% endif %}">
-                        <i class="fas fa-plus me-2"></i> Add Harvest
-                    </a>
-                </div>
-            </div>
-
-            {% if unallocated_harvests %}
-            <div class="card mb-4">
-                <div class="card-header bg-warning text-dark">
-                    <h5 class="mb-0"><i class="fas fa-exclamation-triangle me-2"></i> Unallocated Juice</h5>
-                </div>
-                <div class="list-group list-group-flush">
-                    {% for harvest in unallocated_harvests %}
-                    <a href="{% url 'harvests:harvest_detail' harvest.id %}" class="list-group-item list-group-item-action">
-                        <div class="d-flex justify-content-between align-items-center">
-                            <div>
-                                <strong>{{ harvest.vineyard.name }}</strong>
-                                <br>
-                                <small class="text-muted">{{ harvest.date }}</small>
-                            </div>
-                            <span class="badge bg-warning text-dark">
-                                {{ harvest.remaining_juice }} L
-                            </span>
-                        </div>
-                    </a>
-                    {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-        </div>
-        <div class="col-md-9">
-            {% block harvest_content %}{% endblock %}
-        </div>
-    </div>
+<div class="flex-1">
+    {% block harvest_content %}{% endblock %}
 </div>
-
-<style>
-.list-group-item i {
-    width: 20px;
-    text-align: center;
-}
-.list-group-item.active i {
-    color: white;
-}
-</style>
 {% endblock %}

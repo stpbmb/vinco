@@ -1,313 +1,199 @@
-{% extends 'base_harvests.html' %}
+{% extends 'harvests/base_harvests.html' %}
 
-{% block harvests_content %}
-<div class="harvests-container">
-    <div class="header">
-        <h1>Harvests</h1>
-        <div class="header-actions">
-            <form method="get" class="search-form" id="searchForm">
-                <div class="search-input-group">
-                    <input type="text" 
-                           name="search" 
-                           class="form-control" 
-                           placeholder="Search harvests..." 
-                           value="{{ search_query }}"
-                           aria-label="Search harvests"
-                           id="searchInput">
-                    <button type="button" class="btn btn-outline-primary" id="searchButton">
+{% block harvest_content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <h1 class="text-2xl font-semibold text-gray-900">Harvests</h1>
+        <div class="flex flex-col sm:flex-row gap-4 w-full sm:w-auto">
+            <!-- Search Form -->
+            <form method="get" class="flex-1 sm:flex-initial" id="searchForm">
+                <div class="flex">
+                    <div class="relative flex-1">
+                        <input type="text" 
+                               name="search" 
+                               class="block w-full rounded-l-md border-gray-300 shadow-sm focus:border-wine-500 focus:ring-wine-500 sm:text-sm" 
+                               placeholder="Search harvests..." 
+                               value="{{ search_query }}"
+                               aria-label="Search harvests"
+                               id="searchInput">
+                        {% if search_query %}
+                            <button type="button" 
+                                    class="absolute inset-y-0 right-0 flex items-center px-2 text-gray-500 hover:text-gray-700" 
+                                    id="clearSearch">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        {% endif %}
+                    </div>
+                    <button type="button" 
+                            class="inline-flex items-center px-4 py-2 border border-l-0 border-gray-300 bg-gray-50 text-gray-700 hover:bg-gray-100 sm:text-sm" 
+                            id="searchButton">
                         <i class="fas fa-search"></i>
                     </button>
-                    {% if search_query %}
-                        <a href="{% url 'harvests:list_harvests' %}" class="btn btn-outline-secondary" id="clearSearch">
-                            <i class="fas fa-times"></i>
-                        </a>
-                    {% endif %}
                 </div>
             </form>
-            <a href="{% url 'harvests:add_harvest' %}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add New Harvest
+
+            <!-- Add Button -->
+            <a href="{% url 'harvests:add_harvest' %}" 
+               class="btn-primary inline-flex items-center justify-center">
+                <i class="fas fa-plus mr-2"></i>Add New Harvest
             </a>
         </div>
     </div>
 
-    <div class="harvest-section">
+    <!-- Harvests Table -->
+    <div class="bg-white shadow-sm rounded-lg overflow-hidden">
         {% if harvests %}
-        <div class="table-container">
-            <table class="table">
-                <thead>
-                    <tr>
-                        <th class="sortable" data-sort="date">Date <i class="fas fa-sort"></i></th>
-                        <th class="sortable" data-sort="vineyard">Vineyard <i class="fas fa-sort"></i></th>
-                        <th class="sortable" data-sort="variety">Grape Variety <i class="fas fa-sort"></i></th>
-                        <th class="sortable" data-sort="quantity">Quantity <i class="fas fa-sort"></i></th>
-                        <th class="sortable" data-sort="juice">Juice Yield <i class="fas fa-sort"></i></th>
-                        <th class="sortable" data-sort="status">Status <i class="fas fa-sort"></i></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for harvest in harvests %}
-                    <tr class="clickable-row" data-href="{% url 'harvests:harvest_detail' harvest.id %}">
-                        <td>{{ harvest.date }}</td>
-                        <td>{{ harvest.vineyard.name }}</td>
-                        <td>{{ harvest.vineyard.get_grape_variety_display }}</td>
-                        <td>{{ harvest.quantity }} kg</td>
-                        <td>{{ harvest.juice_yield|default:"-" }} L</td>
-                        <td>
-                            {% if harvest.available_juice > 0 %}
-                            <span class="badge bg-warning text-dark">
-                                {{ harvest.available_juice }} L available
-                            </span>
-                            {% else %}
-                            <span class="badge bg-success">
-                                Allocated
-                            </span>
-                            {% endif %}
-                        </td>
-                    </tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-        </div>
+            <div class="overflow-x-auto">
+                <table class="min-w-full divide-y divide-gray-200">
+                    <thead>
+                        <tr class="bg-gray-50">
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sortable hover:bg-gray-100" data-sort="date">
+                                <div class="flex items-center space-x-1">
+                                    <span>Date</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sortable hover:bg-gray-100" data-sort="vineyard">
+                                <div class="flex items-center space-x-1">
+                                    <span>Vineyard</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sortable hover:bg-gray-100" data-sort="variety">
+                                <div class="flex items-center space-x-1">
+                                    <span>Grape Variety</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sortable hover:bg-gray-100" data-sort="quantity">
+                                <div class="flex items-center space-x-1">
+                                    <span>Quantity</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sortable hover:bg-gray-100" data-sort="juice">
+                                <div class="flex items-center space-x-1">
+                                    <span>Juice Yield</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider cursor-pointer sortable hover:bg-gray-100" data-sort="status">
+                                <div class="flex items-center space-x-1">
+                                    <span>Status</span>
+                                    <i class="fas fa-sort"></i>
+                                </div>
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody class="bg-white divide-y divide-gray-200">
+                        {% for harvest in harvests %}
+                        <tr class="hover:bg-gray-50 cursor-pointer" onclick="window.location='{% url 'harvests:harvest_detail' harvest.id %}'">
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ harvest.date }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ harvest.vineyard.name }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ harvest.get_grape_variety_display }}</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ harvest.quantity }} kg</td>
+                            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ harvest.juice_yield }} L</td>
+                            <td class="px-6 py-4 whitespace-nowrap">
+                                {% if harvest.is_allocated %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800">
+                                        Allocated
+                                    </span>
+                                {% else %}
+                                    <span class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-100 text-yellow-800">
+                                        {{ harvest.remaining_juice }}L Unallocated
+                                    </span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
         {% else %}
-        <p class="no-data">No harvests recorded yet.</p>
+            <div class="text-center py-12">
+                <i class="fas fa-wine-bottle text-gray-400 text-5xl mb-4"></i>
+                <p class="text-gray-500 text-lg">No harvests found</p>
+                {% if search_query %}
+                    <p class="text-gray-400 mt-2">Try adjusting your search criteria</p>
+                {% else %}
+                    <a href="{% url 'harvests:add_harvest' %}" class="mt-4 btn-primary inline-flex items-center">
+                        <i class="fas fa-plus mr-2"></i>Add First Harvest
+                    </a>
+                {% endif %}
+            </div>
         {% endif %}
     </div>
 </div>
 
-<style>
-.harvests-container {
-    padding: 20px;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-
-.header h1 {
-    margin: 0;
-}
-
-.header-actions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-
-.search-form {
-    min-width: 300px;
-}
-
-.search-input-group {
-    display: flex;
-    gap: 8px;
-}
-
-.search-input-group input {
-    border: 2px solid #e9ecef;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 1rem;
-    flex-grow: 1;
-    min-width: 200px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-
-.search-input-group input:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-    outline: none;
-}
-
-.search-input-group .btn {
-    padding: 8px 12px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.harvest-section {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-    padding: 20px;
-}
-
-.table-container {
-    overflow-x: auto;
-}
-
-.table {
-    width: 100%;
-    margin-bottom: 0;
-}
-
-.table thead th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    color: #495057;
-    padding: 12px;
-}
-
-.table td {
-    padding: 12px;
-    vertical-align: middle;
-}
-
-.clickable-row {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-
-.clickable-row:hover {
-    background-color: #f8f9fa;
-}
-
-.no-data {
-    color: #6c757d;
-    text-align: center;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 6px;
-    margin: 0;
-}
-
-.badge {
-    font-size: 0.875rem;
-    padding: 0.4em 0.8em;
-    border-radius: 4px;
-}
-
-.sortable {
-    cursor: pointer;
-    user-select: none;
-    position: relative;
-}
-
-.sortable i {
-    margin-left: 5px;
-    opacity: 0.3;
-    font-size: 0.8em;
-}
-
-.sortable.asc i {
-    opacity: 1;
-    transform: rotate(180deg);
-}
-
-.sortable.desc i {
-    opacity: 1;
-}
-
-.sortable:hover {
-    background-color: #e9ecef;
-}
-
-@media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        align-items: stretch;
-    }
-    
-    .header-actions {
-        flex-direction: column;
-    }
-    
-    .search-form {
-        min-width: 100%;
-    }
-    
-    .btn {
-        width: 100%;
-        justify-content: center;
-    }
-}
-</style>
-
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Handle row clicks
-    document.querySelectorAll('.clickable-row').forEach(row => {
-        row.addEventListener('click', function(e) {
-            // Don't navigate if clicking on a sortable header
-            if (!e.target.closest('.sortable')) {
-                window.location.href = this.dataset.href;
-            }
-        });
-    });
-
-    // Sorting functionality
-    let currentSort = {
-        column: null,
-        direction: 'asc'
-    };
-
-    function sortTable(column) {
-        const table = document.querySelector('.table');
-        const tbody = table.querySelector('tbody');
-        const rows = Array.from(tbody.querySelectorAll('tr'));
+function sortTable(column) {
+    const table = document.querySelector('table');
+    const tbody = table.querySelector('tbody');
+    const rows = Array.from(tbody.querySelectorAll('tr'));
+    const columnIndex = getColumnIndex(column);
+    
+    let sortOrder = table.getAttribute('data-sort-order') === 'asc' ? -1 : 1;
+    if (table.getAttribute('data-sort-column') !== column) {
+        sortOrder = 1;
+    }
+    
+    rows.sort((a, b) => {
+        let aValue = a.cells[columnIndex].textContent.trim();
+        let bValue = b.cells[columnIndex].textContent.trim();
         
-        // Update sort direction
-        if (currentSort.column === column) {
-            currentSort.direction = currentSort.direction === 'asc' ? 'desc' : 'asc';
-        } else {
-            currentSort.column = column;
-            currentSort.direction = 'asc';
+        // Handle date sorting
+        if (column === 'date') {
+            return sortOrder * (new Date(aValue) - new Date(bValue));
         }
-
-        // Update header classes
-        document.querySelectorAll('.sortable').forEach(th => {
-            th.classList.remove('asc', 'desc');
-            if (th.dataset.sort === column) {
-                th.classList.add(currentSort.direction);
-            }
-        });
-
-        // Sort rows
-        const sortedRows = rows.sort((a, b) => {
-            const aCol = a.children[getColumnIndex(column)].textContent.trim();
-            const bCol = b.children[getColumnIndex(column)].textContent.trim();
-            
-            let comparison = 0;
-            
-            // Handle different data types
-            if (column === 'date') {
-                comparison = new Date(aCol) - new Date(bCol);
-            } else if (column === 'quantity' || column === 'juice') {
-                const aNum = parseFloat(aCol.replace(/[^\d.-]/g, '')) || 0;
-                const bNum = parseFloat(bCol.replace(/[^\d.-]/g, '')) || 0;
-                comparison = aNum - bNum;
-            } else {
-                comparison = aCol.localeCompare(bCol);
-            }
-            
-            return currentSort.direction === 'asc' ? comparison : -comparison;
-        });
-
-        // Clear and re-append sorted rows
-        while (tbody.firstChild) {
-            tbody.removeChild(tbody.firstChild);
+        
+        // Handle numeric sorting
+        if (column === 'quantity' || column === 'juice') {
+            aValue = parseFloat(aValue);
+            bValue = parseFloat(bValue);
+            return sortOrder * (aValue - bValue);
         }
-        tbody.append(...sortedRows);
-    }
+        
+        // Default string sorting
+        return sortOrder * aValue.localeCompare(bValue);
+    });
+    
+    rows.forEach(row => tbody.appendChild(row));
+    
+    table.setAttribute('data-sort-column', column);
+    table.setAttribute('data-sort-order', sortOrder === 1 ? 'asc' : 'desc');
+    
+    // Update sort icons
+    document.querySelectorAll('.sortable i').forEach(icon => {
+        icon.className = 'fas fa-sort';
+    });
+    const currentIcon = document.querySelector(`[data-sort="${column}"] i`);
+    currentIcon.className = `fas fa-sort-${sortOrder === 1 ? 'up' : 'down'}`;
+}
 
-    function getColumnIndex(column) {
-        const mapping = {
-            'date': 0,
-            'vineyard': 1,
-            'variety': 2,
-            'quantity': 3,
-            'juice': 4,
-            'status': 5
-        };
-        return mapping[column];
+function getColumnIndex(column) {
+    const headers = document.querySelectorAll('th');
+    for (let i = 0; i < headers.length; i++) {
+        if (headers[i].getAttribute('data-sort') === column) {
+            return i;
+        }
     }
+    return 0;
+}
+
+function filterHarvests(searchQuery) {
+    const rows = document.querySelectorAll('tbody tr');
+    rows.forEach(row => {
+        const text = row.textContent.toLowerCase();
+        row.style.display = text.includes(searchQuery.toLowerCase()) ? '' : 'none';
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+    const searchInput = document.getElementById('searchInput');
+    const searchButton = document.getElementById('searchButton');
+    const clearSearch = document.getElementById('clearSearch');
+    let searchTimeout;
 
     // Add click handlers to sortable headers
     document.querySelectorAll('.sortable').forEach(th => {
@@ -316,21 +202,7 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 
-    // Handle search
-    const searchInput = document.getElementById('searchInput');
-    const searchButton = document.getElementById('searchButton');
-    let searchTimeout;
-
-    function filterHarvests(searchQuery) {
-        const rows = document.querySelectorAll('.clickable-row');
-        const query = searchQuery.toLowerCase();
-
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(query) ? '' : 'none';
-        });
-    }
-
+    // Handle search input
     searchInput.addEventListener('input', function(e) {
         clearTimeout(searchTimeout);
         searchTimeout = setTimeout(() => {
@@ -338,16 +210,17 @@ document.addEventListener('DOMContentLoaded', function() {
         }, 300);
     });
 
+    // Handle search button click
     searchButton.addEventListener('click', function() {
-        filterHarvests(searchInput.value);
+        document.getElementById('searchForm').submit();
     });
 
-    // Handle form submission
-    document.getElementById('searchForm').addEventListener('submit', function(e) {
-        e.preventDefault();
-        filterHarvests(searchInput.value);
-    });
+    // Handle clear search
+    if (clearSearch) {
+        clearSearch.addEventListener('click', function() {
+            window.location.href = "{% url 'harvests:list_harvests' %}";
+        });
+    }
 });
 </script>
-
 {% endblock %}

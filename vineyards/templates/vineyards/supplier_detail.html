@@ -1,74 +1,99 @@
-{% extends 'base.html' %}
+{% extends 'vineyards/base_vineyards.html' %}
 
-{% block content %}
-<div class="supplier-detail-container">
-    <div class="header">
-        <h1>{{ supplier.name }}</h1>
-        <div class="actions">
-            <a href="{% url 'vineyards:edit_supplier' supplier.id %}" class="btn btn-edit">Edit Supplier</a>
-            <a href="{% url 'vineyards:list_suppliers' %}" class="btn btn-secondary">Back to List</a>
+{% block vineyard_content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <h1 class="text-2xl font-semibold text-gray-900">{{ supplier.name }}</h1>
+        <div class="flex flex-wrap gap-3">
+            <a href="{% url 'vineyards:edit_supplier' supplier.id %}" 
+               class="btn-primary inline-flex items-center">
+                <i class="fas fa-edit mr-2"></i>Edit Supplier
+            </a>
+            <a href="{% url 'vineyards:list_suppliers' %}" 
+               class="btn-secondary inline-flex items-center">
+                <i class="fas fa-arrow-left mr-2"></i>Back to List
+            </a>
         </div>
     </div>
 
-    <div class="supplier-info">
-        <div class="info-section">
-            <h2>Contact Information</h2>
-            <table class="details-table">
-                <tr>
-                    <th>Contact Person:</th>
-                    <td>{{ supplier.contact_person }}</td>
-                </tr>
-                <tr>
-                    <th>Phone:</th>
-                    <td>{{ supplier.phone }}</td>
-                </tr>
-                <tr>
-                    <th>Email:</th>
-                    <td>{{ supplier.email }}</td>
-                </tr>
-                <tr>
-                    <th>Address:</th>
-                    <td>{{ supplier.address }}</td>
-                </tr>
-                <tr>
-                    <th>OIB:</th>
-                    <td>{{ supplier.oib }}</td>
-                </tr>
-                <tr>
-                    <th>IBK:</th>
-                    <td>{{ supplier.ibk }}</td>
-                </tr>
-                <tr>
-                    <th>MIBPG:</th>
-                    <td>{{ supplier.mibpg }}</td>
-                </tr>
-            </table>
+    <!-- Contact Information -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Contact Information</h2>
         </div>
+        <div class="px-4 py-5 sm:p-6">
+            <dl class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Contact Person</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ supplier.contact_person }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Phone</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ supplier.phone }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Email</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ supplier.email }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">Address</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ supplier.address }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">OIB</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ supplier.oib }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">IBK</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ supplier.ibk }}</dd>
+                </div>
+                <div>
+                    <dt class="text-sm font-medium text-gray-500">MIBPG</dt>
+                    <dd class="mt-1 text-sm text-gray-900">{{ supplier.mibpg }}</dd>
+                </div>
+            </dl>
+        </div>
+    </div>
 
-        <div class="info-section">
-            <h2>Supplied Vineyards</h2>
+    <!-- Supplied Vineyards -->
+    <div class="bg-white rounded-lg shadow overflow-hidden">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200 flex justify-between items-center">
+            <h2 class="text-lg font-medium text-gray-900">Supplied Vineyards</h2>
+            <a href="{% url 'vineyards:add_vineyard' %}?supplier={{ supplier.id }}" 
+               class="btn-primary inline-flex items-center text-sm">
+                <i class="fas fa-plus mr-2"></i>Add Vineyard
+            </a>
+        </div>
+        <div class="px-4 py-5 sm:p-6">
             {% if supplier.vineyards.all %}
-                <div class="table-container">
-                    <table class="table">
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Size (ha)</th>
-                                <th>Grape Variety</th>
-                                <th>Actions</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Location</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Size (ha)</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grape Variety</th>
+                                <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="bg-white divide-y divide-gray-200">
                             {% for vineyard in supplier.vineyards.all %}
                                 <tr>
-                                    <td>{{ vineyard.name }}</td>
-                                    <td>{{ vineyard.location }}</td>
-                                    <td>{{ vineyard.size }}</td>
-                                    <td>{{ vineyard.get_grape_variety_display }}</td>
-                                    <td>
-                                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" class="btn btn-sm btn-info">View</a>
-                                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" class="btn btn-sm btn-edit">Edit</a>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ vineyard.name }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ vineyard.location }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ vineyard.size }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ vineyard.get_grape_variety_display }}</td>
+                                    <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-3">
+                                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" 
+                                           class="text-wine hover:text-wine-dark">
+                                            <i class="fas fa-eye"></i>
+                                        </a>
+                                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" 
+                                           class="text-wine hover:text-wine-dark">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
                                     </td>
                                 </tr>
                             {% endfor %}
@@ -76,106 +101,11 @@
                     </table>
                 </div>
             {% else %}
-                <p>No vineyards associated with this supplier.</p>
+                <div class="text-center py-6">
+                    <p class="text-gray-500">No vineyards associated with this supplier.</p>
+                </div>
             {% endif %}
-            
-            <div class="actions mt-3">
-                <a href="{% url 'vineyards:add_vineyard' %}?supplier={{ supplier.id }}" class="btn btn-primary">Add Vineyard</a>
-            </div>
         </div>
     </div>
 </div>
-
-<style>
-    .supplier-detail-container {
-        padding: 20px;
-    }
-    .header {
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-        margin-bottom: 30px;
-    }
-    .header h1 {
-        margin: 0;
-    }
-    .info-section {
-        background: white;
-        padding: 20px;
-        border-radius: 8px;
-        box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-        margin-bottom: 20px;
-    }
-    .info-section h2 {
-        color: #333;
-        margin-bottom: 20px;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #eee;
-    }
-    .details-table {
-        width: 100%;
-        margin-bottom: 0;
-    }
-    .details-table th {
-        width: 150px;
-        padding: 8px;
-        vertical-align: top;
-        color: #666;
-    }
-    .details-table td {
-        padding: 8px;
-    }
-    .table-container {
-        margin-top: 20px;
-        overflow-x: auto;
-    }
-    .table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .table th {
-        background-color: #f8f9fa;
-        border-bottom: 2px solid #dee2e6;
-        padding: 12px;
-        text-align: left;
-    }
-    .table td {
-        padding: 12px;
-        border-bottom: 1px solid #dee2e6;
-    }
-    .btn {
-        display: inline-block;
-        padding: 8px 16px;
-        margin: 0 4px;
-        border-radius: 4px;
-        text-decoration: none;
-        font-weight: 500;
-    }
-    .btn-primary {
-        background-color: #007bff;
-        color: white;
-    }
-    .btn-secondary {
-        background-color: #6c757d;
-        color: white;
-    }
-    .btn-edit {
-        background-color: #28a745;
-        color: white;
-    }
-    .btn-info {
-        background-color: #17a2b8;
-        color: white;
-    }
-    .btn-sm {
-        padding: 4px 8px;
-        font-size: 0.875rem;
-    }
-    .actions {
-        margin-top: 20px;
-    }
-    .mt-3 {
-        margin-top: 1rem;
-    }
-</style>
 {% endblock %}

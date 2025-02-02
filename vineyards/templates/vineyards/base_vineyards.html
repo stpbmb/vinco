@@ -1,36 +1,35 @@
 {% extends "base.html" %}
 
 {% block content %}
-<div class="container mt-4">
-    <div class="row">
-        <div class="col-md-3">
-            <div class="card mb-4">
-                <div class="card-header">
-                    <h5 class="mb-0">Vineyard Management</h5>
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="{% url 'vineyards:list_vineyards' %}" class="list-group-item list-group-item-action {% if 'vineyards' in request.path and not 'suppliers' in request.path %}active{% endif %}">
-                        <i class="fas fa-mountain me-2"></i> Vineyards
-                    </a>
-                    <a href="{% url 'vineyards:list_suppliers' %}" class="list-group-item list-group-item-action {% if 'suppliers' in request.path %}active{% endif %}">
-                        <i class="fas fa-truck me-2"></i> Suppliers
-                    </a>
-                </div>
+<div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+    <!-- Sidebar -->
+    <div class="lg:col-span-1">
+        <div class="bg-white rounded-lg shadow">
+            <div class="px-4 py-5 border-b border-gray-200">
+                <h2 class="text-lg font-medium text-gray-900">Vineyard Management</h2>
+            </div>
+            <div class="p-4 space-y-2">
+                <a href="{% url 'vineyards:list_vineyards' %}" 
+                   class="flex items-center px-4 py-2 text-sm rounded-md {% if 'vineyards' in request.path and not 'suppliers' in request.path %}bg-wine text-white{% else %}text-gray-700 hover:bg-gray-50{% endif %}">
+                    <i class="fas fa-mountain w-5"></i>
+                    <span class="ml-3">Vineyards</span>
+                </a>
+                <a href="{% url 'vineyards:list_suppliers' %}" 
+                   class="flex items-center px-4 py-2 text-sm rounded-md {% if 'suppliers' in request.path %}bg-wine text-white{% else %}text-gray-700 hover:bg-gray-50{% endif %}">
+                    <i class="fas fa-truck w-5"></i>
+                    <span class="ml-3">Suppliers</span>
+                </a>
             </div>
         </div>
-        <div class="col-md-9">
-            {% block vineyard_content %}{% endblock %}
+    </div>
+
+    <!-- Main Content -->
+    <div class="lg:col-span-3">
+        <div class="bg-white rounded-lg shadow">
+            <div class="p-6">
+                {% block vineyard_content %}{% endblock %}
+            </div>
         </div>
     </div>
 </div>
-
-<style>
-.list-group-item i {
-    width: 20px;
-    text-align: center;
-}
-.list-group-item.active i {
-    color: white;
-}
-</style>
 {% endblock %}

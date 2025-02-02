@@ -1,137 +1,121 @@
-{% extends 'base.html' %}
+{% extends "cellars/base_cellars.html" %}
 {% load static %}
 {% load cellar_tags %}
 
-{% block content %}
-<div class="container">
-    <div class="card mb-4">
-        <div class="card-header">
-            <h4 class="mb-0">Tank History: {{ tank.name }}</h4>
+{% block cellar_content %}
+<div class="space-y-6">
+    <!-- Tank Details -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-semibold text-gray-900">Tank History: {{ tank.name }}</h1>
+                <a href="{% url 'cellars:tank_detail' tank.id %}" 
+                   class="inline-flex items-center px-3 py-2 border border-gray-300 shadow-sm text-sm leading-4 font-medium rounded-md text-gray-700 bg-white hover:bg-gray-50">
+                    <i class="fas fa-arrow-left mr-2"></i>
+                    Back to Tank
+                </a>
+            </div>
         </div>
-        <div class="card-body">
-            <div class="row">
-                <div class="col-md-6">
-                    <h5>Tank Details</h5>
-                    <table class="table">
-                        <tr>
-                            <th>Location:</th>
-                            <td>{{ tank.cellar.name }}</td>
-                        </tr>
-                        <tr>
-                            <th>Type:</th>
-                            <td>{{ tank.get_tank_type_display }}</td>
-                        </tr>
-                        <tr>
-                            <th>Capacity:</th>
-                            <td>{{ tank.capacity }} L</td>
-                        </tr>
-                        <tr>
-                            <th>Current Volume:</th>
-                            <td>{{ tank.current_volume }} L</td>
-                        </tr>
-                    </table>
+        <div class="px-4 py-5 sm:p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <div>
+                    <h2 class="text-lg font-medium text-gray-900 mb-4">Tank Details</h2>
+                    <dl class="grid grid-cols-3 gap-4">
+                        <dt class="text-sm font-medium text-gray-500">Location</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ tank.cellar.name }}</dd>
+                        
+                        <dt class="text-sm font-medium text-gray-500">Type</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ tank.get_tank_type_display }}</dd>
+                        
+                        <dt class="text-sm font-medium text-gray-500">Capacity</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ tank.capacity }} L</dd>
+                        
+                        <dt class="text-sm font-medium text-gray-500">Current Volume</dt>
+                        <dd class="text-sm text-gray-900 col-span-2">{{ tank.current_volume }} L</dd>
+                    </dl>
                 </div>
             </div>
         </div>
     </div>
 
     {% if tank.crushed_juice_allocations.all %}
-    <div class="card mb-4">
-        <div class="card-header">
-            <h5 class="mb-0">Juice Allocations</h5>
+    <!-- Juice Allocations -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Juice Allocations</h2>
         </div>
-        <div class="card-body p-0">
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Vineyard</th>
-                            <th>Grape Variety</th>
-                            <th>Volume</th>
-                            <th>Notes</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for allocation in tank.crushed_juice_allocations.all %}
-                        <tr>
-                            <td>{{ allocation.allocation_date }}</td>
-                            <td>{{ allocation.harvest.vineyard.name }}</td>
-                            <td>{{ allocation.harvest.vineyard.get_grape_variety_display }}</td>
-                            <td>{{ allocation.allocated_volume }} L</td>
-                            <td>{{ allocation.notes|default:"-" }}</td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Vineyard</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Grape Variety</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for allocation in tank.crushed_juice_allocations.all %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ allocation.allocation_date|date:"M d, Y" }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ allocation.harvest.vineyard.name }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ allocation.harvest.vineyard.get_grape_variety_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ allocation.allocated_volume }} L</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
     </div>
     {% endif %}
 
-    <div class="card">
-        <div class="card-header">
-            <h5 class="mb-0">Volume Changes History</h5>
+    <!-- Volume Changes History -->
+    <div class="bg-white shadow rounded-lg overflow-hidden">
+        <div class="px-4 py-5 sm:px-6 border-b border-gray-200">
+            <h2 class="text-lg font-medium text-gray-900">Volume Changes History</h2>
         </div>
-        <div class="card-body p-0">
-            {% if history %}
-            <div class="table-responsive">
-                <table class="table table-hover mb-0">
-                    <thead>
-                        <tr>
-                            <th>Date</th>
-                            <th>Operation</th>
-                            <th>Volume Change</th>
-                            <th>Details</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        {% for entry in history %}
-                        <tr>
-                            <td>{{ entry.date }}</td>
-                            <td>{{ entry.get_operation_type_display }}</td>
-                            <td class="{% if entry.volume > 0 %}text-success{% else %}text-danger{% endif %}">
+        <div class="overflow-x-auto">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Operation</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Volume Change</th>
+                        <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Details</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for entry in history %}
+                    <tr class="hover:bg-gray-50">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ entry.date }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{{ entry.get_operation_type_display }}</td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm">
+                            <span class="{% if entry.volume > 0 %}text-green-600{% else %}text-red-600{% endif %}">
                                 {% if entry.volume > 0 %}+{% endif %}{{ entry.volume }} L
-                            </td>
-                            <td>
-                                {% if entry.operation_type == 'allocation' %}
-                                    {% if entry.harvest %}
-                                        From harvest: {{ entry.harvest.vineyard.name }}
-                                        ({{ entry.harvest.vineyard.get_grape_variety_display }})
-                                    {% else %}
-                                        Manual allocation
-                                    {% endif %}
-                                {% elif entry.operation_type == 'transfer_in' %}
-                                    From tank: {{ entry.source.name }}
-                                {% elif entry.operation_type == 'transfer_out' %}
-                                    To tank: {{ entry.destination.name }}
+                            </span>
+                        </td>
+                        <td class="px-6 py-4 text-sm text-gray-500">
+                            {% if entry.operation_type == 'allocation' %}
+                                {% if entry.harvest %}
+                                    From harvest: {{ entry.harvest.vineyard.name }}
+                                    ({{ entry.harvest.vineyard.get_grape_variety_display }})
+                                {% else %}
+                                    Manual allocation
                                 {% endif %}
-                                {% if entry.notes %}
-                                    <br><small class="text-muted">{{ entry.notes }}</small>
-                                {% endif %}
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% else %}
-            <div class="p-4 text-center text-muted">
-                <p>No volume changes recorded yet.</p>
-            </div>
-            {% endif %}
+                            {% elif entry.operation_type == 'transfer_in' %}
+                                From tank: {{ entry.source.name }}
+                            {% elif entry.operation_type == 'transfer_out' %}
+                                To tank: {{ entry.destination.name }}
+                            {% endif %}
+                            {% if entry.notes %}
+                                <br><small class="text-muted">{{ entry.notes }}</small>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
         </div>
-    </div>
-
-    <div class="mt-3">
-        <a href="{% url 'cellars:tank_detail' tank.pk %}" class="btn btn-secondary">
-            <i class="fas fa-arrow-left me-2"></i>Back to Tank Details
-        </a>
     </div>
 </div>
-
-<style>
-.volume.positive { color: #28a745; }
-.volume.negative { color: #dc3545; }
-</style>
 {% endblock %}

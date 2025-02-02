@@ -1,145 +1,116 @@
-{% extends 'base.html' %}
+{% extends 'cellars/base_cellars.html' %}
 {% load cellar_tags %}
 
-{% block content %}
-<h1>Cellars and Tanks</h1>
-<div class="actions">
-    <a href="{% url 'cellars:add_cellar' %}" class="btn">Add New Cellar</a>
-    <a href="{% url 'cellars:transfer_wine' %}" class="btn btn-secondary">Transfer Wine</a>
-</div>
+{% block cellar_content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-center">
+        <h1 class="text-2xl font-bold text-gray-900 mb-4 sm:mb-0">Cellars and Tanks</h1>
+        <div class="flex space-x-4">
+            <a href="{% url 'cellars:add_cellar' %}" 
+               class="inline-flex items-center px-4 py-2 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wine-600 hover:bg-wine-700">
+                <i class="fas fa-plus mr-2"></i>
+                Add New Cellar
+            </a>
+            <a href="{% url 'cellars:transfer_wine' %}" 
+               class="inline-flex items-center px-4 py-2 border border-gray-300 rounded-md shadow-sm text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                <i class="fas fa-exchange-alt mr-2"></i>
+                Transfer Wine
+            </a>
+        </div>
+    </div>
 
-<div class="cellars-list">
-    {% for cellar in cellars %}
-        <div class="cellar-section">
-            <h2>
-                {{ cellar.name }}
-                <span class="cellar-meta">
-                    (Total Capacity: {{ cellar.capacity|floatformat:2 }} L | Current Volume: {{ cellar.total_current_volume|floatformat:2 }} L | Available: {{ cellar.available_capacity|floatformat:2 }} L)
-                    <a href="{% url 'cellars:edit_cellar' cellar.id %}" class="btn-small">Edit Cellar</a>
-                    <a href="{% url 'cellars:add_tank' cellar.id %}" class="btn-small">Add Tank</a>
-                </span>
-            </h2>
-            
-            <div class="tanks-list">
+    <!-- Cellars List -->
+    <div class="space-y-6">
+        {% for cellar in cellars %}
+        <div class="bg-white shadow rounded-lg overflow-hidden">
+            <!-- Cellar Header -->
+            <div class="px-4 py-5 border-b border-gray-200 sm:px-6">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center">
+                    <h2 class="text-xl font-semibold text-gray-900 mb-4 sm:mb-0">{{ cellar.name }}</h2>
+                    <div class="flex flex-wrap gap-2">
+                        <a href="{% url 'cellars:edit_cellar' cellar.id %}" 
+                           class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            <i class="fas fa-edit mr-1"></i>
+                            Edit Cellar
+                        </a>
+                        <a href="{% url 'cellars:add_tank' cellar.id %}" 
+                           class="inline-flex items-center px-3 py-1 border border-gray-300 rounded-md text-sm font-medium text-gray-700 bg-white hover:bg-gray-50">
+                            <i class="fas fa-plus mr-1"></i>
+                            Add Tank
+                        </a>
+                    </div>
+                </div>
+                <div class="mt-2 grid grid-cols-1 sm:grid-cols-3 gap-4">
+                    <div class="flex items-center text-sm text-gray-500">
+                        <span class="font-medium mr-1">Total Capacity:</span>
+                        {{ cellar.capacity|floatformat:2 }} L
+                    </div>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <span class="font-medium mr-1">Current Volume:</span>
+                        {{ cellar.total_current_volume|floatformat:2 }} L
+                    </div>
+                    <div class="flex items-center text-sm text-gray-500">
+                        <span class="font-medium mr-1">Available:</span>
+                        {{ cellar.available_capacity|floatformat:2 }} L
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tanks Table -->
+            <div class="px-4 sm:px-6 py-4">
                 {% if cellar.tanks.all %}
-                    <table>
+                <div class="overflow-x-auto">
+                    <table class="min-w-full divide-y divide-gray-200">
                         <thead>
                             <tr>
-                                <th>Tank Name</th>
-                                <th>Type</th>
-                                <th>Capacity</th>
-                                <th>Current Volume</th>
-                                <th>Available Space</th>
-                                <th>Actions</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Tank Name</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Type</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Capacity</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Current Volume</th>
+                                <th class="px-6 py-3 bg-gray-50 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Available Space</th>
+                                <th class="px-6 py-3 bg-gray-50 text-right text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
                             </tr>
                         </thead>
-                        <tbody>
+                        <tbody class="bg-white divide-y divide-gray-200">
                             {% for tank in cellar.tanks.all %}
-                                <tr>
-                                    <td>
-                                        <a href="{% url 'cellars:tank_history' tank.id %}" class="tank-link">{{ tank.name }}</a>
-                                    </td>
-                                    <td>{{ tank.get_tank_type_display }}</td>
-                                    <td>{{ tank.capacity }} L</td>
-                                    <td>{{ tank.current_volume }} L</td>
-                                    <td>{{ tank.capacity|sub:tank.current_volume }} L</td>
-                                    <td class="actions-cell">
-                                        <a href="{% url 'cellars:edit_tank' tank.id %}" class="btn-small">Edit</a>
-                                        <a href="{% url 'cellars:transfer_wine' %}?source={{ tank.id }}" class="btn-small btn-transfer">Transfer From</a>
-                                    </td>
-                                </tr>
+                            <tr class="hover:bg-gray-50">
+                                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-wine-600">
+                                    <a href="{% url 'cellars:tank_history' tank.id %}" class="hover:text-wine-700">{{ tank.name }}</a>
+                                </td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ tank.get_tank_type_display }}</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ tank.capacity }} L</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ tank.current_volume }} L</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">{{ tank.capacity|sub:tank.current_volume }} L</td>
+                                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                                    <div class="flex justify-end space-x-2">
+                                        <a href="{% url 'cellars:edit_tank' tank.id %}" 
+                                           class="text-wine-600 hover:text-wine-900">
+                                            <i class="fas fa-edit"></i>
+                                        </a>
+                                        <a href="{% url 'cellars:transfer_wine' %}?source={{ tank.id }}" 
+                                           class="text-wine-600 hover:text-wine-900">
+                                            <i class="fas fa-exchange-alt"></i>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
                             {% endfor %}
                         </tbody>
                     </table>
+                </div>
                 {% else %}
-                    <p class="no-tanks">No tanks in this cellar yet.</p>
+                <p class="text-center text-gray-500 py-4">No tanks in this cellar yet.</p>
                 {% endif %}
             </div>
         </div>
-    {% empty %}
-        <p class="no-cellars">No cellars have been added yet.</p>
-    {% endfor %}
+        {% empty %}
+        <div class="text-center py-12">
+            <i class="fas fa-warehouse text-gray-400 text-5xl mb-4"></i>
+            <h3 class="text-lg font-medium text-gray-900 mb-2">No Cellars Yet</h3>
+            <p class="text-gray-500">Get started by adding your first cellar.</p>
+        </div>
+        {% endfor %}
+    </div>
 </div>
-
-<style>
-    .cellars-list {
-        margin-top: 20px;
-    }
-    .cellar-section {
-        margin-bottom: 30px;
-        border: 1px solid #ddd;
-        padding: 15px;
-        border-radius: 5px;
-    }
-    .cellar-section h2 {
-        margin-top: 0;
-        padding-bottom: 10px;
-        border-bottom: 2px solid #eee;
-        display: flex;
-        justify-content: space-between;
-        align-items: center;
-    }
-    .cellar-meta {
-        font-size: 0.8em;
-        font-weight: normal;
-    }
-    .tanks-list {
-        margin-top: 15px;
-    }
-    .tanks-list table {
-        width: 100%;
-        border-collapse: collapse;
-    }
-    .tanks-list th, .tanks-list td {
-        padding: 8px;
-        text-align: left;
-        border-bottom: 1px solid #eee;
-    }
-    .tanks-list th {
-        background-color: #f5f5f5;
-    }
-    .actions {
-        display: flex;
-        gap: 10px;
-        margin-bottom: 20px;
-    }
-    .btn {
-        display: inline-block;
-        padding: 8px 16px;
-        background-color: #007bff;
-        color: white;
-        text-decoration: none;
-        border-radius: 4px;
-    }
-    .btn-secondary {
-        background-color: #6c757d;
-    }
-    .btn-small {
-        padding: 4px 8px;
-        background-color: #6c757d;
-        color: white;
-        text-decoration: none;
-        border-radius: 3px;
-        font-size: 0.9em;
-        margin-left: 8px;
-    }
-    .btn-transfer {
-        background-color: #28a745;
-    }
-    .no-tanks, .no-cellars {
-        color: #666;
-        font-style: italic;
-    }
-    .tank-link {
-        color: #007bff;
-        text-decoration: none;
-        font-weight: 500;
-    }
-    .tank-link:hover {
-        text-decoration: underline;
-    }
-    .actions-cell {
-        white-space: nowrap;
-    }
-</style>
 {% endblock %}

@@ -1,349 +1,182 @@
-{% extends 'base.html' %}
+{% extends 'vineyards/base_vineyards.html' %}
 {% load cache %}
 {% load vineyard_filters %}
 
-{% block content %}
-<div class="vineyards-container">
-    <div class="header">
-        <h1>Vineyards</h1>
-        <div class="header-actions">
-            <form method="get" class="search-form" id="searchForm">
-                <div class="search-input-group">
+{% block vineyard_content %}
+<div class="space-y-6">
+    <!-- Header -->
+    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
+        <h1 class="text-2xl font-semibold text-gray-900">Vineyards</h1>
+        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
+            <!-- Search Form -->
+            <form method="get" class="flex-1 sm:flex-none" id="searchForm">
+                <div class="relative">
                     <input type="text" 
                            name="search" 
-                           class="form-control" 
+                           class="form-input pl-10 pr-10"
                            placeholder="Search vineyards..." 
                            value="{{ search_query }}"
                            aria-label="Search vineyards"
                            id="searchInput">
-                    <button type="button" class="btn btn-outline-primary" id="searchButton">
-                        <i class="fas fa-search"></i>
-                    </button>
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-search text-gray-400"></i>
+                    </div>
                     {% if search_query %}
-                        <a href="{% url 'vineyards:list_vineyards' %}" class="btn btn-outline-secondary" id="clearSearch">
-                            <i class="fas fa-times"></i>
-                        </a>
+                    <a href="{% url 'vineyards:list_vineyards' %}" 
+                       class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600" 
+                       id="clearSearch">
+                        <i class="fas fa-times"></i>
+                    </a>
                     {% endif %}
                 </div>
             </form>
-            <a href="{% url 'vineyards:add_vineyard' %}" class="btn btn-primary">
-                <i class="fas fa-plus"></i> Add New Vineyard
+            
+            <!-- Add New Button -->
+            <a href="{% url 'vineyards:add_vineyard' %}" 
+               class="btn-primary inline-flex items-center justify-center">
+                <i class="fas fa-plus mr-2"></i>
+                Add New Vineyard
             </a>
         </div>
     </div>
 
-    <div class="vineyard-sections">
-        <!-- Owned Vineyards Section -->
-        <div class="vineyard-section">
-            <h2>Owned Vineyards</h2>
-            {% if owned_vineyards %}
-                {% cache 300 owned_vineyards %}
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Size (ha)</th>
-                                <th>Grape Variety</th>
-                                <th>Planting Year</th>
-                                <th>Cadastral Parcel</th>
-                                <th>Cadastral County</th>
-                                <th>ARKOD ID</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for vineyard in owned_vineyards %}
-                                <tr class="clickable-row" data-href="{% url 'vineyards:vineyard_detail' vineyard.id %}">
-                                    <td>{{ vineyard.name }}</td>
-                                    <td>{{ vineyard.location }}</td>
-                                    <td>{{ vineyard.size }}</td>
-                                    <td>{{ vineyard.get_grape_variety_display }}</td>
-                                    <td>{{ vineyard.planting_year|default_if_none_or_empty:"-" }}</td>
-                                    <td>{{ vineyard.cadastral_parcel|default_if_none_or_empty:"-" }}</td>
-                                    <td>{{ vineyard.cadastral_county|default_if_none_or_empty:"-" }}</td>
-                                    <td>{{ vineyard.arkod_id|default_if_none_or_empty:"-" }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% endcache %}
-            {% else %}
-                <p class="no-data">No owned vineyards yet.</p>
-            {% endif %}
-        </div>
-
-        <!-- Supplied Vineyards Section -->
-        <div class="vineyard-section">
-            <div class="section-header">
-                <h2>Supplied Vineyards</h2>
-                <a href="{% url 'vineyards:add_supplier' %}" class="btn btn-outline-primary btn-sm">
-                    <i class="fas fa-plus"></i> Add Supplier
+    <!-- Owned Vineyards Section -->
+    <div class="space-y-4">
+        <h2 class="text-lg font-medium text-gray-900">Owned Vineyards</h2>
+        {% if owned_vineyards %}
+            {% cache 300 owned_vineyards %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Size (ha)</th>
+                            <th>Grape Variety</th>
+                            <th>Planting Year</th>
+                            <th>Cadastral Parcel</th>
+                            <th>Cadastral County</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for vineyard in owned_vineyards %}
+                        <tr class="vineyard-row">
+                            <td class="font-medium text-gray-900">{{ vineyard.name }}</td>
+                            <td>{{ vineyard.location }}</td>
+                            <td>{{ vineyard.size }}</td>
+                            <td>{{ vineyard.get_grape_variety_display }}</td>
+                            <td>{{ vineyard.planting_year|default_if_none_or_empty:"-" }}</td>
+                            <td>{{ vineyard.cadastral_parcel|default_if_none_or_empty:"-" }}</td>
+                            <td>{{ vineyard.cadastral_county|default_if_none_or_empty:"-" }}</td>
+                            <td class="text-right space-x-2">
+                                <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" 
+                                   class="text-gray-400 hover:text-wine">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" 
+                                   class="text-gray-400 hover:text-wine">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                                <a href="{% url 'vineyards:delete_vineyard' vineyard.id %}" 
+                                   class="text-gray-400 hover:text-red-600">
+                                    <i class="fas fa-trash"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endcache %}
+        {% else %}
+            <div class="bg-gray-50 rounded-lg p-6 text-center">
+                <p class="text-gray-500">No owned vineyards found.</p>
+                <a href="{% url 'vineyards:add_vineyard' %}" 
+                   class="btn-primary inline-flex items-center mt-4">
+                    <i class="fas fa-plus mr-2"></i>
+                    Add Your First Vineyard
                 </a>
             </div>
-            {% if supplied_vineyards %}
-                {% cache 300 supplied_vineyards %}
-                <div class="table-container">
-                    <table class="table">
-                        <thead>
-                            <tr>
-                                <th>Name</th>
-                                <th>Location</th>
-                                <th>Size (ha)</th>
-                                <th>Grape Variety</th>
-                                <th>Planting Year</th>
-                                <th>Cadastral Parcel</th>
-                                <th>Cadastral County</th>
-                                <th>Supplier</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for vineyard in supplied_vineyards %}
-                                <tr class="clickable-row" data-href="{% url 'vineyards:vineyard_detail' vineyard.id %}">
-                                    <td>{{ vineyard.name }}</td>
-                                    <td>{{ vineyard.location }}</td>
-                                    <td>{{ vineyard.size }}</td>
-                                    <td>{{ vineyard.get_grape_variety_display }}</td>
-                                    <td>{{ vineyard.planting_year|default_if_none_or_empty:"-" }}</td>
-                                    <td>{{ vineyard.cadastral_parcel|default_if_none_or_empty:"-" }}</td>
-                                    <td>{{ vineyard.cadastral_county|default_if_none_or_empty:"-" }}</td>
-                                    <td>{{ vineyard.supplier.name }}</td>
-                                </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                {% endcache %}
-            {% else %}
-                <p class="no-data">No supplied vineyards yet.</p>
-            {% endif %}
-        </div>
+        {% endif %}
+    </div>
+
+    <!-- Supplied Vineyards Section -->
+    <div class="space-y-4">
+        <h2 class="text-lg font-medium text-gray-900">Supplied Vineyards</h2>
+        {% if supplied_vineyards %}
+            {% cache 300 supplied_vineyards %}
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Location</th>
+                            <th>Size (ha)</th>
+                            <th>Grape Variety</th>
+                            <th>Supplier</th>
+                            <th class="text-right">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-gray-200">
+                        {% for vineyard in supplied_vineyards %}
+                        <tr class="vineyard-row">
+                            <td class="font-medium text-gray-900">{{ vineyard.name }}</td>
+                            <td>{{ vineyard.location }}</td>
+                            <td>{{ vineyard.size }}</td>
+                            <td>{{ vineyard.get_grape_variety_display }}</td>
+                            <td>{{ vineyard.supplier.name }}</td>
+                            <td class="text-right space-x-2">
+                                <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" 
+                                   class="text-gray-400 hover:text-wine">
+                                    <i class="fas fa-eye"></i>
+                                </a>
+                                <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" 
+                                   class="text-gray-400 hover:text-wine">
+                                    <i class="fas fa-edit"></i>
+                                </a>
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% endcache %}
+        {% else %}
+            <div class="bg-gray-50 rounded-lg p-6 text-center">
+                <p class="text-gray-500">No supplied vineyards found.</p>
+            </div>
+        {% endif %}
     </div>
 </div>
 
-<style>
-.vineyards-container {
-    padding: 20px;
-}
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    flex-wrap: wrap;
-    gap: 20px;
-}
-.header h1 {
-    margin: 0;
-}
-.header-actions {
-    display: flex;
-    gap: 15px;
-    align-items: center;
-    flex-wrap: wrap;
-}
-.search-form {
-    min-width: 300px;
-}
-.search-input-group {
-    display: flex;
-    gap: 8px;
-}
-.search-input-group input {
-    border: 2px solid #e9ecef;
-    border-radius: 6px;
-    padding: 8px 12px;
-    font-size: 1rem;
-    flex-grow: 1;
-    min-width: 200px;
-    transition: border-color 0.2s, box-shadow 0.2s;
-}
-.search-input-group input:focus {
-    border-color: #80bdff;
-    box-shadow: 0 0 0 3px rgba(0,123,255,0.1);
-    outline: none;
-}
-.search-input-group .btn {
-    padding: 8px 12px;
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-}
-.vineyard-section {
-    background: white;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
-    margin-bottom: 30px;
-    padding: 20px;
-}
-.vineyard-section h2 {
-    margin-bottom: 20px;
-    color: #2c3e50;
-}
-.table-container {
-    overflow-x: auto;
-}
-.table {
-    width: 100%;
-    margin-bottom: 0;
-}
-.table thead th {
-    background-color: #f8f9fa;
-    border-bottom: 2px solid #dee2e6;
-    color: #495057;
-}
-.clickable-row {
-    cursor: pointer;
-    transition: background-color 0.2s ease;
-}
-.clickable-row:hover {
-    background-color: #f8f9fa;
-}
-.no-data {
-    color: #6c757d;
-    text-align: center;
-    padding: 20px;
-    background: #f8f9fa;
-    border-radius: 4px;
-}
-.section-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 20px;
-}
-.section-header h2 {
-    margin: 0;
-}
-.btn-outline-primary {
-    color: #007bff;
-    border: 1px solid #007bff;
-    background: transparent;
-    transition: all 0.2s;
-}
-.btn-outline-primary:hover {
-    color: white;
-    background: #007bff;
-}
-.btn-sm {
-    padding: 6px 12px;
-    font-size: 0.875rem;
-}
-</style>
-
 <script>
-    document.addEventListener('DOMContentLoaded', function() {
-        const searchInput = document.getElementById('searchInput');
-        const searchForm = document.getElementById('searchForm');
-        const clearSearch = document.getElementById('clearSearch');
-        let searchTimeout;
+    const searchInput = document.getElementById('searchInput');
+    const searchForm = document.getElementById('searchForm');
+    let searchTimeout;
 
-        // Function to show/hide rows based on search query
-        function filterVineyards(searchQuery) {
-            searchQuery = searchQuery.toLowerCase();
-            
-            // Function to check if a row matches the search query
-            function rowMatches(row) {
-                const searchableColumns = row.querySelectorAll('td:not(.actions-cell)');
-                return Array.from(searchableColumns).some(cell => {
-                    return cell.textContent.toLowerCase().includes(searchQuery);
-                });
-            }
+    function filterVineyards(searchQuery) {
+        const rows = document.querySelectorAll('.vineyard-row');
+        const normalizedQuery = searchQuery.toLowerCase();
 
-            // Filter owned vineyards
-            document.querySelectorAll('.vineyard-section table tbody tr').forEach(row => {
-                if (searchQuery === '') {
-                    row.style.display = '';
-                } else {
-                    row.style.display = rowMatches(row) ? '' : 'none';
-                }
-            });
-
-            // Update empty state messages
-            document.querySelectorAll('.vineyard-section').forEach(section => {
-                const tbody = section.querySelector('tbody');
-                const noData = section.querySelector('.no-data');
-                const table = section.querySelector('.table-container');
-                
-                if (tbody) {
-                    const visibleRows = tbody.querySelectorAll('tr[style=""]').length;
-                    if (visibleRows === 0) {
-                        if (table) table.style.display = 'none';
-                        if (!noData) {
-                            const message = document.createElement('p');
-                            message.className = 'no-data';
-                            message.textContent = searchQuery ? 'No vineyards match your search.' : 'No vineyards yet.';
-                            section.appendChild(message);
-                        } else {
-                            noData.textContent = searchQuery ? 'No vineyards match your search.' : 'No vineyards yet.';
-                            noData.style.display = '';
-                        }
-                    } else {
-                        if (table) table.style.display = '';
-                        if (noData) noData.style.display = 'none';
-                    }
-                }
-            });
-
-            // Update URL without reloading the page
-            const url = new URL(window.location);
-            if (searchQuery) {
-                url.searchParams.set('search', searchQuery);
-            } else {
-                url.searchParams.delete('search');
-            }
-            window.history.pushState({}, '', url);
-
-            // Show/hide clear button
-            const clearButton = document.getElementById('clearSearch');
-            if (clearButton) {
-                clearButton.style.display = searchQuery ? '' : 'none';
-            } else if (searchQuery) {
-                const newClearButton = document.createElement('a');
-                newClearButton.href = '{% url 'vineyards:list_vineyards' %}';
-                newClearButton.className = 'btn btn-outline-secondary';
-                newClearButton.id = 'clearSearch';
-                newClearButton.innerHTML = '<i class="fas fa-times"></i>';
-                document.querySelector('.search-input-group').appendChild(newClearButton);
-            }
-        }
-
-        // Handle input changes with debouncing
-        searchInput.addEventListener('input', function(e) {
-            clearTimeout(searchTimeout);
-            searchTimeout = setTimeout(() => {
-                filterVineyards(e.target.value.trim());
-            }, 300); // Wait 300ms after user stops typing
+        rows.forEach(row => {
+            const text = row.textContent.toLowerCase();
+            row.style.display = text.includes(normalizedQuery) ? '' : 'none';
         });
+    }
 
-        // Handle form submission
-        searchForm.addEventListener('submit', function(e) {
-            e.preventDefault();
-            filterVineyards(searchInput.value.trim());
-        });
+    // Handle input changes with debouncing
+    searchInput.addEventListener('input', function(e) {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            filterVineyards(e.target.value);
+        }, 300);
+    });
 
-        // Handle clear button click
-        if (clearSearch) {
-            clearSearch.addEventListener('click', function(e) {
-                e.preventDefault();
-                searchInput.value = '';
-                filterVineyards('');
-            });
-        }
+    // Handle form submission
+    searchForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+        filterVineyards(searchInput.value);
     });
 </script>
-
-{% block extra_js %}
-<script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Make rows clickable
-    document.querySelectorAll('.clickable-row').forEach(row => {
-        row.addEventListener('click', function() {
-            window.location.href = this.dataset.href;
-        });
-    });
-});
-</script>
-{% endblock %}
 {% endblock %}
