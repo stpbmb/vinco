@@ -1,8 +1,9 @@
 from django import forms
 from .models import Bottle, Label, Closure, Box, Bottling
 from cellars.models import Tank
+from core.forms import TenantFormMixin
 
-class BottleForm(forms.ModelForm):
+class BottleForm(TenantFormMixin, forms.ModelForm):
     class Meta:
         model = Bottle
         fields = [
@@ -14,7 +15,7 @@ class BottleForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
 
-class LabelForm(forms.ModelForm):
+class LabelForm(TenantFormMixin, forms.ModelForm):
     class Meta:
         model = Label
         fields = [
@@ -26,7 +27,7 @@ class LabelForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
 
-class ClosureForm(forms.ModelForm):
+class ClosureForm(TenantFormMixin, forms.ModelForm):
     class Meta:
         model = Closure
         fields = [
@@ -38,7 +39,7 @@ class ClosureForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
 
-class BoxForm(forms.ModelForm):
+class BoxForm(TenantFormMixin, forms.ModelForm):
     class Meta:
         model = Box
         fields = [
@@ -51,7 +52,7 @@ class BoxForm(forms.ModelForm):
             'notes': forms.Textarea(attrs={'rows': 3}),
         }
 
-class BottlingForm(forms.ModelForm):
+class BottlingForm(TenantFormMixin, forms.ModelForm):
     class Meta:
         model = Bottling
         fields = ['tank', 'bottle', 'closure', 'label', 'box', 'bottling_date', 'quantity', 'notes']
@@ -86,6 +87,13 @@ class BottlingForm(forms.ModelForm):
         self.fields['tank'].help_text = 'Select a tank containing wine'
         self.fields['quantity'].help_text = 'Number of bottles to fill'
         self.fields['notes'].help_text = 'Optional notes about the bottling process'
+
+        if self.organization:
+            self.fields['tank'].queryset = self.fields['tank'].queryset.filter(organization=self.organization)
+            self.fields['bottle'].queryset = self.fields['bottle'].queryset.filter(organization=self.organization)
+            self.fields['closure'].queryset = self.fields['closure'].queryset.filter(organization=self.organization)
+            self.fields['label'].queryset = self.fields['label'].queryset.filter(organization=self.organization)
+            self.fields['box'].queryset = self.fields['box'].queryset.filter(organization=self.organization)
 
     def clean(self):
         cleaned_data = super().clean()

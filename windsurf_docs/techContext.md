@@ -1,57 +1,84 @@
 # Technical Context
 
 ## Technologies Used
-1. **Backend**
-   - Django 4.2+
-   - Python 3.x
-   - PostgreSQL Database
 
-2. **Frontend**
-   - Bootstrap 5
-   - JavaScript
-   - django-crispy-forms
-   - crispy-bootstrap4
+### Backend
+- Django 4.x
+- Python 3.x
+- PostgreSQL (production) / SQLite (development)
+- Django REST Framework for API endpoints
 
-3. **Development Tools**
-   - django-debug-toolbar
-   - pytest
-   - Coverage.py
+### Frontend
+- Tailwind CSS for styling
+- JavaScript for dynamic interactions
+- HTML templates with Django template language
+
+### Multi-Tenancy Components
+1. **Core App**
+   - `TenantModel`: Base model for tenant isolation
+   - `TenantMiddleware`: Request processing
+   - `TenantRouter`: Database operations
+   - `TenantViewMixin`: View filtering
+   - `TenantFormMixin`: Form handling
+
+2. **Organizations App**
+   - `Organization`: Tenant model
+   - `OrganizationUser`: User-tenant relationship
+   - Organization selection views
+   - Role-based access control
 
 ## Development Setup
-1. **Environment Requirements**
-   - Python 3.x
-   - Virtual environment
-   - PostgreSQL
 
-2. **Installation Steps**
-   - Clone repository
-   - Create virtual environment
-   - Install dependencies from requirements.txt
-   - Configure environment variables
-   - Run migrations
-   - Create superuser
-   - Start development server
+### Prerequisites
+- Python 3.x
+- pip
+- virtualenv
+- PostgreSQL (optional for development)
 
-3. **Configuration**
-   - Environment variables in .env
-   - Django settings modules
-   - Database configurations
+### Installation Steps
+1. Create and activate virtual environment
+2. Install dependencies from requirements.txt
+3. Run database migrations
+4. Create initial superuser
+5. Create initial organization
+
+### Environment Variables
+- `DATABASE_URL`: Database connection string
+- `SECRET_KEY`: Django secret key
+- `DEBUG`: Debug mode flag
+- `ALLOWED_HOSTS`: Allowed host names
 
 ## Technical Constraints
-1. **Dependencies**
-   - Django >= 4.2.0
-   - django-crispy-forms >= 2.0
-   - crispy-bootstrap4 >= 2022.1
-   - psycopg2-binary >= 2.9.9
-   - django-debug-toolbar >= 4.2.0
 
-2. **System Requirements**
-   - Python 3 compatibility
-   - PostgreSQL database
-   - Modern web browser support
+### Database
+- Single database multi-tenancy
+- Organization field on all models
+- Foreign key constraints within organizations
 
-3. **Development Guidelines**
-   - PEP 8 compliance
-   - Django coding style
-   - Test coverage requirements
-   - Documentation standards
+### Authentication
+- Django's built-in authentication
+- Custom organization-based authorization
+- Role-based permissions
+
+### Performance
+- Database query optimization
+- Proper indexing for organization field
+- Efficient tenant filtering
+
+### Security
+- Data isolation between organizations
+- Role-based access control
+- Cross-organization access prevention
+
+## Deployment
+- Docker containers
+- PostgreSQL database
+- Static file serving
+- Media file storage
+- SSL/TLS encryption
+
+## Monitoring
+- Error tracking
+- Performance monitoring
+- User activity logging
+- Organization-specific metrics

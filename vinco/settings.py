@@ -37,14 +37,18 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    
+    # Third-party apps
     'crispy_forms',
     'crispy_bootstrap4',
-    'core.apps.CoreConfig',  
-    'vineyards',
-    'packaging',
-    'harvests',
-    'cellars',
-    'debug_toolbar',
+    
+    # Local apps
+    'core.apps.CoreConfig',
+    'organizations.apps.OrganizationsConfig',
+    'vineyards.apps.VineyardsConfig',
+    'harvests.apps.HarvestsConfig',
+    'cellars.apps.CellarsConfig',
+    'packaging.apps.PackagingConfig',
 ]
 
 MIDDLEWARE = [
@@ -55,10 +59,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'debug_toolbar.middleware.DebugToolbarMiddleware',
-    'vinco.middleware.RequestLoggingMiddleware',
-    'vinco.middleware.SecurityMiddleware',
-    'vinco.middleware.RateLimitMiddleware',
+    'core.middleware.tenant_middleware.TenantMiddleware',
 ]
 
 ROOT_URLCONF = 'vinco.urls'
@@ -149,7 +150,7 @@ CRISPY_ALLOWED_TEMPLATE_PACKS = 'bootstrap4'
 
 # Authentication settings
 LOGIN_URL = '/login/'
-LOGIN_REDIRECT_URL = '/'
+LOGIN_REDIRECT_URL = '/organizations/select/'  # Redirect directly to org selection after login
 LOGOUT_REDIRECT_URL = '/login/'
 
 # Debug Toolbar Configuration
@@ -174,6 +175,13 @@ RATELIMIT_ENABLE = True
 RATELIMIT_VIEW_LIMIT = "100/h"  # 100 requests per hour per IP per view
 RATELIMIT_LOGIN_LIMIT = "5/h"   # 5 login attempts per hour per IP
 
+# Database router settings
+DATABASE_ROUTERS = ['core.db_routers.TenantRouter']
+
+# Tenant settings
+TENANT_MODEL = 'organizations.Organization'
+TENANT_FIELD = 'organization'
+
 # Logging Configuration
 LOGGING = {
     'version': 1,
@@ -188,43 +196,31 @@ LOGGING = {
             'style': '{',
         },
     },
-    'filters': {
-        'require_debug_true': {
-            '()': 'django.utils.log.RequireDebugTrue',
-        },
-    },
     'handlers': {
         'console': {
-            'level': 'INFO',
-            'filters': ['require_debug_true'],
             'class': 'logging.StreamHandler',
-            'formatter': 'simple',
-        },
-        'file': {
-            'level': 'ERROR',
-            'class': 'logging.FileHandler',
-            'filename': BASE_DIR / 'logs/vinco.log',
             'formatter': 'verbose',
         },
-        'mail_admins': {
-            'level': 'ERROR',
-            'class': 'django.utils.log.AdminEmailHandler',
-        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
     },
     'loggers': {
         'django': {
             'handlers': ['console'],
-            'propagate': True,
-        },
-        'django.request': {
-            'handlers': ['file', 'mail_admins'],
-            'level': 'ERROR',
+            'level': 'INFO',
             'propagate': False,
         },
-        'vinco': {
-            'handlers': ['console', 'file'],
-            'level': 'INFO',
-            'propagate': True,
+        'organizations': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'core': {
+            'handlers': ['console'],
+            'level': 'DEBUG',
+            'propagate': False,
         },
     },
 }

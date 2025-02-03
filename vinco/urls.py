@@ -1,42 +1,39 @@
-"""
-URL configuration for vinco project.
-
-The `urlpatterns` list routes URLs to views. For more information please see:
-    https://docs.djangoproject.com/en/5.1/topics/http/urls/
-Examples:
-Function views
-    1. Add an import:  from my_app import views
-    2. Add a URL to urlpatterns:  path('', views.home, name='home')
-Class-based views
-    1. Add an import:  from other_app.views import Home
-    2. Add a URL to urlpatterns:  path('', Home.as_view(), name='home')
-Including another URLconf
-    1. Import the include() function: from django.urls import include, path
-    2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
-"""
+"""vinco URL Configuration"""
 from django.contrib import admin
-from django.contrib.auth import views as auth_views
 from django.urls import path, include
-from django.shortcuts import redirect
 from django.conf import settings
-from .views import UserListView
+from django.conf.urls.static import static
+from django.views.generic import RedirectView, TemplateView
+from django.contrib.auth import views as auth_views
 
-def home(request):
-    return redirect('vineyards:list_vineyards')
+# Error handlers must be strings
+handler404 = 'core.views.error_handlers.handler404'
+handler500 = 'core.views.error_handlers.handler500'
+handler403 = 'core.views.error_handlers.handler403'
+handler400 = 'core.views.error_handlers.handler400'
 
 urlpatterns = [
-    path('', home, name='home'),
     path('admin/', admin.site.urls),
+    path('', RedirectView.as_view(url='/organizations/select/', permanent=False)),
+    
+    # Favicon
+    path('favicon.ico', RedirectView.as_view(url='/static/favicon.ico', permanent=True)),
+    
+    # Authentication URLs
+    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(next_page='login'), name='logout'),
+    path('password_change/', auth_views.PasswordChangeView.as_view(), name='password_change'),
+    path('password_change/done/', auth_views.PasswordChangeDoneView.as_view(), name='password_change_done'),
+    
+    # App URLs - include app namespaces
+    path('core/', include(('core.urls', 'core'), namespace='core')),
+    path('organizations/', include(('organizations.urls', 'organizations'), namespace='organizations')),
     path('vineyards/', include(('vineyards.urls', 'vineyards'), namespace='vineyards')),
     path('harvests/', include(('harvests.urls', 'harvests'), namespace='harvests')),
     path('cellars/', include(('cellars.urls', 'cellars'), namespace='cellars')),
     path('packaging/', include(('packaging.urls', 'packaging'), namespace='packaging')),
-    
-    # Authentication URLs
-    path('login/', auth_views.LoginView.as_view(template_name='registration/login.html'), name='login'),
-    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),
-    path('users/', UserListView.as_view(), name='user_list'),
 ]
 
 if settings.DEBUG:
-    urlpatterns.append(path('__debug__/', include('debug_toolbar.urls')))
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)

@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Vinco - Wine Management System</title>
+    <title>{% block title %}Vinco{% endblock %}</title>
     <link href="{% static 'css/output.css' %}" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     {% block extra_css %}{% endblock %}
@@ -16,53 +16,63 @@
             <!-- Sidebar content -->
             <div class="flex flex-col flex-grow bg-white border-r border-gray-200">
                 <div class="flex items-center flex-shrink-0 px-4 py-5 border-b border-gray-200">
-                    <h1 class="text-2xl font-bold text-wine">Vinco</h1>
+                    <h1 class="text-2xl font-bold text-wine-600">Vinco</h1>
                 </div>
                 
                 <!-- Navigation -->
+                {% if request.organization %}
                 <nav class="flex-1 px-3 mt-6 space-y-1">
+                    <a href="{% url 'core:dashboard' %}" 
+                       class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'core' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                        <i class="fas fa-home w-6"></i>
+                        <span>Dashboard</span>
+                    </a>
+                    
                     <a href="{% url 'vineyards:list_vineyards' %}" 
-                       class="sidebar-link {% if request.resolver_match.namespace == 'vineyards' %}active{% endif %}">
-                        <i class="fas fa-mountain w-6"></i>
+                       class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'vineyards' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                        <i class="fas fa-seedling w-6"></i>
                         <span>Vineyards</span>
                     </a>
                     
                     <a href="{% url 'harvests:list_harvests' %}" 
-                       class="sidebar-link {% if request.resolver_match.namespace == 'harvests' %}active{% endif %}">
+                       class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'harvests' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                         <i class="fas fa-apple-alt w-6"></i>
                         <span>Harvests</span>
                     </a>
                     
-                    <a href="{% url 'cellars:list_cellars' %}" 
-                       class="sidebar-link {% if request.resolver_match.namespace == 'cellars' %}active{% endif %}">
+                    <a href="{% url 'cellars:list' %}" 
+                       class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'cellars' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                         <i class="fas fa-warehouse w-6"></i>
                         <span>Cellars</span>
                     </a>
                     
-                    <a href="{% url 'packaging:list_bottles' %}" 
-                       class="sidebar-link {% if request.resolver_match.namespace == 'packaging' %}active{% endif %}">
+                    <a href="{% url 'packaging:list' %}" 
+                       class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'packaging' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                         <i class="fas fa-wine-bottle w-6"></i>
                         <span>Packaging</span>
                     </a>
                 </nav>
+                {% endif %}
 
                 <!-- User section -->
                 {% if request.user.is_authenticated %}
                 <div class="flex-shrink-0 p-4 border-t border-gray-200">
                     <div class="flex items-center">
                         <div class="flex-shrink-0">
-                            <div class="w-8 h-8 rounded-full bg-wine flex items-center justify-center text-white">
-                                {{ request.user.get_full_name|first|upper }}
+                            <div class="w-8 h-8 rounded-full bg-wine-600 flex items-center justify-center text-white">
+                                {{ request.user.get_full_name|default:request.user.username|first|upper }}
                             </div>
                         </div>
                         <div class="ml-3">
-                            <p class="text-sm font-medium text-gray-900">{{ request.user.get_full_name }}</p>
-                            <p class="text-xs text-gray-500">{{ request.user.email }}</p>
+                            <p class="text-sm font-medium text-gray-900">{{ request.user.get_full_name|default:request.user.username }}</p>
+                            {% if request.organization %}
+                                <p class="text-xs text-gray-500">{{ request.organization.name }}</p>
+                            {% endif %}
                         </div>
                         <div class="ml-auto">
                             <form method="post" action="{% url 'logout' %}">
                                 {% csrf_token %}
-                                <button type="submit" class="text-sm text-gray-500 hover:text-wine">
+                                <button type="submit" class="text-sm text-gray-500 hover:text-wine-600">
                                     <i class="fas fa-sign-out-alt"></i>
                                 </button>
                             </form>
@@ -76,7 +86,7 @@
         <!-- Mobile menu button -->
         <div class="lg:hidden">
             <div class="sticky top-0 z-40 flex items-center gap-x-6 bg-white px-4 py-4 shadow-sm sm:px-6 lg:hidden">
-                <button type="button" class="text-gray-700 hover:text-wine" onclick="toggleSidebar()">
+                <button type="button" class="text-gray-700 hover:text-wine-600" onclick="toggleSidebar()">
                     <span class="sr-only">Open sidebar</span>
                     <i class="fas fa-bars text-xl"></i>
                 </button>
@@ -98,40 +108,48 @@
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
-                    
-                    <!-- Sidebar content -->
-                    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-2">
+
+                    <!-- Mobile sidebar content -->
+                    <div class="flex grow flex-col gap-y-5 overflow-y-auto bg-white px-6 pb-4">
                         <div class="flex h-16 shrink-0 items-center">
-                            <h1 class="text-2xl font-bold text-wine">Vinco</h1>
+                            <h1 class="text-2xl font-bold text-wine-600">Vinco</h1>
                         </div>
+                        {% if request.organization %}
                         <nav class="flex flex-1 flex-col">
                             <ul role="list" class="flex flex-1 flex-col gap-y-7">
                                 <li>
                                     <ul role="list" class="-mx-2 space-y-1">
                                         <li>
+                                            <a href="{% url 'core:dashboard' %}" 
+                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'core' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                                <i class="fas fa-home w-6"></i>
+                                                <span>Dashboard</span>
+                                            </a>
+                                        </li>
+                                        <li>
                                             <a href="{% url 'vineyards:list_vineyards' %}" 
-                                               class="sidebar-link {% if request.resolver_match.namespace == 'vineyards' %}active{% endif %}">
-                                                <i class="fas fa-mountain w-6"></i>
+                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'vineyards' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                                <i class="fas fa-seedling w-6"></i>
                                                 <span>Vineyards</span>
                                             </a>
                                         </li>
                                         <li>
                                             <a href="{% url 'harvests:list_harvests' %}" 
-                                               class="sidebar-link {% if request.resolver_match.namespace == 'harvests' %}active{% endif %}">
+                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'harvests' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                                                 <i class="fas fa-apple-alt w-6"></i>
                                                 <span>Harvests</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'cellars:list_cellars' %}" 
-                                               class="sidebar-link {% if request.resolver_match.namespace == 'cellars' %}active{% endif %}">
+                                            <a href="{% url 'cellars:list' %}" 
+                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'cellars' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                                                 <i class="fas fa-warehouse w-6"></i>
                                                 <span>Cellars</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'packaging:list_bottles' %}" 
-                                               class="sidebar-link {% if request.resolver_match.namespace == 'packaging' %}active{% endif %}">
+                                            <a href="{% url 'packaging:list' %}" 
+                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'packaging' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                                                 <i class="fas fa-wine-bottle w-6"></i>
                                                 <span>Packaging</span>
                                             </a>
@@ -140,6 +158,7 @@
                                 </li>
                             </ul>
                         </nav>
+                        {% endif %}
                     </div>
                 </div>
             </div>
@@ -147,17 +166,9 @@
 
         <!-- Main content -->
         <div class="lg:pl-64">
-            <main class="py-6">
+            <main class="py-10">
                 <div class="px-4 sm:px-6 lg:px-8">
-                    <!-- Page header -->
-                    <div class="mb-8">
-                        <h1 class="text-2xl font-semibold text-gray-900">{% block header %}{% endblock %}</h1>
-                    </div>
-                    
-                    <!-- Main content area -->
-                    <div class="space-y-6">
-                        {% block content %}{% endblock %}
-                    </div>
+                    {% block content %}{% endblock %}
                 </div>
             </main>
         </div>

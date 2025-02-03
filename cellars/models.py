@@ -5,10 +5,11 @@ from django.db.models import Sum
 from django.core.validators import MinValueValidator
 from harvests.models import Harvest
 from decimal import Decimal
+from core.models import TenantModel
 
 User = get_user_model()
 
-class Cellar(models.Model):
+class Cellar(TenantModel):
     """
     Model for managing wine cellars.
 
@@ -86,7 +87,7 @@ class Cellar(models.Model):
         verbose_name = 'Cellar'
         verbose_name_plural = 'Cellars'
 
-class Tank(models.Model):
+class Tank(TenantModel):
     """
     Model for managing wine tanks.
 
@@ -332,7 +333,7 @@ class CrushedJuiceAllocation(models.Model):
         verbose_name = 'Crushed Juice Allocation'
         verbose_name_plural = 'Crushed Juice Allocations'
 
-class TankHistory(models.Model):
+class TankHistory(TenantModel):
     """
     Model for managing tank history.
 

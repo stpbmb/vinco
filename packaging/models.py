@@ -1,10 +1,11 @@
 from django.db import models
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
+from core.models import TenantModel
 
 User = get_user_model()
 
-class Bottle(models.Model):
+class Bottle(TenantModel):
     """Model for wine bottles."""
     
     # Define choices for bottle types
@@ -69,7 +70,7 @@ class Bottle(models.Model):
     class Meta:
         ordering = ['name']
 
-class Label(models.Model):
+class Label(TenantModel):
     """Model for wine labels."""
     
     # Define choices for label types
@@ -126,7 +127,7 @@ class Label(models.Model):
     class Meta:
         ordering = ['name']
 
-class Closure(models.Model):
+class Closure(TenantModel):
     """Model for bottle closures (caps, corks, etc.)."""
     
     # Define choices for closure types
@@ -188,7 +189,7 @@ class Closure(models.Model):
     class Meta:
         ordering = ['name']
 
-class Box(models.Model):
+class Box(TenantModel):
     """Model for packaging boxes."""
     
     # Define choices for box types
@@ -259,7 +260,7 @@ class Box(models.Model):
         ordering = ['name']
         verbose_name_plural = "boxes"
 
-class Bottling(models.Model):
+class Bottling(TenantModel):
     """Model for tracking bottling operations."""
     
     # Define choices for bottling status

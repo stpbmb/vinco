@@ -10,13 +10,14 @@ from django.db import models
 from django.core.exceptions import ValidationError
 from django.core.validators import MinValueValidator, MaxValueValidator
 from django.conf import settings
+from core.models import TenantModel
 from vineyards.models import Vineyard
 from decimal import Decimal
 from django.db.models import Sum
 from django.db.models.signals import pre_delete
 from django.dispatch import receiver
 
-class Harvest(models.Model):
+class Harvest(TenantModel):
     """
     Represents a grape harvest event in the wine production process.
     
@@ -42,7 +43,7 @@ class Harvest(models.Model):
     # Basic harvest information
     vineyard = models.ForeignKey(
         Vineyard,
-        on_delete=models.PROTECT,
+        on_delete=models.CASCADE,
         related_name='harvests',
         help_text="Vineyard where grapes were harvested"
     )
@@ -163,6 +164,9 @@ class Harvest(models.Model):
                         f"Cannot reduce juice volume below allocated amount ({allocated_volume}L)"
                     )
 
+        if self.vineyard.organization != self.organization:
+            raise ValidationError('Vineyard must belong to the same organization')
+
     def save(self, *args, **kwargs):
         self.full_clean()
         super().save(*args, **kwargs)
@@ -172,7 +176,7 @@ class Harvest(models.Model):
         verbose_name = 'Harvest'
         verbose_name_plural = 'Harvests'
 
-class HarvestAllocation(models.Model):
+class HarvestAllocation(TenantModel):
     """
     Represents an allocation of juice from a harvest to a tank.
     
@@ -197,7 +201,7 @@ class HarvestAllocation(models.Model):
         related_name='allocations'
     )
     tank = models.ForeignKey(
-        'cellars.Tank',
+        'cellars.Tank',  # Use string reference to avoid circular import
         on_delete=models.CASCADE,  # Delete allocations when tank is deleted
         related_name='harvest_allocations'
     )
@@ -248,6 +252,7 @@ class HarvestAllocation(models.Model):
                 )
 
         # Check if allocation would exceed tank capacity
+        from cellars.models import Tank
         if self.tank:
             current_volume = self.tank.current_volume
             if self.pk:  # For updates, subtract this allocation's current volume
@@ -259,9 +264,14 @@ class HarvestAllocation(models.Model):
                     "Allocation would exceed tank capacity"
                 )
 
+        if self.harvest.organization != self.organization:
+            raise ValidationError('Harvest must belong to the same organization')
+        if self.tank.organization != self.organization:
+            raise ValidationError('Tank must belong to the same organization')
+
     def save(self, *args, **kwargs):
         """Save the allocation and update the tank's volume."""
-        from cellars.models import TankHistory
+        from cellars.models import Tank, TankHistory
         
         is_new = self.pk is None
         
@@ -327,7 +337,7 @@ class HarvestAllocation(models.Model):
 @receiver(pre_delete, sender=HarvestAllocation)
 def remove_allocation_from_tank(sender, instance, **kwargs):
     """Remove the allocated volume from the tank when an allocation is deleted."""
-    from cellars.models import TankHistory
+    from cellars.models import Tank, TankHistory
     
     # Remove volume from tank
     instance.tank.update_volume(-float(instance.allocated_volume))

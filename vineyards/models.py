@@ -9,8 +9,9 @@ for wine production management.
 from django.db import models
 from django.conf import settings
 from django.core.exceptions import ValidationError
+from core.models import TenantModel
 
-class Supplier(models.Model):
+class Supplier(TenantModel):
     """
     Represents a grape supplier in the wine production system.
     
@@ -41,6 +42,7 @@ class Supplier(models.Model):
         return self.name
 
     class Meta:
+        unique_together = ['organization', 'oib']
         ordering = ['name']
         permissions = [
             ("view_all_suppliers", "Can view all suppliers"),
@@ -49,7 +51,7 @@ class Supplier(models.Model):
             ("view_supplier_analytics", "Can view supplier analytics"),
         ]
 
-class Vineyard(models.Model):
+class Vineyard(TenantModel):
     """
     Represents a vineyard in the wine production system.
     
@@ -204,6 +206,7 @@ class Vineyard(models.Model):
         super().save(*args, **kwargs)
     
     class Meta:
+        unique_together = ['organization', 'arkod_id']
         ordering = ['name']
         permissions = [
             ("view_all_vineyards", "Can view all vineyards"),

@@ -5,34 +5,34 @@ app_name = 'packaging'
 
 urlpatterns = [
     # Bottle URLs
-    path('bottles/', views.list_bottles, name='list_bottles'),
-    path('bottles/add/', views.add_bottle, name='add_bottle'),
-    path('bottles/<int:pk>/', views.bottle_detail, name='bottle_detail'),
-    path('bottles/<int:pk>/edit/', views.edit_bottle, name='edit_bottle'),
-    
-    # Label URLs
-    path('labels/', views.list_labels, name='list_labels'),
-    path('labels/add/', views.add_label, name='add_label'),
-    path('labels/<int:pk>/', views.label_detail, name='label_detail'),
-    path('labels/<int:pk>/edit/', views.edit_label, name='edit_label'),
-    
-    # Closure URLs
-    path('closures/', views.list_closures, name='list_closures'),
-    path('closures/add/', views.add_closure, name='add_closure'),
-    path('closures/<int:pk>/', views.closure_detail, name='closure_detail'),
-    path('closures/<int:pk>/edit/', views.edit_closure, name='edit_closure'),
+    path('bottles/', views.BottleListView.as_view(), name='list_bottles'),
+    path('bottles/create/', views.BottleCreateView.as_view(), name='create_bottle'),
+    path('bottles/<int:pk>/', views.BottleDetailView.as_view(), name='detail_bottle'),
+    path('bottles/<int:pk>/update/', views.BottleUpdateView.as_view(), name='update_bottle'),
     
     # Box URLs
-    path('boxes/', views.list_boxes, name='list_boxes'),
-    path('boxes/add/', views.add_box, name='add_box'),
-    path('boxes/<int:pk>/', views.box_detail, name='box_detail'),
-    path('boxes/<int:pk>/edit/', views.edit_box, name='edit_box'),
+    path('boxes/', views.BoxListView.as_view(), name='list_boxes'),
+    path('boxes/create/', views.BoxCreateView.as_view(), name='create_box'),
+    path('boxes/<int:pk>/', views.BoxDetailView.as_view(), name='detail_box'),
+    path('boxes/<int:pk>/update/', views.BoxUpdateView.as_view(), name='update_box'),
+    
+    # Closure URLs
+    path('closures/', views.ClosureListView.as_view(), name='list_closures'),
+    path('closures/create/', views.ClosureCreateView.as_view(), name='create_closure'),
+    path('closures/<int:pk>/', views.ClosureDetailView.as_view(), name='detail_closure'),
+    path('closures/<int:pk>/update/', views.ClosureUpdateView.as_view(), name='update_closure'),
+    
+    # Label URLs
+    path('labels/', views.LabelListView.as_view(), name='list_labels'),
+    path('labels/create/', views.LabelCreateView.as_view(), name='create_label'),
+    path('labels/<int:pk>/', views.LabelDetailView.as_view(), name='detail_label'),
+    path('labels/<int:pk>/update/', views.LabelUpdateView.as_view(), name='update_label'),
     
     # Bottling URLs
-    path('bottling/new/', views.BottlingCreateView.as_view(), name='add_bottling'),
-    path('bottling/<int:pk>/', views.bottling_detail, name='bottling_detail'),
-    path('bottling/<int:pk>/edit/', views.BottlingUpdateView.as_view(), name='edit_bottling'),
-    path('bottling/<int:pk>/delete/', views.delete_bottling, name='delete_bottling'),
-    path('bottling/unfinished/', views.list_unfinished_bottlings, name='list_unfinished'),
-    path('bottling/finished/', views.list_finished_bottlings, name='list_finished'),
+    path('bottlings/', views.BottlingListView.as_view(), name='list_bottlings'),
+    path('bottlings/<int:pk>/', views.BottlingDetailView.as_view(), name='detail_bottling'),
+    path('bottlings/add/', views.BottlingCreateView.as_view(), name='create_bottling'),
+    path('bottlings/<int:pk>/edit/', views.BottlingUpdateView.as_view(), name='update_bottling'),
+    path('bottlings/<int:pk>/delete/', views.delete_bottling, name='delete_bottling'),
+    path('bottlings/unfinished/', views.list_unfinished_bottlings, name='list_unfinished_bottlings'),
 ]

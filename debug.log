@@ -1,0 +1,734 @@
+INFO 2025-02-03 20:48:30,967 autoreload 36208 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:48:50,798 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,812 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:50,812 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:50,812 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:50,817 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:50,817 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:50,818 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:50,818 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:50,819 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,832 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,847 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:50,847 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:50,847 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:50,850 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:50,851 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:50,852 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:50,852 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:50,852 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,866 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,881 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:50,881 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:50,881 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:50,884 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:50,885 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:50,886 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:50,886 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:50,886 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,902 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,917 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:50,917 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:50,917 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:50,920 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:50,921 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:50,922 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:50,922 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:50,923 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,940 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,956 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:50,956 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:50,956 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:50,960 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:50,960 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:50,962 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:50,962 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:50,962 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:50,984 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,001 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:51,001 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:51,001 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:51,004 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:51,005 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:51,006 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:51,006 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:51,007 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,021 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,035 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:51,035 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:51,035 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:51,037 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:51,037 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:51,038 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:51,038 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:51,039 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,059 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,095 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:51,095 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:51,095 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:51,098 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:51,099 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:51,100 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:51,100 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:51,100 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,113 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,128 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:51,128 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:51,128 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:51,130 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:51,130 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:51,131 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:51,131 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:51,131 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,149 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,163 views 36208 6137524224 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:48:51,163 views 36208 6137524224 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:48:51,163 views 36208 6137524224 Current URL name: select
+INFO 2025-02-03 20:48:51,165 views 36208 6137524224 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:48:51,166 views 36208 6137524224 Current organization ID from session: 2
+INFO 2025-02-03 20:48:51,168 views 36208 6137524224 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:48:51,168 views 36208 6137524224 Next URL from session: None
+INFO 2025-02-03 20:48:51,168 basehttp 36208 6137524224 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:48:51,204 basehttp 36208 6137524224 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:49:32,942 autoreload 36208 8398228480 /Users/stpbmb/vinco/organizations/views.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:48:31
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:49:33,292 autoreload 36348 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:49:47,542 autoreload 36348 8398228480 /Users/stpbmb/vinco/core/views/dashboard.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:49:33
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:49:47,886 autoreload 36405 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:50:03,206 autoreload 36405 8398228480 /Users/stpbmb/vinco/core/views/mixins.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:49:47
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:50:03,533 autoreload 36434 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:50:22,946 autoreload 36434 8398228480 /Users/stpbmb/vinco/vinco/urls.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:50:03
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:50:23,258 autoreload 36465 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:50:44,143 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,161 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,161 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,161 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,165 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,166 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,167 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,168 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,168 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,168 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,185 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,213 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,213 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,213 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,218 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,219 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,220 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,221 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,221 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,221 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,241 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,262 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,262 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,262 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,267 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,268 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,269 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,269 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,269 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,269 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,291 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,314 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,314 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,315 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,318 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,319 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,321 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,321 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,321 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,321 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,347 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,375 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,375 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,375 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,379 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,381 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,383 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,383 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,383 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,383 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,406 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,430 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,430 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,430 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,436 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,437 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,439 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,439 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,439 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,440 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,467 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,490 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,491 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,491 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,494 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,495 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,497 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,498 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,498 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,498 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,522 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,548 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,548 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,548 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,553 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,554 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,555 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,555 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,555 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,555 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,584 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,606 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,606 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,606 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,611 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,612 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,621 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,621 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,621 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,621 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,640 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,656 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:44,656 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:44,656 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:44,660 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:44,661 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:44,662 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:44,662 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:44,662 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:44,662 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:44,679 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,505 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,521 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,521 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,521 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,523 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,523 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,524 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,524 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,524 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,524 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,541 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,569 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,569 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,569 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,572 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,573 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,575 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,575 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,575 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,576 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,596 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,612 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,613 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,613 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,616 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,617 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,619 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,619 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,619 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,619 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,635 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,653 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,653 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,653 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,656 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,657 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,658 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,658 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,658 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,659 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,678 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,697 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,697 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,697 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,701 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,702 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,703 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,703 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,703 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,704 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,721 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,738 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,738 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,738 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,742 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,743 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,745 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,745 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,745 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,745 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,766 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,786 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,786 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,786 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,790 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,791 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,792 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,793 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,793 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,793 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,815 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,837 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,837 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,837 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,841 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,842 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,844 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,844 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,844 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,844 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,867 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,888 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,888 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,888 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,892 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,893 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,895 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,895 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,895 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,896 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,919 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,941 views 36465 6192394240 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:50:47,941 views 36465 6192394240 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:50:47,941 views 36465 6192394240 Current URL name: select
+INFO 2025-02-03 20:50:47,945 views 36465 6192394240 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:50:47,946 views 36465 6192394240 Current organization ID from session: 2
+INFO 2025-02-03 20:50:47,949 views 36465 6192394240 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:50:47,949 views 36465 6192394240 Next URL from session: None
+INFO 2025-02-03 20:50:47,949 views 36465 6192394240 Redirecting to core:dashboard
+INFO 2025-02-03 20:50:47,949 basehttp 36465 6192394240 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:50:47,967 basehttp 36465 6192394240 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:51:53,697 autoreload 36465 8398228480 /Users/stpbmb/vinco/organizations/views.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:50:23
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:51:54,093 autoreload 36609 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:52:13,481 autoreload 36609 8398228480 /Users/stpbmb/vinco/core/views/mixins.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:51:54
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:52:13,766 autoreload 36655 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:52:30,066 autoreload 36655 8398228480 /Users/stpbmb/vinco/vinco/urls.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:52:13
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:52:30,404 autoreload 36684 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:52:53,847 autoreload 36684 8398228480 /Users/stpbmb/vinco/organizations/views.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:52:30
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:52:54,177 autoreload 36730 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:53:18,620 autoreload 36730 8398228480 /Users/stpbmb/vinco/core/views/mixins.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:52:54
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 20:53:18,992 autoreload 36825 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 20:53:50,506 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,528 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,528 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,531 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,532 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,533 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,534 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,534 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,534 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,547 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,562 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,562 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,566 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,566 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,568 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,568 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,568 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,568 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,584 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,600 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,600 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,603 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,603 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,605 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,605 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,605 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,605 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,622 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,652 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,652 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,655 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,656 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,658 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,658 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,658 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,658 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,676 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,696 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,696 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,699 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,700 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,701 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,701 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,701 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,701 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,719 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,738 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,738 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,743 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,743 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,745 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,745 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,745 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,745 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,769 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,793 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,793 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,797 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,799 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,801 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,801 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,801 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,802 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,827 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,851 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,851 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,853 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,855 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,857 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,857 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,857 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,857 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,880 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,902 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,902 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,905 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,906 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,908 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,908 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,908 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,909 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,932 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,951 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:50,951 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:50,954 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:50,955 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:50,957 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:50,957 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:50,957 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:50,957 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:50,978 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,584 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,604 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:52,604 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:52,608 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:52,609 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:52,611 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:52,611 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:52,611 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:52,611 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,633 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,652 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:52,652 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:52,657 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:52,658 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:52,660 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:52,660 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:52,660 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:52,661 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,681 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,700 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:52,700 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:52,704 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:52,705 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:52,707 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:52,707 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:52,707 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:52,708 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,729 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,749 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:52,749 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:52,753 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:52,754 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:52,756 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:52,756 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:52,756 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:52,756 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,779 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,801 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:52,801 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:52,806 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:52,806 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:52,809 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:52,809 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:52,809 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:52,809 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,832 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,854 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:52,854 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:52,858 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:52,859 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:52,862 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:52,862 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:52,862 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:52,862 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,886 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,908 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:52,908 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:52,915 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:52,916 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:52,919 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:52,919 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:52,919 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:52,919 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,941 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,966 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:52,967 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:52,970 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:52,971 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:52,972 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:52,972 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:52,972 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:52,973 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:52,997 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:53,021 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:53,021 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:53,024 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:53,025 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:53,028 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:53,028 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:53,028 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:53,028 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:53,052 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:53,079 views 36825 6196834304 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 20:53:53,079 views 36825 6196834304 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 20:53:53,082 views 36825 6196834304 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 20:53:53,084 views 36825 6196834304 Current organization ID from session: 2
+INFO 2025-02-03 20:53:53,086 views 36825 6196834304 User already has organization Vinarija Kaptol selected
+INFO 2025-02-03 20:53:53,086 views 36825 6196834304 Next URL from session: None
+INFO 2025-02-03 20:53:53,086 views 36825 6196834304 Redirecting to dashboard
+INFO 2025-02-03 20:53:53,086 basehttp 36825 6196834304 "GET /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 20:53:53,111 basehttp 36825 6196834304 "GET /core/dashboard/ HTTP/1.1" 302 0
+INFO 2025-02-03 21:02:41,213 autoreload 36825 8398228480 /Users/stpbmb/vinco/core/middleware/tenant_middleware.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 20:53:19
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 21:02:41,584 autoreload 37292 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 21:03:01,914 autoreload 37292 8398228480 /Users/stpbmb/vinco/organizations/views.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 21:02:41
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 21:03:02,676 autoreload 37332 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 21:03:12,945 autoreload 37332 8398228480 /Users/stpbmb/vinco/core/views/mixins.py changed, reloading.
+Performing system checks...
+
+System check identified no issues (0 silenced).
+February 03, 2025 - 21:03:02
+Django version 5.1.5, using settings 'vinco.settings'
+Starting development server at http://127.0.0.1:8000/
+Quit the server with CONTROL-C.
+
+INFO 2025-02-03 21:03:13,305 autoreload 37415 8398228480 Watching for file changes with StatReloader
+INFO 2025-02-03 21:03:46,424 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:03:46,428 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:03:46,429 dashboard 37415 6133084160 Getting dashboard data for organization: Vinarija Kaptol
+ERROR 2025-02-03 21:03:46,437 dashboard 37415 6133084160 Error getting dashboard data: Cannot resolve keyword 'is_active' into field. Choices are: allocations, created_at, created_by, created_by_id, crushed_juice_allocations, crushing_date, date, id, juice_yield, notes, organization, organization_id, pressing_notes, price_per_kg, quantity, tankhistory, updated_at, updated_by, updated_by_id, vat_per_kg, vineyard, vineyard_id
+ERROR 2025-02-03 21:03:46,486 log 37415 6133084160 Internal Server Error: /core/dashboard/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'list' not found. 'list' is not a valid view function or pattern name.
+ERROR 2025-02-03 21:03:46,489 basehttp 37415 6133084160 "GET /core/dashboard/ HTTP/1.1" 500 147902
+INFO 2025-02-03 21:03:53,865 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:03:53,869 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:03:53,870 basehttp 37415 6133084160 "GET / HTTP/1.1" 302 0
+INFO 2025-02-03 21:03:53,892 views 37415 6133084160 Organization select view - Path: /organizations/select/, User: stpbmb, Method: GET
+INFO 2025-02-03 21:03:53,893 views 37415 6133084160 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 21:03:53,897 views 37415 6133084160 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 21:03:53,899 views 37415 6133084160 Rendering organization selection form
+INFO 2025-02-03 21:03:53,906 basehttp 37415 6133084160 "GET /organizations/select/ HTTP/1.1" 200 6710
+INFO 2025-02-03 21:03:56,932 views 37415 6133084160 Organization select view - Path: /organizations/select/, User: stpbmb, Method: POST
+INFO 2025-02-03 21:03:56,932 views 37415 6133084160 Session data: {'_auth_user_id': '1', '_auth_user_backend': 'django.contrib.auth.backends.ModelBackend', '_auth_user_hash': '2c383f09b15edbb4655daefa51470c8d3cfc13c1d3c597c313b26e7758b1d7f0', 'organization_id': '2'}
+INFO 2025-02-03 21:03:56,939 views 37415 6133084160 Found organizations: [{'id': 2, 'name': 'Vinarija Kaptol'}]
+INFO 2025-02-03 21:03:56,940 views 37415 6133084160 Organization ID from POST: 2
+INFO 2025-02-03 21:03:56,947 views 37415 6133084160 Organization Vinarija Kaptol selected and session saved
+INFO 2025-02-03 21:03:56,948 views 37415 6133084160 Next URL from session: None
+INFO 2025-02-03 21:03:56,948 views 37415 6133084160 Redirecting to dashboard
+INFO 2025-02-03 21:03:56,952 basehttp 37415 6133084160 "POST /organizations/select/ HTTP/1.1" 302 0
+INFO 2025-02-03 21:03:56,977 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:03:56,981 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:03:56,982 dashboard 37415 6133084160 Getting dashboard data for organization: Vinarija Kaptol
+ERROR 2025-02-03 21:03:56,985 dashboard 37415 6133084160 Error getting dashboard data: Cannot resolve keyword 'is_active' into field. Choices are: allocations, created_at, created_by, created_by_id, crushed_juice_allocations, crushing_date, date, id, juice_yield, notes, organization, organization_id, pressing_notes, price_per_kg, quantity, tankhistory, updated_at, updated_by, updated_by_id, vat_per_kg, vineyard, vineyard_id
+ERROR 2025-02-03 21:03:57,014 log 37415 6133084160 Internal Server Error: /core/dashboard/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/defaulttags.py", line 327, in render
+    return nodelist.render(context)
+           ~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'list' not found. 'list' is not a valid view function or pattern name.
+ERROR 2025-02-03 21:03:57,016 basehttp 37415 6133084160 "GET /core/dashboard/ HTTP/1.1" 500 148199

@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="max-w-md mx-auto mt-8">
+    <h2 class="text-2xl font-semibold mb-4">Select Organization</h2>
+    {% if organizations %}
+        <form method="post" class="space-y-4">
+            {% csrf_token %}
+            {% for org_user in organizations %}
+                <div class="flex items-center p-4 border rounded-lg hover:bg-gray-50">
+                    <input type="radio" name="organization" value="{{ org_user.organization.id }}"
+                           class="h-4 w-4 text-wine-600 focus:ring-wine-500">
+                    <label class="ml-3 block text-sm font-medium text-gray-700">
+                        {{ org_user.organization.name }}
+                        <span class="text-sm text-gray-500">({{ org_user.get_role_display }})</span>
+                    </label>
+                </div>
+            {% endfor %}
+            <button type="submit" 
+                    class="w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-wine-600 hover:bg-wine-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-wine-500">
+                Continue
+            </button>
+        </form>
+    {% else %}
+        <p class="text-gray-500">You don't have access to any organizations.</p>
+    {% endif %}
+</div>
+{% endblock %}
