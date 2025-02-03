@@ -2,28 +2,37 @@
 
 ## Architecture Overview
 
-### Multi-Tenancy Architecture
-The system uses a single-database multi-tenancy approach with the following components:
+### Multi-Tenancy Pattern
 
-1. **Core Components**
-   - `Organization` model: Represents tenant organizations
-   - `OrganizationUser` model: Links users to organizations with roles
-   - `TenantModel`: Base class for all tenant-aware models
-   - `TenantMiddleware`: Handles organization context in requests
-   - `TenantRouter`: Manages database operations
-   - `TenantViewMixin`: Provides organization-based filtering in views
-   - `TenantFormMixin`: Handles organization context in forms
+#### Organization Context Handling
 
-2. **Data Isolation**
-   - Each model inherits from `TenantModel`
-   - All queries are automatically filtered by organization
-   - Related objects must belong to the same organization
-   - Forms filter choices by organization
+The application uses a middleware-based approach for handling organization context:
 
-3. **Access Control**
-   - Users can belong to multiple organizations
-   - Role-based permissions within organizations
-   - Organization selection required for access
+1. TenantMiddleware (Primary Handler):
+   - Intercepts all requests
+   - Manages organization context and session
+   - Handles redirects for organization selection
+   - Skips checks for exempt URLs (static, admin, auth)
+   - Uses database transactions for data safety
+   - Comprehensive logging for debugging
+
+2. TenantViewMixin (Secondary Handler):
+   - Ensures login requirement
+   - Acts as safety net for middleware
+   - Minimal logic to prevent conflicts
+
+3. Organization Selection:
+   - Transaction-based organization selection
+   - Session verification after save
+   - Smart next URL handling
+   - User-friendly error messages
+
+#### Session Management
+
+- Organization ID stored in session
+- Explicit session saves
+- Session verification after writes
+- Cleanup of invalid session data
 
 ### Model Patterns
 1. **Base Models**

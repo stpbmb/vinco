@@ -21,6 +21,12 @@ Implementing multi-tenancy architecture to support multiple organizations in the
    - Added TenantViewMixin for view-level filtering
    - Created TenantFormMixin for form-level filtering
 
+4. Fixed redirect loops between dashboard and organization selection by:
+   - Centralizing organization context handling in TenantMiddleware
+   - Adding session verification and transaction safety
+   - Simplifying TenantViewMixin to avoid conflicts
+   - Improving error handling and logging
+
 ### Next Steps
 1. Update remaining templates to handle organization context
 2. Add organization switching functionality in the UI
@@ -28,6 +34,9 @@ Implementing multi-tenancy architecture to support multiple organizations in the
 4. Add organization-specific settings and preferences
 5. Create organization management views (invite users, manage roles)
 6. Add audit logging for organization-related actions
+7. Monitor the application logs for any unexpected behavior
+8. Consider adding automated tests for organization context handling
+9. Document the new organization context flow for other developers
 
 ## Design Patterns
 - Using wine-themed colors (wine-600, wine-700) for primary actions
