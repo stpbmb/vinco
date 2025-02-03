@@ -28,11 +28,23 @@
                         <span>Dashboard</span>
                     </a>
                     
-                    <a href="{% url 'vineyards:list_vineyards' %}" 
-                       class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'vineyards' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
-                        <i class="fas fa-seedling w-6"></i>
-                        <span>Vineyards</span>
-                    </a>
+                    <div class="space-y-1">
+                        <a href="{% url 'vineyards:list_vineyards' %}" 
+                           class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'vineyards' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                            <i class="fas fa-seedling w-6"></i>
+                            <span>Vineyards</span>
+                        </a>
+                        
+                        {% if request.resolver_match.namespace == 'vineyards' %}
+                        <div class="ml-12 pl-12 border-l border-gray-200">
+                            <a href="{% url 'vineyards:list_suppliers' %}"
+                               class="group flex items-center px-12 py-1 text-sm font-medium rounded-md {% if 'suppliers' in request.path %}text-wine-600{% else %}text-gray-600 hover:text-gray-900{% endif %}">
+                                <i class="fas fa-truck w-6"></i>
+                                <span>Suppliers</span>
+                            </a>
+                        </div>
+                        {% endif %}
+                    </div>
                     
                     <a href="{% url 'harvests:list_harvests' %}" 
                        class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'harvests' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
@@ -40,13 +52,13 @@
                         <span>Harvests</span>
                     </a>
                     
-                    <a href="{% url 'cellars:list' %}" 
+                    <a href="{% url 'cellars:list_cellars' %}" 
                        class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'cellars' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                         <i class="fas fa-warehouse w-6"></i>
                         <span>Cellars</span>
                     </a>
                     
-                    <a href="{% url 'packaging:list' %}" 
+                    <a href="{% url 'packaging:list_bottles' %}" 
                        class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'packaging' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                         <i class="fas fa-wine-bottle w-6"></i>
                         <span>Packaging</span>
@@ -121,37 +133,49 @@
                                     <ul role="list" class="-mx-2 space-y-1">
                                         <li>
                                             <a href="{% url 'core:dashboard' %}" 
-                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'core' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                               class="flex items-center px-2 py-2 text-base font-medium rounded-md {% if request.resolver_match.namespace == 'core' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                                                 <i class="fas fa-home w-6"></i>
-                                                <span>Dashboard</span>
+                                                <span class="ml-3">Dashboard</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'vineyards:list_vineyards' %}" 
-                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'vineyards' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
-                                                <i class="fas fa-seedling w-6"></i>
-                                                <span>Vineyards</span>
-                                            </a>
+                                            <div class="space-y-1">
+                                                <a href="{% url 'vineyards:list_vineyards' %}" 
+                                                   class="flex items-center px-2 py-2 text-base font-medium rounded-md {% if request.resolver_match.namespace == 'vineyards' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                                    <i class="fas fa-seedling w-6"></i>
+                                                    <span class="ml-3">Vineyards</span>
+                                                </a>
+                                                
+                                                {% if request.resolver_match.namespace == 'vineyards' %}
+                                                <div class="ml-12 pl-12 border-l border-gray-200">
+                                                    <a href="{% url 'vineyards:list_suppliers' %}"
+                                                       class="group flex items-center px-12 py-1 text-base font-medium rounded-md {% if 'suppliers' in request.path %}text-wine-600{% else %}text-gray-600 hover:text-gray-900{% endif %}">
+                                                        <i class="fas fa-truck w-6"></i>
+                                                        <span class="ml-3">Suppliers</span>
+                                                    </a>
+                                                </div>
+                                                {% endif %}
+                                            </div>
                                         </li>
                                         <li>
                                             <a href="{% url 'harvests:list_harvests' %}" 
-                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'harvests' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                               class="flex items-center px-2 py-2 text-base font-medium rounded-md {% if request.resolver_match.namespace == 'harvests' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                                                 <i class="fas fa-apple-alt w-6"></i>
-                                                <span>Harvests</span>
+                                                <span class="ml-3">Harvests</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'cellars:list' %}" 
-                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'cellars' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                            <a href="{% url 'cellars:list_cellars' %}" 
+                                               class="flex items-center px-2 py-2 text-base font-medium rounded-md {% if request.resolver_match.namespace == 'cellars' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                                                 <i class="fas fa-warehouse w-6"></i>
-                                                <span>Cellars</span>
+                                                <span class="ml-3">Cellars</span>
                                             </a>
                                         </li>
                                         <li>
-                                            <a href="{% url 'packaging:list' %}" 
-                                               class="flex items-center px-2 py-2 text-sm font-medium rounded-md {% if request.resolver_match.namespace == 'packaging' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
+                                            <a href="{% url 'packaging:list_bottles' %}" 
+                                               class="flex items-center px-2 py-2 text-base font-medium rounded-md {% if request.resolver_match.namespace == 'packaging' %}bg-wine-50 text-wine-600{% else %}text-gray-600 hover:bg-gray-50 hover:text-gray-900{% endif %}">
                                                 <i class="fas fa-wine-bottle w-6"></i>
-                                                <span>Packaging</span>
+                                                <span class="ml-3">Packaging</span>
                                             </a>
                                         </li>
                                     </ul>
