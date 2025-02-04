@@ -94,6 +94,17 @@
      - Status workflows
      - Integration with all modules
 
+8. **Settings App**
+   - Purpose: Organization and user management system
+   - Models: OrganizationProfile, UserInvitation, AuditLog
+   - Features:
+     - Organization settings management
+     - User account administration
+     - Role and permission control
+     - Invitation system
+     - Activity logging
+     - Security preferences
+
 ### Optional Components
 1. **Webshop**
    - Framework: Django Oscar

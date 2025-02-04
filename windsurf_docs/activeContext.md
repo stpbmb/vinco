@@ -70,6 +70,14 @@ Implementing multi-tenancy architecture to support multiple organizations in the
    - Task status updates
    - Integration with all production modules
 
+8. **Settings App**:
+   - Organization profile management
+   - User account administration
+   - Role and permission management
+   - Organization preferences
+   - User invitation system
+   - Audit logging
+
 ### Optional Webshop Implementation
 1. **Global Marketplace**:
    - Display products from all organizations
@@ -87,7 +95,11 @@ Implementing multi-tenancy architecture to support multiple organizations in the
 1. Update remaining templates to handle organization context
 2. Add organization switching functionality in the UI
 3. Implement data migration strategy for existing records
-4. Add organization-specific settings and preferences
+4. Create Settings app infrastructure
+   - Organization profile management
+   - User management interface
+   - Permission system UI
+   - Settings views and forms
 5. Create organization management views
 6. Implement Inventory app core features
 7. Develop Sales app functionality
