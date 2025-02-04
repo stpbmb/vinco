@@ -1,182 +1,155 @@
-{% extends 'vineyards/base_vineyards.html' %}
-{% load cache %}
-{% load vineyard_filters %}
+{% extends "base.html" %}
+{% load static %}
 
-{% block vineyard_content %}
-<div class="space-y-6">
-    <!-- Header -->
-    <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center space-y-4 sm:space-y-0">
-        <h1 class="text-2xl font-semibold text-gray-900">Vineyards</h1>
-        <div class="flex flex-col sm:flex-row space-y-4 sm:space-y-0 sm:space-x-4 w-full sm:w-auto">
-            <!-- Search Form -->
-            <form method="get" class="flex-1 sm:flex-none" id="searchForm">
-                <div class="relative">
-                    <input type="text" 
-                           name="search" 
-                           class="form-input pl-10 pr-10"
-                           placeholder="Search vineyards..." 
-                           value="{{ search_query }}"
-                           aria-label="Search vineyards"
-                           id="searchInput">
-                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                        <i class="fas fa-search text-gray-400"></i>
-                    </div>
+{% block title %}Vineyards{% endblock %}
+
+{% block content %}
+<div class="container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-6">
+        <h1 class="text-2xl font-bold text-gray-900">Vineyards</h1>
+        {% if can_manage %}
+        <a href="{% url 'vineyards:add_vineyard' %}" class="btn-primary">
+            <i class="fas fa-plus mr-2"></i>Add Vineyard
+        </a>
+        {% endif %}
+    </div>
+
+    <!-- Search Section -->
+    <div class="bg-white shadow rounded-lg p-6 mb-6">
+        <form id="searchForm" class="max-w-2xl mx-auto">
+            {% csrf_token %}
+            <div class="relative">
+                <input type="search" 
+                       name="search" 
+                       id="search"
+                       class="form-input pl-10 pr-10 block w-full rounded-lg"
+                       placeholder="Search vineyards by name, location, grape variety..." 
+                       value="{{ search_query }}"
+                       autocomplete="off">
+                <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                    <i class="fas fa-search text-gray-400"></i>
+                </div>
+                <div class="absolute inset-y-0 right-0 pr-3 flex items-center">
+                    <span id="loading-indicator" class="hidden">
+                        <i class="fas fa-spinner fa-spin text-gray-400"></i>
+                    </span>
                     {% if search_query %}
-                    <a href="{% url 'vineyards:list_vineyards' %}" 
-                       class="absolute inset-y-0 right-0 pr-3 flex items-center text-gray-400 hover:text-gray-600" 
-                       id="clearSearch">
+                    <button type="button" 
+                            id="clear-button"
+                            class="text-gray-400 hover:text-gray-600"
+                            onclick="clearSearch()">
                         <i class="fas fa-times"></i>
-                    </a>
+                    </button>
                     {% endif %}
                 </div>
-            </form>
+            </div>
+        </form>
+    </div>
+
+    <!-- Results Section -->
+    <div class="bg-white shadow rounded-lg" id="results-container">
+        {% include "vineyards/partials/vineyard_list.html" %}
+    </div>
+
+    {% block extra_js %}
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            const resultsContainer = document.getElementById('results-container');
+            const searchInput = document.getElementById('search');
+            const loadingIndicator = document.getElementById('loading-indicator');
+            const clearButton = document.getElementById('clear-button');
             
-            <!-- Add New Button -->
-            <a href="{% url 'vineyards:add_vineyard' %}" 
-               class="btn-primary inline-flex items-center justify-center">
-                <i class="fas fa-plus mr-2"></i>
-                Add New Vineyard
-            </a>
-        </div>
-    </div>
-
-    <!-- Owned Vineyards Section -->
-    <div class="space-y-4">
-        <h2 class="text-lg font-medium text-gray-900">Owned Vineyards</h2>
-        {% if owned_vineyards %}
-            {% cache 300 owned_vineyards %}
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>Size (ha)</th>
-                            <th>Grape Variety</th>
-                            <th>Planting Year</th>
-                            <th>Cadastral Parcel</th>
-                            <th>Cadastral County</th>
-                            <th class="text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        {% for vineyard in owned_vineyards %}
-                        <tr class="vineyard-row">
-                            <td class="font-medium text-gray-900">{{ vineyard.name }}</td>
-                            <td>{{ vineyard.location }}</td>
-                            <td>{{ vineyard.size }}</td>
-                            <td>{{ vineyard.get_grape_variety_display }}</td>
-                            <td>{{ vineyard.planting_year|default_if_none_or_empty:"-" }}</td>
-                            <td>{{ vineyard.cadastral_parcel|default_if_none_or_empty:"-" }}</td>
-                            <td>{{ vineyard.cadastral_county|default_if_none_or_empty:"-" }}</td>
-                            <td class="text-right space-x-2">
-                                <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" 
-                                   class="text-gray-400 hover:text-wine">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" 
-                                   class="text-gray-400 hover:text-wine">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                                <a href="{% url 'vineyards:delete_vineyard' vineyard.id %}" 
-                                   class="text-gray-400 hover:text-red-600">
-                                    <i class="fas fa-trash"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% endcache %}
-        {% else %}
-            <div class="bg-gray-50 rounded-lg p-6 text-center">
-                <p class="text-gray-500">No owned vineyards found.</p>
-                <a href="{% url 'vineyards:add_vineyard' %}" 
-                   class="btn-primary inline-flex items-center mt-4">
-                    <i class="fas fa-plus mr-2"></i>
-                    Add Your First Vineyard
-                </a>
-            </div>
-        {% endif %}
-    </div>
-
-    <!-- Supplied Vineyards Section -->
-    <div class="space-y-4">
-        <h2 class="text-lg font-medium text-gray-900">Supplied Vineyards</h2>
-        {% if supplied_vineyards %}
-            {% cache 300 supplied_vineyards %}
-            <div class="table-container">
-                <table class="table">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Location</th>
-                            <th>Size (ha)</th>
-                            <th>Grape Variety</th>
-                            <th>Supplier</th>
-                            <th class="text-right">Actions</th>
-                        </tr>
-                    </thead>
-                    <tbody class="divide-y divide-gray-200">
-                        {% for vineyard in supplied_vineyards %}
-                        <tr class="vineyard-row">
-                            <td class="font-medium text-gray-900">{{ vineyard.name }}</td>
-                            <td>{{ vineyard.location }}</td>
-                            <td>{{ vineyard.size }}</td>
-                            <td>{{ vineyard.get_grape_variety_display }}</td>
-                            <td>{{ vineyard.supplier.name }}</td>
-                            <td class="text-right space-x-2">
-                                <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" 
-                                   class="text-gray-400 hover:text-wine">
-                                    <i class="fas fa-eye"></i>
-                                </a>
-                                <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" 
-                                   class="text-gray-400 hover:text-wine">
-                                    <i class="fas fa-edit"></i>
-                                </a>
-                            </td>
-                        </tr>
-                        {% endfor %}
-                    </tbody>
-                </table>
-            </div>
-            {% endcache %}
-        {% else %}
-            <div class="bg-gray-50 rounded-lg p-6 text-center">
-                <p class="text-gray-500">No supplied vineyards found.</p>
-            </div>
-        {% endif %}
-    </div>
-</div>
-
-<script>
-    const searchInput = document.getElementById('searchInput');
-    const searchForm = document.getElementById('searchForm');
-    let searchTimeout;
-
-    function filterVineyards(searchQuery) {
-        const rows = document.querySelectorAll('.vineyard-row');
-        const normalizedQuery = searchQuery.toLowerCase();
-
-        rows.forEach(row => {
-            const text = row.textContent.toLowerCase();
-            row.style.display = text.includes(normalizedQuery) ? '' : 'none';
+            let currentController = null;
+            let searchTimeout = null;
+            
+            function showLoading() {
+                loadingIndicator.classList.remove('hidden');
+                if (clearButton) clearButton.classList.add('hidden');
+            }
+            
+            function hideLoading() {
+                loadingIndicator.classList.add('hidden');
+                if (clearButton && searchInput.value) clearButton.classList.remove('hidden');
+            }
+            
+            async function updateResults(searchQuery, page = 1) {
+                if (currentController) {
+                    currentController.abort();
+                }
+                
+                currentController = new AbortController();
+                showLoading();
+                
+                try {
+                    const params = new URLSearchParams();
+                    if (searchQuery) params.set('search', searchQuery);
+                    if (page > 1) params.set('page', page);
+                    
+                    const response = await fetch(`${window.location.pathname}?${params.toString()}`, {
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        },
+                        signal: currentController.signal
+                    });
+                    
+                    if (!response.ok) throw new Error('Network response was not ok');
+                    
+                    const html = await response.text();
+                    resultsContainer.innerHTML = html;
+                    
+                    // Update URL without page reload
+                    const newUrl = new URL(window.location);
+                    if (searchQuery) {
+                        newUrl.searchParams.set('search', searchQuery);
+                    } else {
+                        newUrl.searchParams.delete('search');
+                    }
+                    if (page > 1) {
+                        newUrl.searchParams.set('page', page);
+                    } else {
+                        newUrl.searchParams.delete('page');
+                    }
+                    window.history.pushState({}, '', newUrl);
+                    
+                } catch (error) {
+                    if (error.name === 'AbortError') return;
+                    console.error('Error:', error);
+                } finally {
+                    hideLoading();
+                    currentController = null;
+                }
+            }
+            
+            window.clearSearch = function() {
+                searchInput.value = '';
+                updateResults('');
+                searchInput.focus();
+            }
+            
+            // Handle search input with debouncing
+            searchInput.addEventListener('input', function(e) {
+                if (searchTimeout) {
+                    clearTimeout(searchTimeout);
+                }
+                
+                const query = e.target.value;
+                searchTimeout = setTimeout(() => {
+                    searchTimeout = null;
+                    updateResults(query);
+                }, 300);
+            });
+            
+            // Handle pagination clicks
+            document.addEventListener('click', function(e) {
+                const link = e.target.closest('a[data-page]');
+                if (link) {
+                    e.preventDefault();
+                    const page = link.dataset.page;
+                    updateResults(searchInput.value, page);
+                }
+            });
         });
-    }
-
-    // Handle input changes with debouncing
-    searchInput.addEventListener('input', function(e) {
-        clearTimeout(searchTimeout);
-        searchTimeout = setTimeout(() => {
-            filterVineyards(e.target.value);
-        }, 300);
-    });
-
-    // Handle form submission
-    searchForm.addEventListener('submit', function(e) {
-        e.preventDefault();
-        filterVineyards(searchInput.value);
-    });
-</script>
+    </script>
+    {% endblock %}
+</div>
 {% endblock %}

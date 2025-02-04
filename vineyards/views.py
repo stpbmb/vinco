@@ -13,6 +13,11 @@ from django.core.exceptions import PermissionDenied
 from django.contrib import messages
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.db import transaction
+from django.db.models import Q, Count, Prefetch, F, Value, Sum
+from django.db.models.functions import Coalesce
+from django.views.decorators.cache import cache_page
+from django.utils.cache import get_cache_key
+from django.core.cache import cache
 from core.utils.exceptions import (
     handle_view_exception,
     InvalidOperationError,
@@ -22,7 +27,6 @@ from core.utils.exceptions import (
 )
 from .models import Vineyard, Supplier
 from .forms import VineyardForm, SupplierForm
-from django.db.models import Q
 
 logger = logging.getLogger('vinco')
 
@@ -31,57 +35,47 @@ logger = logging.getLogger('vinco')
 @permission_required('vineyards.view_vineyard', raise_exception=True)
 @handle_view_exception
 def list_vineyards(request):
-    """
-    Display a list of all vineyards with search functionality.
-    
-    Lists vineyards separated into owned and supplied categories. Provides search
-    functionality across multiple fields including name, location, grape variety,
-    and supplier information.
-
-    Args:
-        request: The HTTP request object
-
-    Returns:
-        Rendered template with context containing:
-        - owned_vineyards: QuerySet of owned vineyards
-        - supplied_vineyards: QuerySet of supplied vineyards
-        - search_query: Current search term if any
-        - active_tab: Current active navigation tab
-    """
     try:
+        # Get search query and page number
         search_query = request.GET.get('search', '').strip()
+        page = request.GET.get('page', 1)
         
         # Base queryset with optimized joins
-        base_qs = Vineyard.objects.select_related('supplier', 'created_by')
+        vineyards = Vineyard.objects.select_related(
+            'supplier', 
+            'created_by'
+        ).annotate(
+            supplier_name=F('supplier__name')
+        )
         
         # If user doesn't have view_all_vineyards permission, only show their vineyards
         if not request.user.has_perm('vineyards.view_all_vineyards'):
-            base_qs = base_qs.filter(created_by=request.user)
+            vineyards = vineyards.filter(created_by=request.user)
         
-        # Filter owned vineyards
-        owned_vineyards = base_qs.filter(ownership_type='owned')
-        
-        # Filter supplier vineyards
-        supplied_vineyards = base_qs.filter(ownership_type='supplied')
-        
+        # Apply search filter if query exists
         if search_query:
-            # Apply search filter to both querysets
-            search_filter = (
+            vineyards = vineyards.filter(
                 Q(name__icontains=search_query) |
                 Q(location__icontains=search_query) |
                 Q(grape_variety__icontains=search_query) |
-                Q(supplier__name__icontains=search_query)
-            )
-            owned_vineyards = owned_vineyards.filter(search_filter)
-            supplied_vineyards = supplied_vineyards.filter(search_filter)
+                Q(supplier__name__icontains=search_query) |
+                Q(ownership_type__icontains=search_query)
+            ).distinct()
         
-        # Order the results
-        owned_vineyards = owned_vineyards.order_by('name')
-        supplied_vineyards = supplied_vineyards.order_by('supplier__name', 'name')
+        # Order by name for consistent results
+        vineyards = vineyards.order_by('name')
+        
+        # Paginate results
+        paginator = Paginator(vineyards, 20)  # Show 20 vineyards per page
+        try:
+            vineyards_page = paginator.page(page)
+        except PageNotAnInteger:
+            vineyards_page = paginator.page(1)
+        except EmptyPage:
+            vineyards_page = paginator.page(paginator.num_pages)
         
         context = {
-            'owned_vineyards': owned_vineyards,
-            'supplied_vineyards': supplied_vineyards,
+            'vineyards': vineyards_page,
             'search_query': search_query,
             'active_tab': 'vineyards',
             'can_manage': request.user.has_perm('vineyards.manage_vineyards'),
@@ -89,12 +83,15 @@ def list_vineyards(request):
             'can_view_analytics': request.user.has_perm('vineyards.view_vineyard_analytics'),
         }
         
+        if request.headers.get('X-Requested-With') == 'XMLHttpRequest':
+            return render(request, 'vineyards/partials/vineyard_list.html', context)
+        
         return render(request, 'vineyards/list_vineyards.html', context)
         
     except Exception as e:
-        log_error(logger, e)
+        logger.error(f"Error in list_vineyards: {str(e)}", exc_info=True)
         messages.error(request, str(e))
-        return redirect('home')
+        return redirect('vineyards:list_vineyards')
 
 @login_required
 @permission_required(['vineyards.add_vineyard', 'vineyards.manage_vineyards'], raise_exception=True)
@@ -210,7 +207,7 @@ def edit_vineyard(request, vineyard_id):
     except Exception as e:
         log_error(logger, e)
         messages.error(request, str(e))
-        return redirect('home')
+        return redirect('vineyards:list_vineyards')
 
 @login_required
 @handle_view_exception
@@ -218,45 +215,62 @@ def vineyard_detail(request, vineyard_id):
     """
     Display detailed information about a specific vineyard.
     
-    Shows all vineyard information including harvest history and related data.
+    Shows all vineyard information including associated data.
     Uses select_related and prefetch_related to optimize database queries.
-
+    Implements caching for better performance.
+    
     Args:
         request: The HTTP request object
         vineyard_id: ID of the vineyard to display
-
+        
     Returns:
         Rendered template with detailed vineyard information
     """
     try:
-        # Optimize queries by selecting related fields
+        # Generate cache key
+        cache_key = f'vineyard_detail:{vineyard_id}:{request.user.id}'
+        cached_data = cache.get(cache_key)
+        
+        if cached_data:
+            context = cached_data
+            # Update dynamic data that shouldn't be cached
+            context.update({
+                'active_tab': 'vineyards',
+                'can_manage': request.user.has_perm('vineyards.manage_vineyards'),
+                'can_export': request.user.has_perm('vineyards.export_vineyard_data'),
+                'can_view_analytics': request.user.has_perm('vineyards.view_vineyard_analytics'),
+            })
+            return render(request, 'vineyards/vineyard_detail.html', context)
+        
+        # Fetch vineyard with optimized queries
         vineyard = get_object_or_404(
             Vineyard.objects.select_related(
                 'supplier',
                 'created_by'
-            ).prefetch_related(
-                'harvests__created_by'
             ),
             id=vineyard_id
         )
         
-        # Check if user has permission to view this vineyard
+        # Check permissions
         if not request.user.has_perm('vineyards.view_all_vineyards') and vineyard.created_by != request.user:
-            raise PermissionDenied("You don't have permission to view this vineyard.")
+            raise PermissionDenied
         
         context = {
             'vineyard': vineyard,
-            'active_tab': 'vineyards'
+            'active_tab': 'vineyards',
+            'can_manage': request.user.has_perm('vineyards.manage_vineyards'),
+            'can_export': request.user.has_perm('vineyards.export_vineyard_data'),
+            'can_view_analytics': request.user.has_perm('vineyards.view_vineyard_analytics'),
         }
+        
+        # Cache the results for 5 minutes
+        cache.set(cache_key, context, 300)
         
         return render(request, 'vineyards/vineyard_detail.html', context)
         
     except Exception as e:
-        logger.error(f"Error viewing vineyard {vineyard_id}: {str(e)}", extra={
-            'user': request.user.username,
-            'vineyard_id': vineyard_id
-        })
-        messages.error(request, "An error occurred while viewing the vineyard.")
+        log_error(logger, e)
+        messages.error(request, str(e))
         return redirect('vineyards:list_vineyards')
 
 @login_required
@@ -284,13 +298,6 @@ def delete_vineyard(request, vineyard_id):
         if not request.user.has_perm('vineyards.manage_vineyards') and vineyard.created_by != request.user:
             raise PermissionDenied("You don't have permission to delete this vineyard.")
         
-        # Check if vineyard has any related harvests
-        if vineyard.harvests.exists():
-            raise InvalidOperationError(
-                "Cannot delete vineyard with existing harvests",
-                code='vineyard_has_harvests'
-            )
-                
         if request.method == 'POST':
             vineyard_name = vineyard.name
             vineyard.delete()
@@ -313,13 +320,6 @@ def delete_vineyard(request, vineyard_id):
             'user': request.user.username
         })
         raise ResourceNotFoundError(f"Vineyard with id {vineyard_id} not found")
-    except InvalidOperationError as e:
-        logger.warning(str(e), extra={
-            'user': request.user.username,
-            'vineyard_id': vineyard_id
-        })
-        messages.error(request, str(e))
-        return redirect('vineyards:vineyard_detail', vineyard_id=vineyard_id)
     except Exception as e:
         log_error(e, request)
         raise
@@ -519,9 +519,7 @@ def supplier_detail(request, supplier_id):
         # Optimize queries by selecting related fields and prefetching related data
         supplier = get_object_or_404(
             Supplier.objects.prefetch_related(
-                'vineyards__created_by',
-                'vineyards__harvests__created_by',
-                'vineyards__harvests__allocations__tank__cellar'
+                'vineyards__created_by'
             ),
             id=supplier_id
         )
@@ -536,7 +534,7 @@ def supplier_detail(request, supplier_id):
     except Exception as e:
         log_error(logger, e)
         messages.error(request, str(e))
-        return redirect('home')
+        return redirect('vineyards:list_suppliers')
 
 @login_required
 @handle_view_exception

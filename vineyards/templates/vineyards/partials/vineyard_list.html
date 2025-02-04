@@ -1,0 +1,133 @@
+{% if vineyards %}
+    <div class="table-container">
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Location</th>
+                    <th>Size (ha)</th>
+                    <th>Grape Variety</th>
+                    <th>Type</th>
+                    <th>Supplier</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for vineyard in vineyards %}
+                <tr>
+                    <td>
+                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" 
+                           class="text-wine-600 hover:text-wine-800">
+                            {{ vineyard.name }}
+                        </a>
+                    </td>
+                    <td>{{ vineyard.location }}</td>
+                    <td>{{ vineyard.size }}</td>
+                    <td>{{ vineyard.get_grape_variety_display }}</td>
+                    <td>{{ vineyard.get_ownership_type_display }}</td>
+                    <td>
+                        {% if vineyard.supplier %}
+                            <a href="{% url 'vineyards:supplier_detail' vineyard.supplier.id %}"
+                               class="text-wine-600 hover:text-wine-800">
+                                {{ vineyard.supplier_name }}
+                            </a>
+                        {% else %}
+                            -
+                        {% endif %}
+                    </td>
+                    <td class="space-x-2">
+                        {% if can_manage %}
+                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" 
+                           class="text-wine-600 hover:text-wine-800"
+                           title="Edit">
+                            <i class="fas fa-edit"></i>
+                        </a>
+                        <a href="{% url 'vineyards:delete_vineyard' vineyard.id %}" 
+                           class="text-red-600 hover:text-red-800"
+                           title="Delete">
+                            <i class="fas fa-trash"></i>
+                        </a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    <!-- Pagination -->
+    {% if vineyards.has_other_pages %}
+    <div class="px-6 py-4 border-t border-gray-200">
+        <div class="flex items-center justify-between">
+            <div class="flex-1 flex justify-between sm:hidden">
+                {% if vineyards.has_previous %}
+                    <a href="#" 
+                       data-page="{{ vineyards.previous_page_number }}"
+                       class="btn-secondary">
+                        Previous
+                    </a>
+                {% endif %}
+                {% if vineyards.has_next %}
+                    <a href="#"
+                       data-page="{{ vineyards.next_page_number }}"
+                       class="btn-secondary">
+                        Next
+                    </a>
+                {% endif %}
+            </div>
+            <div class="hidden sm:flex-1 sm:flex sm:items-center sm:justify-between">
+                <div>
+                    <p class="text-sm text-gray-700">
+                        Showing 
+                        <span class="font-medium">{{ vineyards.start_index }}</span>
+                        to
+                        <span class="font-medium">{{ vineyards.end_index }}</span>
+                        of
+                        <span class="font-medium">{{ vineyards.paginator.count }}</span>
+                        results
+                    </p>
+                </div>
+                <div>
+                    <nav class="relative z-0 inline-flex rounded-md shadow-sm -space-x-px">
+                        {% if vineyards.has_previous %}
+                            <a href="#"
+                               data-page="{{ vineyards.previous_page_number }}"
+                               class="relative inline-flex items-center px-2 py-2 rounded-l-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Previous</span>
+                                <i class="fas fa-chevron-left"></i>
+                            </a>
+                        {% endif %}
+                        
+                        {% for i in vineyards.paginator.page_range %}
+                            {% if vineyards.number == i %}
+                                <span class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-wine-50 text-sm font-medium text-wine-600">
+                                    {{ i }}
+                                </span>
+                            {% else %}
+                                <a href="#"
+                                   data-page="{{ i }}"
+                                   class="relative inline-flex items-center px-4 py-2 border border-gray-300 bg-white text-sm font-medium text-gray-700 hover:bg-gray-50">
+                                    {{ i }}
+                                </a>
+                            {% endif %}
+                        {% endfor %}
+                        
+                        {% if vineyards.has_next %}
+                            <a href="#"
+                               data-page="{{ vineyards.next_page_number }}"
+                               class="relative inline-flex items-center px-2 py-2 rounded-r-md border border-gray-300 bg-white text-sm font-medium text-gray-500 hover:bg-gray-50">
+                                <span class="sr-only">Next</span>
+                                <i class="fas fa-chevron-right"></i>
+                            </a>
+                        {% endif %}
+                    </nav>
+                </div>
+            </div>
+        </div>
+    </div>
+    {% endif %}
+{% else %}
+    <div class="p-6 text-center text-gray-500">
+        No vineyards found matching your criteria.
+    </div>
+{% endif %}

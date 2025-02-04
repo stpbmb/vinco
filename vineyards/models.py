@@ -50,6 +50,11 @@ class Supplier(TenantModel):
             ("export_supplier_data", "Can export supplier data"),
             ("view_supplier_analytics", "Can view supplier analytics"),
         ]
+        indexes = [
+            models.Index(fields=['name'], name='supplier_name_idx'),
+            models.Index(fields=['oib'], name='supplier_oib_idx'),
+            models.Index(fields=['created_at'], name='supplier_created_at_idx'),
+        ]
 
 class Vineyard(TenantModel):
     """
@@ -213,6 +218,15 @@ class Vineyard(TenantModel):
             ("manage_vineyards", "Can manage vineyards"),
             ("export_vineyard_data", "Can export vineyard data"),
             ("view_vineyard_analytics", "Can view vineyard analytics"),
+        ]
+        indexes = [
+            models.Index(fields=['name'], name='vineyard_name_idx'),
+            models.Index(fields=['location'], name='vineyard_location_idx'),
+            models.Index(fields=['grape_variety'], name='vineyard_grape_var_idx'),
+            models.Index(fields=['ownership_type'], name='vineyard_ownership_idx'),
+            models.Index(fields=['size'], name='vineyard_size_idx'),
+            models.Index(fields=['created_at'], name='vineyard_created_at_idx'),
+            models.Index(fields=['supplier', 'ownership_type'], name='vineyard_sup_own_idx'),
         ]
         verbose_name = 'Vineyard'
         verbose_name_plural = 'Vineyards'
