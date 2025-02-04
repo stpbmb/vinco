@@ -1711,3 +1711,258 @@ INFO 2025-02-03 21:23:02,217 tenant_middleware 37415 6133084160 Organization ID 
 INFO 2025-02-03 21:23:02,220 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
 INFO 2025-02-03 21:23:02,221 views 37415 6133084160 Suppliers list accessed
 INFO 2025-02-03 21:23:02,225 basehttp 37415 6133084160 "GET /vineyards/suppliers/ HTTP/1.1" 200 18644
+INFO 2025-02-03 21:23:25,002 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:25,007 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:25,037 basehttp 37415 6133084160 "GET /vineyards/ HTTP/1.1" 200 44376
+INFO 2025-02-03 21:23:25,796 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:25,799 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:25,799 dashboard 37415 6133084160 Getting dashboard data for organization: Vinarija Kaptol
+ERROR 2025-02-03 21:23:25,800 dashboard 37415 6133084160 Error getting dashboard data: Cannot resolve keyword 'is_active' into field. Choices are: allocations, created_at, created_by, created_by_id, crushed_juice_allocations, crushing_date, date, id, juice_yield, notes, organization, organization_id, pressing_notes, price_per_kg, quantity, tankhistory, updated_at, updated_by, updated_by_id, vat_per_kg, vineyard, vineyard_id
+INFO 2025-02-03 21:23:25,802 basehttp 37415 6133084160 "GET /core/dashboard/ HTTP/1.1" 200 16077
+INFO 2025-02-03 21:23:26,883 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:26,886 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:26,895 basehttp 37415 6133084160 "GET /vineyards/ HTTP/1.1" 200 44376
+INFO 2025-02-03 21:23:28,482 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:28,485 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:28,525 basehttp 37415 6133084160 "GET /harvests/ HTTP/1.1" 200 32430
+INFO 2025-02-03 21:23:30,122 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:30,125 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+ERROR 2025-02-03 21:23:30,190 log 37415 6133084160 Internal Server Error: /packaging/bottles/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'add_bottling' not found. 'add_bottling' is not a valid view function or pattern name.
+ERROR 2025-02-03 21:23:30,196 basehttp 37415 6133084160 "GET /packaging/bottles/ HTTP/1.1" 500 197237
+INFO 2025-02-03 21:23:32,916 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:32,920 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:32,920 dashboard 37415 6133084160 Getting dashboard data for organization: Vinarija Kaptol
+ERROR 2025-02-03 21:23:32,923 dashboard 37415 6133084160 Error getting dashboard data: Cannot resolve keyword 'is_active' into field. Choices are: allocations, created_at, created_by, created_by_id, crushed_juice_allocations, crushing_date, date, id, juice_yield, notes, organization, organization_id, pressing_notes, price_per_kg, quantity, tankhistory, updated_at, updated_by, updated_by_id, vat_per_kg, vineyard, vineyard_id
+INFO 2025-02-03 21:23:32,929 basehttp 37415 6133084160 "GET /core/dashboard/ HTTP/1.1" 200 16077
+INFO 2025-02-03 21:23:35,243 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:35,247 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:35,263 basehttp 37415 6133084160 "GET /vineyards/ HTTP/1.1" 200 44376
+INFO 2025-02-03 21:23:41,779 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:41,783 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:41,784 views 37415 6133084160 Suppliers list accessed
+INFO 2025-02-03 21:23:41,792 basehttp 37415 6133084160 "GET /vineyards/suppliers/ HTTP/1.1" 200 18644
+INFO 2025-02-03 21:23:45,862 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:45,867 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:45,885 basehttp 37415 6133084160 "GET /vineyards/suppliers/3/ HTTP/1.1" 200 16525
+INFO 2025-02-03 21:23:51,875 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:23:51,879 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:23:51,880 views 37415 6133084160 Suppliers list accessed
+INFO 2025-02-03 21:23:51,888 basehttp 37415 6133084160 "GET /vineyards/suppliers/ HTTP/1.1" 200 18644
+INFO 2025-02-03 21:24:00,269 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:00,271 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:00,293 basehttp 37415 6133084160 "GET /harvests/ HTTP/1.1" 200 32430
+INFO 2025-02-03 21:24:02,950 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:02,955 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:02,976 basehttp 37415 6133084160 "GET /harvests/14/ HTTP/1.1" 200 13912
+INFO 2025-02-03 21:24:05,111 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:05,115 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:05,172 basehttp 37415 6133084160 "GET /harvests/14/edit/ HTTP/1.1" 200 17598
+INFO 2025-02-03 21:24:11,876 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:11,880 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:11,915 basehttp 37415 6133084160 "GET /harvests/ HTTP/1.1" 200 32430
+INFO 2025-02-03 21:24:13,227 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:13,233 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:13,234 dashboard 37415 6133084160 Getting dashboard data for organization: Vinarija Kaptol
+ERROR 2025-02-03 21:24:13,238 dashboard 37415 6133084160 Error getting dashboard data: Cannot resolve keyword 'is_active' into field. Choices are: allocations, created_at, created_by, created_by_id, crushed_juice_allocations, crushing_date, date, id, juice_yield, notes, organization, organization_id, pressing_notes, price_per_kg, quantity, tankhistory, updated_at, updated_by, updated_by_id, vat_per_kg, vineyard, vineyard_id
+INFO 2025-02-03 21:24:13,242 basehttp 37415 6133084160 "GET /core/dashboard/ HTTP/1.1" 200 16077
+INFO 2025-02-03 21:24:13,541 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:13,546 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:13,576 basehttp 37415 6133084160 "GET /vineyards/ HTTP/1.1" 200 44376
+INFO 2025-02-03 21:24:16,056 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:16,059 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:16,070 basehttp 37415 6133084160 "GET /vineyards/ HTTP/1.1" 200 44376
+INFO 2025-02-03 21:24:17,610 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:17,613 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:17,624 basehttp 37415 6133084160 "GET /harvests/ HTTP/1.1" 200 32430
+INFO 2025-02-03 21:24:20,552 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:20,557 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:20,592 basehttp 37415 6133084160 "GET /harvests/14/ HTTP/1.1" 200 13912
+INFO 2025-02-03 21:24:23,483 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:23,486 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:23,525 basehttp 37415 6133084160 "GET /harvests/ HTTP/1.1" 200 32430
+INFO 2025-02-03 21:24:25,071 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:25,074 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:25,092 basehttp 37415 6133084160 "GET /harvests/12/ HTTP/1.1" 200 13912
+INFO 2025-02-03 21:24:28,194 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:28,200 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:28,233 basehttp 37415 6133084160 "GET /harvests/ HTTP/1.1" 200 32430
+INFO 2025-02-03 21:24:29,284 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:29,295 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:29,313 basehttp 37415 6133084160 "GET /harvests/10/ HTTP/1.1" 200 13928
+INFO 2025-02-03 21:24:30,397 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:30,400 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:30,413 basehttp 37415 6133084160 "GET /harvests/ HTTP/1.1" 200 32430
+INFO 2025-02-03 21:24:43,182 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:43,187 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:43,187 dashboard 37415 6133084160 Getting dashboard data for organization: Vinarija Kaptol
+ERROR 2025-02-03 21:24:43,189 dashboard 37415 6133084160 Error getting dashboard data: Cannot resolve keyword 'is_active' into field. Choices are: allocations, created_at, created_by, created_by_id, crushed_juice_allocations, crushing_date, date, id, juice_yield, notes, organization, organization_id, pressing_notes, price_per_kg, quantity, tankhistory, updated_at, updated_by, updated_by_id, vat_per_kg, vineyard, vineyard_id
+INFO 2025-02-03 21:24:43,193 basehttp 37415 6133084160 "GET /core/dashboard/ HTTP/1.1" 200 16077
+INFO 2025-02-03 21:24:49,681 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:49,684 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:49,692 basehttp 37415 6133084160 "GET /vineyards/ HTTP/1.1" 200 44376
+INFO 2025-02-03 21:24:50,781 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:50,785 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:50,797 basehttp 37415 6133084160 "GET /harvests/ HTTP/1.1" 200 32430
+INFO 2025-02-03 21:24:51,550 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:51,553 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+INFO 2025-02-03 21:24:51,565 basehttp 37415 6133084160 "GET /cellars/ HTTP/1.1" 200 35375
+INFO 2025-02-03 21:24:52,278 tenant_middleware 37415 6133084160 Organization ID from session: 2
+INFO 2025-02-03 21:24:52,289 tenant_middleware 37415 6133084160 Found organization: Vinarija Kaptol
+ERROR 2025-02-03 21:24:52,358 log 37415 6133084160 Internal Server Error: /packaging/bottles/
+Traceback (most recent call last):
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/exception.py", line 55, in inner
+    response = get_response(request)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/core/handlers/base.py", line 220, in _get_response
+    response = response.render()
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/response.py", line 114, in render
+    self.content = self.rendered_content
+                   ^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/response.py", line 92, in rendered_content
+    return template.render(context, self._request)
+           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/backends/django.py", line 107, in render
+    return self.template.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 171, in render
+    return self._render(context)
+           ~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 159, in render
+    return compiled_parent._render(context)
+           ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 163, in _render
+    return self.nodelist.render(context)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/loader_tags.py", line 65, in render
+    result = block.nodelist.render(context)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 1008, in render
+    return SafeString("".join([node.render_annotated(context) for node in self]))
+                               ~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/base.py", line 969, in render_annotated
+    return self.render(context)
+           ~~~~~~~~~~~^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/template/defaulttags.py", line 480, in render
+    url = reverse(view_name, args=args, kwargs=kwargs, current_app=current_app)
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/urls/base.py", line 88, in reverse
+    return resolver._reverse_with_prefix(view, prefix, *args, **kwargs)
+           ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Library/Frameworks/Python.framework/Versions/3.13/lib/python3.13/site-packages/django/urls/resolvers.py", line 831, in _reverse_with_prefix
+    raise NoReverseMatch(msg)
+django.urls.exceptions.NoReverseMatch: Reverse for 'add_bottling' not found. 'add_bottling' is not a valid view function or pattern name.
+ERROR 2025-02-03 21:24:52,359 basehttp 37415 6133084160 "GET /packaging/bottles/ HTTP/1.1" 500 197236

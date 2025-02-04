@@ -1,7 +1,7 @@
 # Vinco - Project Brief
 
 ## Project Overview
-Vinco is a comprehensive wine production management system built with Django. The application serves as an end-to-end solution for managing vineyard operations, harvest tracking, and wine production processes.
+Vinco is a comprehensive wine production management system built with Django. The application serves as an end-to-end solution for managing vineyard operations, harvest tracking, wine production processes, inventory control, and sales operations.
 
 ## Core Functionality
 
@@ -27,50 +27,75 @@ Vinco is a comprehensive wine production management system built with Django. Th
 - Storage management
 - Production process tracking
 
+### 5. Inventory Management
+- Complete wine stock tracking
+- Multi-location inventory control
+- Batch management
+- Organization-specific pricing
+- Real-time monitoring
+
+### 6. Sales Operations
+- Direct sales processing (B2B/B2C)
+- Customer relationship management
+- Invoice generation
+- Payment tracking
+- Sales analytics
+
+### 7. Optional Webshop
+- Global marketplace
+- Organization-specific storefronts
+- Online payment processing
+- Integration with inventory and sales
+
 ## Technical Architecture
 
 ### Technology Stack
-- **Backend Framework**: Django 4.2+
-- **Frontend**: Bootstrap 5 with JavaScript
-- **Database**: PostgreSQL
-- **Form Processing**: django-crispy-forms with crispy-bootstrap4
+- **Backend Framework**: Django 4.x
+- **API Framework**: Django REST Framework
+- **Frontend**: Tailwind CSS with JavaScript
+- **Database**: PostgreSQL (production) / SQLite (development)
+- **Cache**: Redis
+- **Background Tasks**: Celery
+- **Payment Processing**: Stripe Connect (optional)
 - **Development Tools**: django-debug-toolbar
 
 ### Project Structure
 ```
 vinco/
-├── vineyards/     # Vineyard management module
-├── harvests/      # Harvest tracking module
-├── packaging/     # Packaging operations
-├── cellars/      # Cellar management
-├── core/         # Core functionality
-├── static/       # Static assets
-└── templates/    # HTML templates
+├── core/         # Core functionality and multi-tenancy
+├── organizations/# Organization management
+├── vineyards/    # Vineyard management module
+├── harvests/     # Harvest tracking module
+├── packaging/    # Packaging operations
+├── cellars/     # Cellar management
+├── inventory/    # Stock management
+├── sales/       # Sales operations
+├── webshop/     # Optional online store
+├── static/      # Static assets
+└── templates/   # HTML templates
 ```
 
 ## Development Standards
+1. **Code Organization**
+   - Follow Django best practices
+   - Maintain app independence
+   - Clear separation of concerns
+   - Multi-tenancy aware models
 
-### Code Quality
-- Follows PEP 8 Python coding standards
-- Django best practices for views and models
-- Bootstrap conventions for frontend
-- Comprehensive documentation requirements
+2. **UI/UX Standards**
+   - Consistent Tailwind CSS styling
+   - Wine-themed components
+   - Responsive design
+   - Accessible interfaces
 
-### Testing
-- Test coverage for new features
-- Integration with pytest
-- Continuous testing practices
+3. **Testing Requirements**
+   - Unit tests for models and views
+   - Integration testing
+   - Multi-tenancy testing
+   - Performance testing
 
-## Security & Authentication
-- Built-in Django Authentication System
-- Environment-based configuration
-- Secure database handling
-
-## Deployment & Environment
-- PostgreSQL database in production
-- Environment variable configuration
-- Staticfiles management
-- Logging system in place
-
-## Current Status
-The project appears to be in active development with a solid foundation of core features implemented. The modular architecture allows for easy expansion and maintenance of different aspects of wine production management.
+4. **Documentation**
+   - Code documentation
+   - API documentation
+   - User guides
+   - Design patterns

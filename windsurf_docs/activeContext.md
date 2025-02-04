@@ -1,7 +1,7 @@
 # Active Context
 
 ## Current Work
-Implementing multi-tenancy architecture to support multiple organizations in the wine production management system.
+Implementing multi-tenancy architecture to support multiple organizations in the wine production management system, and planning the implementation of standalone apps and an optional webshop.
 
 ### Recent Changes
 1. Created organizations app with:
@@ -27,31 +27,71 @@ Implementing multi-tenancy architecture to support multiple organizations in the
    - Simplifying TenantViewMixin to avoid conflicts
    - Improving error handling and logging
 
+### Core Apps
+1. **Vineyards App**:
+   - Manage vineyard blocks and plots
+   - Track viticulture operations
+   - Monitor soil and climate data
+
+2. **Harvests App**:
+   - Plan and track harvest operations
+   - Record grape collection data
+   - Quality assessment tracking
+
+3. **Cellars App**:
+   - Monitor wine aging process
+   - Track cellar conditions
+   - Manage storage locations
+
+4. **Packaging App**:
+   - Handle bottling operations
+   - Manage label designs
+   - Track packaging materials
+
+5. **Inventory App**:
+   - Track wine stock across all stages
+   - Monitor production batches
+   - Set organization-specific pricing
+   - Real-time stock management
+   - Integration with production data
+
+6. **Sales App**:
+   - Record direct sales (B2B/B2C)
+   - Generate invoices and receipts
+   - Manage customer relationships
+   - Track payments and transactions
+   - Sales analytics and reporting
+
+### Optional Webshop Implementation
+1. **Global Marketplace**:
+   - Display products from all organizations
+   - Advanced filtering (organization, wine type, region)
+   - Organization-specific storefronts
+   - Custom branding per organization
+
+2. **Direct Payment System**:
+   - Stripe Connect integration
+   - Organization-specific payment processing
+   - Secure payment handling
+   - Transaction monitoring
+
 ### Next Steps
 1. Update remaining templates to handle organization context
 2. Add organization switching functionality in the UI
 3. Implement data migration strategy for existing records
 4. Add organization-specific settings and preferences
-5. Create organization management views (invite users, manage roles)
-6. Add audit logging for organization-related actions
-7. Monitor the application logs for any unexpected behavior
-8. Consider adding automated tests for organization context handling
-9. Document the new organization context flow for other developers
+5. Create organization management views
+6. Implement Inventory app core features
+7. Develop Sales app functionality
+8. Set up optional webshop infrastructure (if needed)
+9. Integrate Stripe Connect for organizations (if webshop enabled)
+10. Comprehensive testing of all components
 
 ## Design Patterns
 - Using wine-themed colors (wine-600, wine-700) for primary actions
 - Consistent spacing and typography using Tailwind's utility classes
-- Modern UI components with hover states and transitions
-- Responsive design that works well on all screen sizes
-- Custom form styles with improved validation feedback
-- Consistent table layouts with enhanced status indicators
-- Unified empty state designs across all modules
+- Modern UI components with hover states
+- Responsive design for all screen sizes
+- Custom form styles with validation feedback
+- Consistent table layouts with status indicators
 - Interactive data visualization components
-
-## Notes
-- All major modules now use Tailwind CSS
-- Design is consistent across all modules
-- Form handling and file uploads have been enhanced
-- Custom Tailwind configuration supports wine-specific theme
-- Status indicators follow a consistent pattern across modules
-- Interactive features optimized for both desktop and mobile use
