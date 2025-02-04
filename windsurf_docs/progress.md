@@ -69,6 +69,14 @@
    - Analytics dashboard
    - Organization-specific features
 
+3. **Tasks Module**
+   - Core task management models
+   - Cross-module integration points
+   - Assignment and tracking system
+   - Due date and priority handling
+   - Task templates and categories
+   - Organization-specific workflows
+
 ## Planned Features
 1. **Optional Webshop**
    - Global marketplace

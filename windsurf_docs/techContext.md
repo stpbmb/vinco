@@ -83,6 +83,17 @@
      - Customer database
      - Analytics dashboard
 
+7. **Tasks App**
+   - Purpose: Cross-module task management system
+   - Models: Task, TaskCategory, TaskTemplate, TaskAssignment
+   - Features:
+     - Task creation and tracking
+     - Assignment management
+     - Due date monitoring
+     - Priority handling
+     - Status workflows
+     - Integration with all modules
+
 ### Optional Components
 1. **Webshop**
    - Framework: Django Oscar

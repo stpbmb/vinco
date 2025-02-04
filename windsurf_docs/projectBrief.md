@@ -41,7 +41,15 @@ Vinco is a comprehensive wine production management system built with Django. Th
 - Payment tracking
 - Sales analytics
 
-### 7. Optional Webshop
+### 7. Task Management
+- Cross-module task tracking
+- Assignment and responsibility management
+- Due date and priority handling
+- Workflow automation
+- Progress monitoring
+- Integration with all production stages
+
+### 8. Optional Webshop
 - Global marketplace
 - Organization-specific storefronts
 - Online payment processing
@@ -70,6 +78,7 @@ vinco/
 ├── cellars/     # Cellar management
 ├── inventory/    # Stock management
 ├── sales/       # Sales operations
+├── tasks/       # Task management
 ├── webshop/     # Optional online store
 ├── static/      # Static assets
 └── templates/   # HTML templates

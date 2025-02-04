@@ -62,6 +62,14 @@ Implementing multi-tenancy architecture to support multiple organizations in the
    - Track payments and transactions
    - Sales analytics and reporting
 
+7. **Tasks App**:
+   - Cross-module task management
+   - Task assignment and tracking
+   - Due date monitoring
+   - Priority management
+   - Task status updates
+   - Integration with all production modules
+
 ### Optional Webshop Implementation
 1. **Global Marketplace**:
    - Display products from all organizations
@@ -83,9 +91,10 @@ Implementing multi-tenancy architecture to support multiple organizations in the
 5. Create organization management views
 6. Implement Inventory app core features
 7. Develop Sales app functionality
-8. Set up optional webshop infrastructure (if needed)
-9. Integrate Stripe Connect for organizations (if webshop enabled)
-10. Comprehensive testing of all components
+8. Create Tasks app infrastructure
+9. Set up optional webshop infrastructure (if needed)
+10. Integrate Stripe Connect for organizations (if webshop enabled)
+11. Comprehensive testing of all components
 
 ## Design Patterns
 - Using wine-themed colors (wine-600, wine-700) for primary actions

@@ -194,6 +194,42 @@ The application uses a middleware-based approach for handling organization conte
    - Financial reporting
    - Optional webshop integration
 
+### Tasks App
+1. **Core Functionality**:
+   - Cross-module task creation and tracking
+   - Task assignment and ownership
+   - Priority and due date management
+   - Status workflow handling
+   - Task notifications and reminders
+
+2. **Integration Points**:
+   - Links to vineyard operations
+   - Harvest task scheduling
+   - Cellar operation tasks
+   - Packaging workflow tasks
+   - Inventory-related tasks
+   - Sales follow-ups
+
+3. **Organization Features**:
+   - Organization-specific task views
+   - Role-based task assignment
+   - Custom task categories
+   - Task templates
+   - Reporting and analytics
+
+### Inventory Management
+1. **Stock Control**:
+   - Real-time inventory tracking
+   - Organization-specific stock levels
+   - Low stock alerts
+   - Reservation system
+
+2. **Data Synchronization**:
+   - Production to inventory sync
+   - Order to inventory updates
+   - Stock level verification
+   - Audit logging
+
 ### Optional Webshop
 1. **Global Marketplace**:
    - Multi-organization catalog

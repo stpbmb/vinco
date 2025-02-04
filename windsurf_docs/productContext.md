@@ -26,7 +26,13 @@ Vinco was created to address the complex needs of wine production management, pr
    - Generates invoices and tracks payments
    - Provides sales analytics
 
-5. **Data Organization**
+5. **Task Management**
+   - Centralizes task tracking across all processes
+   - Manages assignments and deadlines
+   - Tracks task progress and completion
+   - Provides workflow automation
+
+6. **Data Organization**
    - Centralizes all wine production data
    - Provides clear audit trails
    - Enables informed decision-making
@@ -64,7 +70,14 @@ Vinco was created to address the complex needs of wine production management, pr
    - Handles invoicing and payments
    - Provides sales reporting
 
-7. **Optional Webshop**
+7. **Tasks Module**
+   - Manages cross-process tasks
+   - Assigns and tracks responsibilities
+   - Monitors deadlines and priorities
+   - Automates common workflows
+   - Integrates with all modules
+
+8. **Optional Webshop**
    - Displays products from all organizations
    - Provides organization-specific storefronts
    - Handles online payments via Stripe
