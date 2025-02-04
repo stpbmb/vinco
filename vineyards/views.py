@@ -36,9 +36,11 @@ logger = logging.getLogger('vinco')
 @handle_view_exception
 def list_vineyards(request):
     try:
-        # Get search query and page number
+        # Get search query, page number, and sort parameters
         search_query = request.GET.get('search', '').strip()
         page = request.GET.get('page', 1)
+        sort_by = request.GET.get('sort', 'name')
+        sort_dir = request.GET.get('dir', 'asc')
         
         # Base queryset with optimized joins
         vineyards = Vineyard.objects.select_related(
@@ -62,8 +64,21 @@ def list_vineyards(request):
                 Q(ownership_type__icontains=search_query)
             ).distinct()
         
-        # Order by name for consistent results
-        vineyards = vineyards.order_by('name')
+        # Apply sorting
+        sort_field = {
+            'name': 'name',
+            'location': 'location',
+            'size': 'size',
+            'grape_variety': 'grape_variety',
+            'ownership_type': 'ownership_type',
+            'supplier': 'supplier_name'
+        }.get(sort_by, 'name')
+        
+        # Add direction prefix
+        if sort_dir == 'desc':
+            sort_field = f'-{sort_field}'
+        
+        vineyards = vineyards.order_by(sort_field)
         
         # Paginate results
         paginator = Paginator(vineyards, 20)  # Show 20 vineyards per page
@@ -81,6 +96,8 @@ def list_vineyards(request):
             'can_manage': request.user.has_perm('vineyards.manage_vineyards'),
             'can_export': request.user.has_perm('vineyards.export_vineyard_data'),
             'can_view_analytics': request.user.has_perm('vineyards.view_vineyard_analytics'),
+            'sort_by': sort_by,
+            'sort_dir': sort_dir
         }
         
         if request.headers.get('X-Requested-With') == 'XMLHttpRequest':

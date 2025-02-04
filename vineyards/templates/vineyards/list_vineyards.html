@@ -61,6 +61,8 @@
             
             let currentController = null;
             let searchTimeout = null;
+            let currentSort = '{{ sort_by }}';
+            let currentDir = '{{ sort_dir }}';
             
             function showLoading() {
                 loadingIndicator.classList.remove('hidden');
@@ -84,6 +86,8 @@
                     const params = new URLSearchParams();
                     if (searchQuery) params.set('search', searchQuery);
                     if (page > 1) params.set('page', page);
+                    if (currentSort) params.set('sort', currentSort);
+                    if (currentDir) params.set('dir', currentDir);
                     
                     const response = await fetch(`${window.location.pathname}?${params.toString()}`, {
                         headers: {
@@ -97,6 +101,9 @@
                     const html = await response.text();
                     resultsContainer.innerHTML = html;
                     
+                    // Update sort icons
+                    updateSortIcons();
+                    
                     // Update URL without page reload
                     const newUrl = new URL(window.location);
                     if (searchQuery) {
@@ -109,6 +116,10 @@
                     } else {
                         newUrl.searchParams.delete('page');
                     }
+                    if (currentSort) {
+                        newUrl.searchParams.set('sort', currentSort);
+                        newUrl.searchParams.set('dir', currentDir);
+                    }
                     window.history.pushState({}, '', newUrl);
                     
                 } catch (error) {
@@ -119,6 +130,40 @@
                     currentController = null;
                 }
             }
+            
+            function updateSortIcons() {
+                document.querySelectorAll('th.sortable').forEach(th => {
+                    const sortField = th.dataset.sort;
+                    const icon = th.querySelector('i.fas');
+                    
+                    if (sortField === currentSort) {
+                        icon.classList.remove('fa-sort');
+                        icon.classList.add(currentDir === 'asc' ? 'fa-sort-up' : 'fa-sort-down');
+                        icon.classList.remove('text-gray-400');
+                        icon.classList.add('text-wine-600');
+                    } else {
+                        icon.classList.remove('fa-sort-up', 'fa-sort-down');
+                        icon.classList.add('fa-sort');
+                        icon.classList.remove('text-wine-600');
+                        icon.classList.add('text-gray-400');
+                    }
+                });
+            }
+            
+            // Handle sorting
+            document.addEventListener('click', function(e) {
+                const th = e.target.closest('th.sortable');
+                if (th) {
+                    const sortField = th.dataset.sort;
+                    if (sortField === currentSort) {
+                        currentDir = currentDir === 'asc' ? 'desc' : 'asc';
+                    } else {
+                        currentSort = sortField;
+                        currentDir = 'asc';
+                    }
+                    updateResults(searchInput.value);
+                }
+            });
             
             window.clearSearch = function() {
                 searchInput.value = '';
@@ -148,6 +193,9 @@
                     updateResults(searchInput.value, page);
                 }
             });
+
+            // Initialize sort icons
+            updateSortIcons();
         });
     </script>
     {% endblock %}

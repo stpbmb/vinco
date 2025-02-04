@@ -3,50 +3,45 @@
         <table class="table">
             <thead>
                 <tr>
-                    <th>Name</th>
-                    <th>Location</th>
-                    <th>Size (ha)</th>
-                    <th>Grape Variety</th>
-                    <th>Type</th>
-                    <th>Supplier</th>
-                    <th>Actions</th>
+                    <th class="sortable" data-sort="name">
+                        Name
+                        <i class="fas fa-sort text-gray-400 ml-1"></i>
+                    </th>
+                    <th class="sortable" data-sort="location">
+                        Location
+                        <i class="fas fa-sort text-gray-400 ml-1"></i>
+                    </th>
+                    <th class="sortable" data-sort="size">
+                        Size (ha)
+                        <i class="fas fa-sort text-gray-400 ml-1"></i>
+                    </th>
+                    <th class="sortable" data-sort="grape_variety">
+                        Grape Variety
+                        <i class="fas fa-sort text-gray-400 ml-1"></i>
+                    </th>
+                    <th class="sortable" data-sort="ownership_type">
+                        Type
+                        <i class="fas fa-sort text-gray-400 ml-1"></i>
+                    </th>
+                    <th class="sortable" data-sort="supplier">
+                        Supplier
+                        <i class="fas fa-sort text-gray-400 ml-1"></i>
+                    </th>
                 </tr>
             </thead>
             <tbody>
                 {% for vineyard in vineyards %}
-                <tr>
-                    <td>
-                        <a href="{% url 'vineyards:vineyard_detail' vineyard.id %}" 
-                           class="text-wine-600 hover:text-wine-800">
-                            {{ vineyard.name }}
-                        </a>
-                    </td>
+                <tr class="cursor-pointer hover:bg-gray-50" onclick="window.location='{% url 'vineyards:vineyard_detail' vineyard.id %}'">
+                    <td class="text-wine-600 hover:text-wine-800">{{ vineyard.name }}</td>
                     <td>{{ vineyard.location }}</td>
                     <td>{{ vineyard.size }}</td>
                     <td>{{ vineyard.get_grape_variety_display }}</td>
                     <td>{{ vineyard.get_ownership_type_display }}</td>
                     <td>
                         {% if vineyard.supplier %}
-                            <a href="{% url 'vineyards:supplier_detail' vineyard.supplier.id %}"
-                               class="text-wine-600 hover:text-wine-800">
-                                {{ vineyard.supplier_name }}
-                            </a>
+                            <span class="text-wine-600">{{ vineyard.supplier_name }}</span>
                         {% else %}
                             -
-                        {% endif %}
-                    </td>
-                    <td class="space-x-2">
-                        {% if can_manage %}
-                        <a href="{% url 'vineyards:edit_vineyard' vineyard.id %}" 
-                           class="text-wine-600 hover:text-wine-800"
-                           title="Edit">
-                            <i class="fas fa-edit"></i>
-                        </a>
-                        <a href="{% url 'vineyards:delete_vineyard' vineyard.id %}" 
-                           class="text-red-600 hover:text-red-800"
-                           title="Delete">
-                            <i class="fas fa-trash"></i>
-                        </a>
                         {% endif %}
                     </td>
                 </tr>
