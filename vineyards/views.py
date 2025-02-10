@@ -130,11 +130,12 @@ def add_vineyard(request):
     """
     try:
         if request.method == 'POST':
-            form = VineyardForm(request.POST)
+            form = VineyardForm(request.POST, organization=request.organization)
             if form.is_valid():
                 with transaction.atomic():
                     vineyard = form.save(commit=False)
                     vineyard.created_by = request.user
+                    vineyard.organization = request.organization
                     vineyard.save()
                     
                     logger.info("New vineyard created", extra={
@@ -151,7 +152,7 @@ def add_vineyard(request):
                     'form_errors': form.errors
                 })
         else:
-            form = VineyardForm()
+            form = VineyardForm(organization=request.organization)
             
         return render(request, 'vineyards/vineyard_form.html', {
             'form': form,
@@ -182,14 +183,14 @@ def edit_vineyard(request, vineyard_id):
         On invalid POST: Rendered form template with errors
     """
     try:
-        vineyard = get_object_or_404(Vineyard, id=vineyard_id)
+        vineyard = get_object_or_404(Vineyard, pk=vineyard_id)
         
         # Check if user has permission to edit this specific vineyard
         if not request.user.has_perm('vineyards.manage_vineyards') and vineyard.created_by != request.user:
             raise PermissionDenied("You don't have permission to edit this vineyard.")
         
         if request.method == 'POST':
-            form = VineyardForm(request.POST, instance=vineyard)
+            form = VineyardForm(request.POST, instance=vineyard, organization=request.organization)
             if form.is_valid():
                 with transaction.atomic():
                     vineyard = form.save()
@@ -205,11 +206,11 @@ def edit_vineyard(request, vineyard_id):
             else:
                 logger.warning("Vineyard update failed - form validation error", extra={
                     'user': request.user.username,
-                    'vineyard_id': vineyard.id,
+                    'vineyard_id': vineyard_id,
                     'form_errors': form.errors
                 })
         else:
-            form = VineyardForm(instance=vineyard)
+            form = VineyardForm(instance=vineyard, organization=request.organization)
             
         return render(request, 'vineyards/vineyard_form.html', {
             'form': form,

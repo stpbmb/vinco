@@ -1,7 +1,22 @@
 from django import forms
 from django.core.validators import RegexValidator, MinValueValidator, MaxValueValidator
-from .models import Vineyard, Supplier
+from .models import Vineyard, Supplier, GrapeVariety
 from cellars.models import Cellar, Tank
+
+class GrapeVarietyChoiceField(forms.ModelChoiceField):
+    def label_from_instance(self, obj):
+        """Display the official name and code of the grape variety."""
+        return f"{obj.name} ({obj.code})"
+    
+    def to_python(self, value):
+        """Convert the selected GrapeVariety to its system_code."""
+        if value in self.empty_values:
+            return None
+        try:
+            value = super().to_python(value)
+            return value.system_code
+        except (ValueError, TypeError):
+            return value
 
 class VineyardForm(forms.ModelForm):
     name = forms.CharField(
@@ -24,14 +39,12 @@ class VineyardForm(forms.ModelForm):
         ]
     )
     
-    grape_variety = forms.CharField(
-        max_length=100,
-        validators=[
-            RegexValidator(
-                regex=r'^[a-zA-Z\s\-\']+$',
-                message='Grape variety can only contain letters, spaces, hyphens, and apostrophes'
-            )
-        ]
+    grape_variety = GrapeVarietyChoiceField(
+        queryset=GrapeVariety.objects.none(),
+        label="Grape Variety",
+        widget=forms.Select(attrs={
+            'class': 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-wine-500 focus:ring-wine-500 sm:text-sm'
+        })
     )
     
     size = forms.DecimalField(
@@ -44,7 +57,26 @@ class VineyardForm(forms.ModelForm):
     )
     
     def __init__(self, *args, **kwargs):
+        organization = kwargs.pop('organization', None)
         super().__init__(*args, **kwargs)
+        
+        # Set up grape variety choices filtered by organization
+        if organization:
+            self.fields['grape_variety'].queryset = GrapeVariety.objects.filter(
+                organization=organization
+            ).order_by('type', 'name')
+        
+        # Set initial grape variety based on system_code if editing
+        if self.instance and self.instance.pk and self.instance.grape_variety:
+            try:
+                variety = GrapeVariety.objects.get(
+                    organization=organization,
+                    system_code=self.instance.grape_variety
+                )
+                self.fields['grape_variety'].initial = variety
+            except GrapeVariety.DoesNotExist:
+                pass
+        
         self.fields['supplier'].required = False
         
         # Initialize supplier visibility based on ownership type
