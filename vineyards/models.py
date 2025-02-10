@@ -56,6 +56,93 @@ class Supplier(TenantModel):
             models.Index(fields=['created_at'], name='supplier_created_at_idx'),
         ]
 
+class GrapeVariety(TenantModel):
+    """
+    Represents an official grape variety in the wine production system.
+    
+    This model stores the official grape variety codes and their corresponding
+    system codes used in the existing database. It provides a mapping between
+    the internal system codes and official Croatian wine variety codes.
+
+    Attributes:
+        code (str): Official variety code (e.g., 'CV036', 'BV073')
+        name (str): Official variety name
+        type (str): Type of grape (red or white)
+        system_code (str): Internal system code used in database (e.g., 'cabernet_sauvignon')
+        created_at (datetime): Timestamp of creation
+        created_by (User): User who created the record
+    """
+    
+    code = models.CharField(
+        max_length=5,
+        help_text="Official variety code (e.g., 'CV036')"
+    )
+    name = models.CharField(
+        max_length=100,
+        help_text="Official variety name"
+    )
+    type = models.CharField(
+        max_length=10,
+        choices=[('red', 'Red'), ('white', 'White')],
+        help_text="Type of grape variety"
+    )
+    system_code = models.CharField(
+        max_length=50,
+        unique=True,
+        help_text="Internal system code (e.g., 'cabernet_sauvignon')"
+    )
+    
+    # Metadata
+    created_at = models.DateTimeField(auto_now_add=True)
+    created_by = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        on_delete=models.SET_NULL,
+        null=True,
+        related_name='grape_varieties_created'
+    )
+
+    class Meta:
+        verbose_name = "grape variety"
+        verbose_name_plural = "grape varieties"
+        ordering = ['name']
+        indexes = [
+            models.Index(fields=['code'], name='variety_code_idx'),
+            models.Index(fields=['system_code'], name='variety_system_code_idx'),
+            models.Index(fields=['type'], name='variety_type_idx'),
+        ]
+        constraints = [
+            models.UniqueConstraint(
+                fields=['organization', 'code'],
+                name='unique_variety_code_per_org'
+            )
+        ]
+
+    def __str__(self):
+        """Return a string representation of the grape variety."""
+        return f"{self.name} ({self.code})"
+
+    def clean(self):
+        """Validate the grape variety model."""
+        super().clean()
+        
+        # Ensure code format is valid
+        if self.code:
+            if not (self.code.startswith('CV') or self.code.startswith('BV')):
+                raise ValidationError({
+                    'code': 'Code must start with CV (red) or BV (white)'
+                })
+            
+            # Ensure type matches code prefix
+            prefix = self.code[:2]
+            if prefix == 'CV' and self.type != 'red':
+                raise ValidationError({
+                    'type': 'CV codes must be red varieties'
+                })
+            elif prefix == 'BV' and self.type != 'white':
+                raise ValidationError({
+                    'type': 'BV codes must be white varieties'
+                })
+
 class Vineyard(TenantModel):
     """
     Represents a vineyard in the wine production system.
@@ -205,11 +292,24 @@ class Vineyard(TenantModel):
                 'supplier': 'Supplied vineyards must have a supplier.'
             })
 
-    def save(self, *args, **kwargs):
-        """Save the vineyard model."""
-        self.full_clean()
-        super().save(*args, **kwargs)
-    
+    @property
+    def variety_code(self):
+        """Get the official variety code."""
+        try:
+            variety = GrapeVariety.objects.get(system_code=self.grape_variety)
+            return variety.code
+        except GrapeVariety.DoesNotExist:
+            return None
+
+    @property
+    def variety_type(self):
+        """Get the variety type (red/white)."""
+        try:
+            variety = GrapeVariety.objects.get(system_code=self.grape_variety)
+            return variety.type
+        except GrapeVariety.DoesNotExist:
+            return None
+
     class Meta:
         unique_together = ['organization', 'arkod_id']
         ordering = ['name']

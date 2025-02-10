@@ -169,3 +169,8 @@
    - Load balancer compatible
    - Static file separation
    - CDN support
+
+5. **Python Environment**:
+   - Always use python3 for running Python commands
+   - No legacy python2.x support
+   - Maintain consistent Python version across development
